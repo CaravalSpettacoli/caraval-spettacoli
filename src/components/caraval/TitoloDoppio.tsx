@@ -1,4 +1,5 @@
 import { cn } from "@/lib/cn";
+import { splitDisplay } from "@/lib/splitDisplay";
 
 interface TitoloDoppioProps {
   /** Prima parola/riga in display Stonehead. SOLO A-Z e 0-9. */
@@ -35,7 +36,7 @@ export function TitoloDoppio({
         )}
       >
         <span className="block font-display text-display-l md:text-display-xl">
-          {display}
+          {splitDisplay(display)}
         </span>
         <span
           className={cn(
@@ -45,7 +46,7 @@ export function TitoloDoppio({
               : "translate-x-6 md:translate-x-12",
           )}
         >
-          {display2}
+          {splitDisplay(display2)}
         </span>
       </Tag>
       {body && (

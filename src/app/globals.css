@@ -8,6 +8,15 @@
   font-weight: normal;
   font-style: normal;
   font-display: swap;
+  /* Disabilita stylistic alternates / ligatures: senza questo il font
+     mostra il watermark "@misterchek" su lettere come S, M, A, F. */
+  font-feature-settings: "liga" 0, "dlig" 0, "salt" 0, "ss01" 0, "ss02" 0,
+    "ss03" 0, "ss04" 0, "ss05" 0, "calt" 0, "swsh" 0, "ornm" 0;
+}
+
+.font-display {
+  font-feature-settings: "liga" 0, "dlig" 0, "salt" 0, "ss01" 0, "ss02" 0,
+    "ss03" 0, "ss04" 0, "ss05" 0, "calt" 0, "swsh" 0, "ornm" 0;
 }
 
 :root {
@@ -150,6 +159,29 @@ body {
   }
 }
 
+/* Pulse rosso: 3 cicli con delay iniziale, hover riavvia 1 ciclo.
+   Sostituisce il vecchio "infinite" che faceva sembrare i CTA un errore. */
+.animate-pulse-rosso {
+  animation-delay: 800ms;
+}
+.animate-pulse-rosso:hover {
+  animation: pulse-rosso 1s ease-in-out 1;
+}
+
+/* Fade-in on scroll: morbido, easing cinematografico */
+.fade-in-on-scroll {
+  opacity: 0;
+  transform: translateY(24px);
+  transition:
+    opacity 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 1000ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+.fade-in-on-scroll.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -160,4 +192,123 @@ body {
     animation-duration: 0.01ms !important;
     transition-duration: 0.01ms !important;
   }
+  .animate-pulse-rosso,
+  .animate-pulse-rosso:hover {
+    animation: none !important;
+  }
+  .fade-in-on-scroll {
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* === Sipario preloader === */
+.sipario-container {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+.sipario-panel {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  background:
+    linear-gradient(135deg, var(--color-rosso-deep), var(--color-rosso-base));
+  transition: transform 1500ms cubic-bezier(0.7, 0, 0.3, 1);
+  overflow: hidden;
+}
+.sipario-panel--left { left: 0; transform: translateX(0); }
+.sipario-panel--right { right: 0; transform: translateX(0); }
+.sipario-panel::before {
+  /* Texture velluto: strisce verticali sottili */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: repeating-linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.18) 0,
+    rgba(0, 0, 0, 0.18) 1px,
+    transparent 1px,
+    transparent 14px
+  );
+  mix-blend-mode: multiply;
+  opacity: 0.55;
+}
+.sipario-panel::after {
+  /* Vignettatura interna lato palco */
+  content: "";
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  width: 80px;
+  background: linear-gradient(to right, rgba(0,0,0,0.4), transparent);
+}
+.sipario-panel--left::after { right: 0; transform: scaleX(-1); }
+.sipario-panel--right::after { left: 0; }
+
+.sipario-container.is-open .sipario-panel--left {
+  transform: translateX(-100%);
+}
+.sipario-container.is-open .sipario-panel--right {
+  transform: translateX(100%);
+}
+
+.sipario-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  text-align: center;
+  color: var(--color-crema-base);
+  z-index: 1;
+  opacity: 0;
+  animation: sipario-fade-in 600ms ease-out 200ms forwards;
+  padding: 0 24px;
+  width: min(720px, 92vw);
+}
+.sipario-container.is-open .sipario-content {
+  animation: sipario-fade-out 400ms ease-out forwards;
+}
+
+@keyframes sipario-fade-in {
+  from { opacity: 0; transform: translate(-50%, -45%); }
+  to { opacity: 1; transform: translate(-50%, -50%); }
+}
+@keyframes sipario-fade-out {
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.95);
+  }
+}
+
+.sipario-title {
+  font-size: clamp(36px, 6vw, 72px);
+  margin: 0;
+  line-height: 1;
+  letter-spacing: -0.01em;
+  font-family: var(--font-stonehead), serif;
+  font-feature-settings: "liga" 0, "dlig" 0, "salt" 0, "ss01" 0, "ss02" 0,
+    "ss03" 0, "ss04" 0, "ss05" 0, "calt" 0, "swsh" 0, "ornm" 0;
+}
+.sipario-divider {
+  display: block;
+  margin: 24px auto;
+  color: var(--color-crema-muted);
+}
+.sipario-label {
+  font-size: 12px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  opacity: 0.75;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .sipario-panel { transition-duration: 1200ms; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sipario-container { display: none; }
 }

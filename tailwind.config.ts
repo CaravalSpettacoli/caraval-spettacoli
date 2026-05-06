@@ -146,7 +146,7 @@ const config: Config = {
         spin: "spin 1s linear infinite",
         "fade-in": "fade-in 200ms ease-out",
         "fade-in-up": "fade-in-up 800ms ease-out both",
-        "pulse-rosso": "pulse-rosso 2s ease-in-out infinite",
+        "pulse-rosso": "pulse-rosso 2s ease-in-out 3",
         "sipario-left":
           "sipario-left 1200ms cubic-bezier(0.4, 0, 0.2, 1) forwards",
         "sipario-right":

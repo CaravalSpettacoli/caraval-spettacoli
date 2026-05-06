@@ -2,6 +2,7 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/cn";
 import { Container } from "@/components/ui/Container";
+import { splitDisplay } from "@/lib/splitDisplay";
 
 type Height = "sm" | "md" | "lg";
 type Align = "left" | "center" | "left-extreme";
@@ -76,7 +77,7 @@ export function Hero({
               </div>
             )}
             <h1 className="font-display text-display-l md:text-display-xl text-balance leading-none">
-              {title}
+              {splitDisplay(title)}
             </h1>
             {subtitle && (
               <p className="mt-6 font-sans italic text-body-l text-crema-muted">
@@ -149,7 +150,7 @@ export function Hero({
               isExtreme && "tracking-tight"
             )}
           >
-            {title}
+            {displayFont ? splitDisplay(title) : title}
           </h1>
           {subtitle && (
             <p

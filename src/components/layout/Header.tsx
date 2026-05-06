@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { splitDisplay } from "@/lib/splitDisplay";
 
 const NAV_LINKS = [
   { href: "/spettacoli", label: "Spettacoli" },
@@ -55,7 +56,7 @@ export function Header() {
           className="font-display text-h3 md:text-h2 leading-none tracking-tight text-crema-base hover:text-crema-bright transition-colors"
           aria-label="Caraval Spettacoli — home"
         >
-          Caraval
+          CARAVAL
         </Link>
 
         <nav
@@ -101,7 +102,7 @@ export function Header() {
                 onClick={() => setOpen(false)}
                 className="block py-4 font-display text-h3 text-crema-base hover:text-rosso-hover transition-colors border-b border-crema-faint"
               >
-                {l.label}
+                {splitDisplay(l.label)}
               </Link>
             ))}
           </nav>

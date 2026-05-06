@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 export function useParallax<T extends HTMLElement = HTMLDivElement>(
-  speed = 0.3,
+  speed = 0.15,
 ) {
   const ref = useRef<T | null>(null);
   const [offset, setOffset] = useState(0);
@@ -13,7 +13,8 @@ export function useParallax<T extends HTMLElement = HTMLDivElement>(
     const reduce = window.matchMedia(
       "(prefers-reduced-motion: reduce)",
     ).matches;
-    if (reduce) return;
+    const isMobile = window.matchMedia("(max-width: 768px)").matches;
+    if (reduce || isMobile) return;
 
     let raf = 0;
     const onScroll = () => {

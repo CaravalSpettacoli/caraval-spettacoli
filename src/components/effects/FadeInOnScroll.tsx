@@ -24,10 +24,8 @@ export function FadeInOnScroll({
       ref={ref as React.RefObject<HTMLDivElement>}
       style={delay ? { transitionDelay: `${delay}ms` } : undefined}
       className={cn(
-        "transition-all duration-cinematic ease-cinema",
-        visible
-          ? "opacity-100 translate-y-0"
-          : "opacity-0 translate-y-4",
+        "fade-in-on-scroll",
+        visible && "is-visible",
         className,
       )}
     >

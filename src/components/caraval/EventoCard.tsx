@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/cn";
+import { splitDisplay } from "@/lib/splitDisplay";
 
 export type EventoCardData = {
   data: string; // ISO date
@@ -81,10 +82,10 @@ export function EventoCard({ evento, className }: EventoCardProps) {
               href={detailUrl}
               className="hover:text-rosso-hover transition-colors"
             >
-              {titolo}
+              {splitDisplay(titolo)}
             </Link>
           ) : (
-            titolo
+            splitDisplay(titolo)
           )}
         </h3>
         <p className="mt-1 text-body-s text-crema-muted">

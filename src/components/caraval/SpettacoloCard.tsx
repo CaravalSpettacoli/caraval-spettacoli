@@ -2,6 +2,7 @@ import Link from "next/link";
 import { CategoriaBadge, type Categoria } from "./CategoriaBadge";
 import { PremioBadge } from "./PremioBadge";
 import { cn } from "@/lib/cn";
+import { splitDisplay } from "@/lib/splitDisplay";
 
 export type SpettacoloCardData = {
   slug: string;
@@ -84,7 +85,7 @@ export function SpettacoloCard({
               aria-hidden="true"
             >
               <span className="font-display text-display-l text-crema-base/20">
-                {titolo.charAt(0)}
+                {titolo.charAt(0).toUpperCase()}
               </span>
             </div>
           )}
@@ -119,7 +120,7 @@ export function SpettacoloCard({
           <div className="absolute inset-x-0 bottom-0 h-1/2 bg-gradient-overlay-nero pointer-events-none" />
           <div className="absolute inset-x-0 bottom-0 p-5">
             <h3 className="font-display text-display-m leading-[0.9] text-crema-base">
-              {titolo}
+              {splitDisplay(titolo)}
             </h3>
             {sottotitolo && (
               <p className="mt-2 font-sans italic text-body-s text-crema-muted line-clamp-2">
@@ -162,7 +163,7 @@ export function SpettacoloCard({
             aria-hidden="true"
           >
             <span className="font-display text-display-m text-crema-base/30">
-              {titolo.charAt(0)}
+              {titolo.charAt(0).toUpperCase()}
             </span>
           </div>
         )}
@@ -173,7 +174,7 @@ export function SpettacoloCard({
 
       <div className="p-5">
         <h3 className="font-display text-h4 text-crema-base group-hover:text-crema-bright transition-colors">
-          {titolo}
+          {splitDisplay(titolo)}
         </h3>
         {sottotitolo && (
           <p className="mt-1 text-body-s text-crema-muted line-clamp-2">

@@ -23,6 +23,7 @@ import { CorniceDeco } from "@/components/decorative/CorniceDeco";
 import { FadeInOnScroll } from "@/components/effects/FadeInOnScroll";
 import { ImmagineConOverlay } from "@/components/effects/ImmagineConOverlay";
 import { SiparioDemo } from "./SiparioDemo";
+import { SiparioPreloaderDemo } from "./SiparioPreloaderDemo";
 
 export const metadata: Metadata = {
   title: "Design System",
@@ -206,6 +207,22 @@ export default function DesignSystemPage() {
             Body/UI: Inter. Body mai sotto i 16px. Stonehead solo su lettere
             A-Z e numeri 0-9 — punteggiatura sempre in Inter.
           </p>
+
+          <SubTitle>2.0 — Test alfabeto Stonehead</SubTitle>
+          <div className="mb-16 space-y-3 p-6 bg-nero-deep rounded-md border border-crema-faint">
+            <p className="text-caption uppercase-tracked text-crema-muted">
+              Verifica anti-watermark: ogni lettera/cifra deve essere pulita
+            </p>
+            <div className="font-display text-display-m leading-[1] tracking-wide">
+              A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+            </div>
+            <div className="font-display text-display-m leading-[1] tracking-wide">
+              0 1 2 3 4 5 6 7 8 9
+            </div>
+            <p className="text-caption text-crema-muted/80 italic">
+              Se vedi &ldquo;@misterchek&rdquo; o glyph strani, font-feature-settings non sta agendo.
+            </p>
+          </div>
 
           <SubTitle>2.1 — Scale base</SubTitle>
           <div className="space-y-8 mb-16">
@@ -488,20 +505,87 @@ export default function DesignSystemPage() {
             ))}
           </div>
 
-          <SubTitle>10.2 — TicketBiglietto</SubTitle>
-          <p className="text-body-s text-crema-muted mb-8">
-            Hover per vedere rotazione, scale e shadow rosso. Stile cinema
-            vintage anni &apos;50.
+          <SubTitle>10.2 — TicketBiglietto · 3 stili a confronto</SubTitle>
+          <p className="text-body-s text-crema-muted mb-8 max-w-2xl">
+            Stesso evento mock renderizzato in 3 stili. Sceglierne uno (gli altri
+            due verranno rimossi in Sessione 3). Hover: lift + shadow rossa + lieve
+            rotazione. Click: animazione &ldquo;strappo&rdquo; sulla matrice
+            laterale prima del redirect (skip su <code className="font-mono">prefers-reduced-motion</code>).
           </p>
+          <div className="space-y-12 mb-16">
+            <div>
+              <div className="mb-4">
+                <p className="text-label uppercase-tracked text-rosso-hover">
+                  Stile A
+                </p>
+                <h4 className="text-h4 mt-1">Manifesto teatrale italiano vintage</h4>
+                <p className="text-body-s text-crema-muted mt-2 max-w-xl">
+                  Bordo doppio rosso, ornamenti floreali stilizzati agli angoli,
+                  Georgia italic per i testi minori, fondo crema con leggera
+                  texture &ldquo;carta vecchia&rdquo;, &ldquo;INGRESSO&rdquo; in
+                  italico ruotato, seriale tipo timbrato.
+                </p>
+              </div>
+              <TicketBiglietto
+                style="A"
+                data="2026-07-12"
+                titolo="Romeo + Giulietta"
+                citta="Brescia"
+                struttura="Teatro Sociale"
+                prezzo="12 €"
+                urlBiglietti="https://example.com/ticket"
+              />
+            </div>
+
+            <div>
+              <div className="mb-4">
+                <p className="text-label uppercase-tracked text-rosso-hover">
+                  Stile B
+                </p>
+                <h4 className="text-h4 mt-1">Art Deco puro</h4>
+                <p className="text-body-s text-crema-muted mt-2 max-w-xl">
+                  Cornice geometrica con linee parallele a raggiera, motivi a
+                  ventaglio, divisore zigzag/chevron, &ldquo;INGRESSO&rdquo; in
+                  Stonehead ruotato, seriale alto a destra in etichetta meccanica.
+                </p>
+              </div>
+              <TicketBiglietto
+                style="B"
+                data="2026-07-12"
+                titolo="Romeo + Giulietta"
+                citta="Brescia"
+                struttura="Teatro Sociale"
+                prezzo="12 €"
+                urlBiglietti="https://example.com/ticket"
+              />
+            </div>
+
+            <div>
+              <div className="mb-4">
+                <p className="text-label uppercase-tracked text-rosso-hover">
+                  Stile C — default
+                </p>
+                <h4 className="text-h4 mt-1">Mix art deco + dettagli teatrali</h4>
+                <p className="text-body-s text-crema-muted mt-2 max-w-xl">
+                  Cornice doppia con angoli geometrici, maschera teatrale in alto
+                  centro, divisore tratteggiato con stella centrale,
+                  &ldquo;INGRESSO&rdquo; in Inter uppercase tracked.
+                </p>
+              </div>
+              <TicketBiglietto
+                style="C"
+                data="2026-07-12"
+                titolo="Romeo + Giulietta"
+                citta="Brescia"
+                struttura="Teatro Sociale"
+                prezzo="12 €"
+                urlBiglietti="https://example.com/ticket"
+              />
+            </div>
+          </div>
+
+          <SubTitle>10.3 — Esempi aggiuntivi (stile C)</SubTitle>
           <div className="flex flex-col gap-8 items-start">
-            <TicketBiglietto
-              data="2026-07-12"
-              titolo="Romeo + Giulietta"
-              citta="Brescia"
-              struttura="Teatro Sociale"
-              prezzo="12 €"
-              urlBiglietti="https://example.com/ticket"
-            />
             <TicketBiglietto
               data="2026-06-04"
               titolo="Imaginarium Apertura"
@@ -563,46 +647,128 @@ export default function DesignSystemPage() {
       {/* 12 — ACCENTI DECORATIVI */}
       <Section>
         <Container>
-          <GroupTitle>12 — Accenti decorativi</GroupTitle>
+          <GroupTitle>12 — Accenti decorativi · 3 varianti</GroupTitle>
           <p className="text-body text-crema-muted mb-12 max-w-2xl">
-            SVG inline con <code className="font-mono text-rosso-hover">currentColor</code>:
-            il colore segue la classe <code className="font-mono">text-*</code> del parent.
+            Per ogni famiglia, 3 varianti stilistiche (A/B/C). Sceglierne una;
+            le altre verranno rimosse in Sessione 3. Tutto SVG inline con{" "}
+            <code className="font-mono text-rosso-hover">currentColor</code>.
           </p>
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-8">
-            <div className="p-8 border border-crema-faint rounded-md flex flex-col items-center gap-4 text-rosso-base">
-              <Stella5Punte size={48} />
-              <span className="text-label uppercase-tracked text-crema-muted">Stella5Punte</span>
-            </div>
-            <div className="p-8 border border-crema-faint rounded-md flex flex-col items-center gap-4 text-crema-base">
-              <div className="flex gap-3">
-                <MascheraTeatrale tipo="commedia" size={56} />
-                <MascheraTeatrale tipo="tragedia" size={56} />
+
+          {/* Stella */}
+          <SubTitle>12.1 — Stella5Punte</SubTitle>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {(["A", "B", "C"] as const).map((s) => (
+              <div
+                key={s}
+                className="p-8 border border-crema-faint rounded-md flex flex-col items-center gap-4 text-rosso-base"
+              >
+                <Stella5Punte size={48} style={s} />
+                <div className="text-center">
+                  <p className="text-label uppercase-tracked text-rosso-hover">Stile {s}</p>
+                  <p className="text-caption text-crema-muted mt-1">
+                    {s === "A" ? "Outline floreale" : s === "B" ? "Geometrica art deco" : "Stella piena"}
+                  </p>
+                </div>
               </div>
-              <span className="text-label uppercase-tracked text-crema-muted">MascheraTeatrale</span>
-            </div>
-            <div className="p-8 border border-crema-faint rounded-md flex flex-col items-center gap-4 text-rosso-hover">
-              <Fiamma size={56} />
-              <span className="text-label uppercase-tracked text-crema-muted">Fiamma</span>
-            </div>
-            <div className="p-8 border border-crema-faint rounded-md flex flex-col items-center gap-4 text-rosso-base">
-              <OndaDecorativa width={200} variant="sottile" />
-              <OndaDecorativa width={200} variant="spessa" />
-              <span className="text-label uppercase-tracked text-crema-muted">OndaDecorativa</span>
-            </div>
-            <div className="p-8 border border-crema-faint rounded-md flex flex-col items-center gap-4 text-rosso-base">
-              <Divider width={240} />
-              <span className="text-label uppercase-tracked text-crema-muted">Divider</span>
-            </div>
-            <div className="border border-crema-faint rounded-md">
-              <CorniceDeco padding="md">
-                <p className="text-center font-display text-h4 text-crema-base">
-                  CARAVAL
-                </p>
-                <p className="text-center text-body-s text-crema-muted mt-2">
-                  Cornice art déco
-                </p>
-              </CorniceDeco>
-            </div>
+            ))}
+          </div>
+
+          {/* Maschera */}
+          <SubTitle>12.2 — MascheraTeatrale</SubTitle>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {(["A", "B", "C"] as const).map((s) => (
+              <div
+                key={s}
+                className="p-8 border border-crema-faint rounded-md flex flex-col items-center gap-4 text-crema-base"
+              >
+                <div className="flex gap-3">
+                  <MascheraTeatrale tipo="commedia" size={56} style={s} />
+                  <MascheraTeatrale tipo="tragedia" size={56} style={s} />
+                </div>
+                <div className="text-center">
+                  <p className="text-label uppercase-tracked text-rosso-hover">Stile {s}</p>
+                  <p className="text-caption text-crema-muted mt-1">
+                    {s === "A" ? "Lineare vintage" : s === "B" ? "Diamante geometrico" : "Volto morbido"}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Fiamma */}
+          <SubTitle>12.3 — Fiamma</SubTitle>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {(["A", "B", "C"] as const).map((s) => (
+              <div
+                key={s}
+                className="p-8 border border-crema-faint rounded-md flex flex-col items-center gap-4 text-rosso-hover"
+              >
+                <Fiamma size={64} style={s} />
+                <div className="text-center">
+                  <p className="text-label uppercase-tracked text-rosso-hover">Stile {s}</p>
+                  <p className="text-caption text-crema-muted mt-1">
+                    {s === "A" ? "Curve morbide" : s === "B" ? "Triangoli concentrici" : "Fiamma classica"}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Onda */}
+          <SubTitle>12.4 — OndaDecorativa</SubTitle>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {(["A", "B", "C"] as const).map((s) => (
+              <div
+                key={s}
+                className="p-8 border border-crema-faint rounded-md flex flex-col items-center gap-4 text-rosso-base"
+              >
+                <OndaDecorativa width={220} variant="sottile" style={s} />
+                <OndaDecorativa width={220} variant="spessa" style={s} />
+                <div className="text-center">
+                  <p className="text-label uppercase-tracked text-rosso-hover">Stile {s}</p>
+                  <p className="text-caption text-crema-muted mt-1">
+                    {s === "A" ? "Onda morbida" : s === "B" ? "Zigzag art deco" : "Sinusoidale"}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Divider */}
+          <SubTitle>12.5 — Divider</SubTitle>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {(["A", "B", "C"] as const).map((s) => (
+              <div
+                key={s}
+                className="p-8 border border-crema-faint rounded-md flex flex-col items-center gap-4 text-rosso-base"
+              >
+                <Divider width={240} style={s} />
+                <div className="text-center">
+                  <p className="text-label uppercase-tracked text-rosso-hover">Stile {s}</p>
+                  <p className="text-caption text-crema-muted mt-1">
+                    {s === "A" ? "Floreale" : s === "B" ? "Triplo chevron" : "Stella"}
+                  </p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* Cornice */}
+          <SubTitle>12.6 — CorniceDeco</SubTitle>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {(["A", "B", "C"] as const).map((s) => (
+              <div key={s} className="border border-crema-faint rounded-md">
+                <CorniceDeco padding="md" style={s}>
+                  <p className="text-center font-display text-h4 text-crema-base">
+                    CARAVAL
+                  </p>
+                  <p className="text-center text-body-s text-crema-muted mt-2">
+                    Stile {s} —{" "}
+                    {s === "A" ? "Floreale" : s === "B" ? "Art deco puro" : "Mix"}
+                  </p>
+                </CorniceDeco>
+              </div>
+            ))}
           </div>
         </Container>
       </Section>
@@ -724,6 +890,28 @@ export default function DesignSystemPage() {
             fonte="La Provincia di Cremona"
             data="2023"
           />
+        </Container>
+      </Section>
+
+      {/* 16 — SIPARIO PRELOADER */}
+      <Section>
+        <Container>
+          <GroupTitle>16 — Sipario preloader</GroupTitle>
+          <p className="text-body text-crema-muted mb-8 max-w-2xl">
+            Preloader teatrale full-screen montato solo sulla homepage. Aspetta
+            il <code className="font-mono">window.load</code> (font + immagini hero), rispetta un
+            tempo minimo di <code className="font-mono">800ms</code> per registrare visivamente,
+            e ha un failsafe a <code className="font-mono">3000ms</code> per non bloccare. Su{" "}
+            <code className="font-mono">prefers-reduced-motion: reduce</code> non si monta affatto.
+          </p>
+          <ul className="text-body-s text-crema-muted mb-8 space-y-1 list-disc pl-5 max-w-2xl">
+            <li>Apertura: 1500ms con easing teatrale <code className="font-mono">cubic-bezier(0.7, 0, 0.3, 1)</code></li>
+            <li>Centro fade-out + scale 0.95 nei primi 400ms</li>
+            <li>Texture velluto: strisce verticali sottili in <code className="font-mono">repeating-linear-gradient</code></li>
+            <li>Vignettatura interna lato palco per profondità</li>
+            <li><code className="font-mono">pointer-events: none</code> + <code className="font-mono">aria-hidden</code>: invisibile agli screen reader</li>
+          </ul>
+          <SiparioPreloaderDemo />
         </Container>
       </Section>
     </div>

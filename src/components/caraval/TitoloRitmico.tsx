@@ -1,4 +1,5 @@
 import { cn } from "@/lib/cn";
+import { splitDisplay } from "@/lib/splitDisplay";
 
 interface TitoloRitmicoPart {
   /** Parola in display Stonehead — SOLO A-Z e 0-9, niente punteggiatura. */
@@ -36,7 +37,7 @@ export function TitoloRitmico({
               : "text-h3 md:text-display-m text-crema-muted",
           )}
         >
-          {part.text}
+          {splitDisplay(part.text)}
         </span>
       ))}
     </Tag>

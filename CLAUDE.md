@@ -217,6 +217,43 @@ Personalità teatrale distintiva. Niente più "tech-startup": vintage circus, ma
 
 **Regola Stonehead (memoria operativa):** font display SOLO su `[A-Z0-9]`. Punteggiatura/simboli sempre Inter. Nei componenti decorativi non Unicode `★`/`—` ma SVG inline.
 
+### ✅ Sessione 2.6 — Polish Chirurgico (FATTO)
+Bug fix critici e raffinamenti dopo Sessione 2.5. Calma e profondità: meno cose, fatte bene.
+
+**Bug fix:**
+- **Font Stonehead `@misterchek` watermark risolto**: `font-feature-settings: "liga" 0, "dlig" 0, "salt" 0, "ss01-05" 0, "calt" 0, "swsh" 0, "ornm" 0` su `@font-face` + `.font-display` in `globals.css`. Test alfabeto in `/design-system` § 2.0.
+- **Helper `splitDisplay(text)`** in `src/lib/splitDisplay.tsx`: uppercase + wrap automatico di punteggiatura/non-A-Z in `<span class="font-sans">`. Applicato a `Hero`, `SpettacoloCard`, `EventoCard`, `TitoloDoppio`, `TitoloRitmico`, `Header` (mobile nav), `Sipario`, demo page.
+- **Pulse rosso non più infinito**: 3 cicli con `animation-delay: 800ms`; hover riavvia 1 ciclo. Skip su `prefers-reduced-motion`.
+- **Script `npm run clean`** (`rm -rf .next`) per ChunkLoadError.
+
+**Animazioni più morbide:**
+- `FadeInOnScroll` ora usa la classe `.fade-in-on-scroll` (1000ms `cubic-bezier(0.25, 0.46, 0.45, 0.94)`, translateY 24px) — sostituisce il vecchio `duration-cinematic`/`ease-cinema` che era brusco.
+- `useParallax` default speed `0.15` (era 0.3) + early return su mobile (≤768px) e `prefers-reduced-motion`.
+- Bottone Replay sipario in `/design-system` § 14 (già presente da 2.5 via `replayKey`).
+
+**Sipario preloader homepage** (`src/components/layout/Sipario.tsx`):
+- Full-screen overlay con due tendaggi rossi (gradiente `var(--color-rosso-deep) → var(--color-rosso-base)`) e texture velluto (strisce verticali) + vignettatura interna lato palco.
+- Centro: "PRONTI A ENTRARE IN SCENA" in Stonehead, divisore SVG, label "CARAVAL SPETTACOLI — SONCINO".
+- State machine: aspetta `window.load`, `minDuration=800ms`, failsafe `maxDuration=3000ms`. Apertura 1500ms con `cubic-bezier(0.7, 0, 0.3, 1)`. Smonta dopo l'animazione (no DOM residuo).
+- Skip totale su `prefers-reduced-motion`. `pointer-events: none` + `aria-hidden`.
+- Modalità `mode="preview"` per il showcase: parte subito, niente attesa load.
+- Integrato in `src/app/page.tsx`. Sezione 16 in `/design-system` con anteprima.
+
+**TicketBiglietto rifatto con 3 stili A/B/C** (prop `style`):
+- **A — Manifesto vintage italiano**: bordo doppio rosso, ornamenti floreali agli angoli, Georgia italic per testi minori, fondo crema con texture "carta vecchia", divisore tratteggiato a cerchietti, "INGRESSO" in italico ruotato.
+- **B — Art Deco puro**: cornice geometrica con linee multiple + outline esterna, ornamenti a ventaglio agli angoli, divisore zigzag/chevron, "INGRESSO" in Stonehead ruotato, seriale alto in etichetta meccanica.
+- **C — Mix (default)**: cornice doppia + maschera teatrale stilizzata in alto centro, divisore tratteggiato con stella centrale, "INGRESSO" in Inter uppercase tracked.
+- Hover comune: lift `-8px` + scale `1.02` + rotate `-1deg` + shadow rossa `0 16px 48px rgba(168,23,74,0.3)` + sezione INGRESSO bg `rosso-muted` + data si alza ulteriormente.
+- Click "strappo": classe `is-tearing` su INGRESSO (`translateX(-20px) rotate(-3deg)` + opacity 0.5 in 380ms) prima dell'apertura URL. Skip su `prefers-reduced-motion`.
+- Confronto a 3 affiancati in `/design-system` § 10.2 per scelta visiva.
+
+**Decorativi 3 varianti A/B/C** (prop `style`):
+- `Stella5Punte`, `MascheraTeatrale`, `Fiamma`, `OndaDecorativa`, `Divider`, `CorniceDeco` — ognuno con 3 versioni stilistiche. Showcase aggiornato in § 12 (sub-sezioni 12.1–12.6).
+
+**Regola Stonehead rinforzata:**
+- Stonehead solo su caratteri `[A-Z0-9 ]`. Per testi dinamici da Sanity → sempre `splitDisplay(text)` che fa uppercase + spezza punteggiatura in Inter.
+- Per testi statici con punteggiatura → `<span className="font-display">PAROLA</span><span className="font-sans"> — </span>...`.
+
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 3** — Pagine reali (homepage, /spettacoli, /spettacoli/[slug], /imaginarium...)
 - [ ] **Sessione 4** — Calendario eventi + filtraggio
@@ -324,3 +361,12 @@ claude mcp add chrome-devtools npx -- @modelcontextprotocol/server-chrome
   - GitHub: `CaravalSpettacoli` / `info@caraval.it`
   - Sanity: `info@caraval.it`
   - Vercel: collegato a GitHub
+
+### Troubleshooting
+
+- **`ChunkLoadError: Loading chunk app/layout failed`** dopo modifiche grosse al layout root → cache `.next` corrotta. Risolvi con:
+  ```bash
+  npm run clean && npm run dev
+  ```
+- **Font Stonehead mostra il watermark `@misterchek`** su lettere come S/M/A/F → `font-feature-settings` non sta agendo. Verifica che `globals.css` abbia il blocco anti-alternates su `@font-face` E `.font-display`. Se ancora visibile, la lettera potrebbe avere un alternates fuori dai feature-tag noti: applica una whitelist (Stonehead solo lettere pulite, fallback Georgia per quelle problematiche).
+- **Testi dinamici da Sanity in font-display**: usa sempre `splitDisplay(text)` da `src/lib/splitDisplay.tsx`. Fa uppercase e spezza punteggiatura in Inter automaticamente.

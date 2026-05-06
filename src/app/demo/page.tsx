@@ -30,7 +30,10 @@ export default async function Demo() {
   return (
     <main className="min-h-screen px-6 py-16 max-w-4xl mx-auto">
       <a href="/" className="text-rosso hover:underline">← Home</a>
-      <h1 className="mt-8 text-3xl font-display">Demo — query Sanity</h1>
+      <h1 className="mt-8 text-3xl">
+        <span className="font-display">DEMO</span>
+        <span className="font-sans"> — query Sanity</span>
+      </h1>
       <p className="mt-2 text-crema/60">
         Questa pagina interroga lo schema <code>spettacolo</code> dal dataset Sanity
         per validare la connessione end-to-end.
