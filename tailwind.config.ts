@@ -41,6 +41,14 @@ const config: Config = {
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
         display: ["var(--font-stonehead)", "serif"],
+        mono: [
+          "ui-monospace",
+          "SFMono-Regular",
+          "Menlo",
+          "Monaco",
+          "Consolas",
+          "monospace",
+        ],
       },
       fontSize: {
         // Mobile-first: la classe base è la versione mobile.
@@ -92,14 +100,24 @@ const config: Config = {
         lg: "0 24px 64px rgba(0,0,0,0.6)",
         "glow-rosso": "0 0 32px rgba(168,23,74,0.3)",
         "glow-rosso-lg": "0 0 48px rgba(168,23,74,0.45)",
+        poster:
+          "0 32px 80px rgba(0,0,0,0.7), 0 8px 24px rgba(168,23,74,0.2)",
+      },
+      backgroundImage: {
+        "gradient-hero": "var(--gradient-hero)",
+        "gradient-overlay-rosso": "var(--gradient-overlay-rosso)",
+        "gradient-overlay-nero": "var(--gradient-overlay-nero)",
       },
       transitionTimingFunction: {
         cinema: "cubic-bezier(0.4, 0, 0.2, 1)",
+        "bounce-soft": "cubic-bezier(0.34, 1.56, 0.64, 1)",
       },
       transitionDuration: {
         fast: "100ms",
         base: "200ms",
         slow: "400ms",
+        cinematic: "800ms",
+        sipario: "1200ms",
       },
       keyframes: {
         spin: { to: { transform: "rotate(360deg)" } },
@@ -107,10 +125,32 @@ const config: Config = {
           from: { opacity: "0" },
           to: { opacity: "1" },
         },
+        "fade-in-up": {
+          from: { opacity: "0", transform: "translateY(16px)" },
+          to: { opacity: "1", transform: "translateY(0)" },
+        },
+        "pulse-rosso": {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(168,23,74,0.4)" },
+          "50%": { boxShadow: "0 0 0 16px rgba(168,23,74,0)" },
+        },
+        "sipario-left": {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(-100%)" },
+        },
+        "sipario-right": {
+          from: { transform: "translateX(0)" },
+          to: { transform: "translateX(100%)" },
+        },
       },
       animation: {
         spin: "spin 1s linear infinite",
         "fade-in": "fade-in 200ms ease-out",
+        "fade-in-up": "fade-in-up 800ms ease-out both",
+        "pulse-rosso": "pulse-rosso 2s ease-in-out infinite",
+        "sipario-left":
+          "sipario-left 1200ms cubic-bezier(0.4, 0, 0.2, 1) forwards",
+        "sipario-right":
+          "sipario-right 1200ms cubic-bezier(0.4, 0, 0.2, 1) forwards",
       },
     },
   },

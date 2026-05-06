@@ -27,6 +27,26 @@
   --color-crema-faint: rgba(245, 230, 211, 0.4);
 
   --font-stonehead: "MCF Stonehead Demo";
+
+  /* Gradients drammatici (Sessione 2.5) */
+  --gradient-hero: linear-gradient(
+    180deg,
+    var(--color-nero-deep) 0%,
+    var(--color-nero-base) 50%,
+    rgba(168, 23, 74, 0.15) 100%
+  );
+  --gradient-overlay-rosso: linear-gradient(
+    0deg,
+    rgba(168, 23, 74, 0.4) 0%,
+    transparent 100%
+  );
+  --gradient-overlay-nero: linear-gradient(
+    0deg,
+    var(--color-nero-base) 0%,
+    transparent 70%
+  );
+  --shadow-poster: 0 32px 80px rgba(0, 0, 0, 0.7),
+    0 8px 24px rgba(168, 23, 74, 0.2);
 }
 
 html {

@@ -115,11 +115,14 @@ Corso adulti (ott–mag, 1 sera/sett), spettacolo finale a Imaginarium. 2 corsi 
 │   ├── design-system/       # showcase interna design system (noindex)
 │   └── studio/[[...tool]]/  # Sanity Studio embedded
 ├── src/components/
-│   ├── ui/                  # Button, Card, Container, Section
-│   ├── layout/              # SkipLink, Header, Footer, Hero
-│   └── caraval/             # CategoriaBadge, PremioBadge, SpettacoloCard, EventoCard
+│   ├── ui/                  # Button (con prop pulse), Card, Container, Section
+│   ├── layout/              # SkipLink, Header, Footer, Hero (variant manifesto-spettacolo)
+│   ├── caraval/             # CategoriaBadge, PremioBadge, SpettacoloCard (variant manifesto), EventoCard, TicketBiglietto, TitoloDoppio, TitoloRitmico, CreditiLocandina, CitazioneStampa
+│   ├── decorative/          # SVG inline: Stella5Punte, MascheraTeatrale, Fiamma, OndaDecorativa, Divider, CorniceDeco
+│   └── effects/             # FadeInOnScroll, RevealSipario, CustomCursor, ImmagineConOverlay
 ├── src/lib/
-│   └── cn.ts                # helper className via clsx
+│   ├── cn.ts                # helper className via clsx
+│   └── hooks/               # useFadeInOnScroll, useParallax
 ├── sanity/
 │   ├── env.ts               # lettura env vars
 │   ├── lib/{client,image}.ts
@@ -177,6 +180,42 @@ Vercel: stessi env settati per Production e Preview.
 - [x] Layout root con Header/Footer integrati e skip link
 - [x] Pagina `/design-system` showcase (noindex)
 - [x] Build production pulito (`npm run build`)
+
+### ✅ Sessione 2.5 — Polish Design System (FATTO)
+Personalità teatrale distintiva. Niente più "tech-startup": vintage circus, manifesti d'epoca, cinema poster.
+
+**Token nuovi (`tailwind.config.ts` + `globals.css`):**
+- Gradients: `bg-gradient-hero`, `bg-gradient-overlay-rosso`, `bg-gradient-overlay-nero` (CSS vars)
+- Shadow: `shadow-poster` (drammatica per blocchi principali)
+- Easing: `ease-bounce-soft` (cubic-bezier 0.34, 1.56, 0.64, 1) per micro-interazioni giocose
+- Duration: `duration-cinematic` (800ms) e `duration-sipario` (1200ms)
+- Animation utilities: `animate-pulse-rosso`, `animate-fade-in-up`, `animate-sipario-left/right`
+- `font-mono` (system stack) per dettagli tipo numero seriale ticket
+
+**Componenti distintivi (`src/components/`):**
+- `decorative/` — libreria SVG inline con `currentColor`: `Stella5Punte`, `MascheraTeatrale` (commedia/tragedia), `Fiamma`, `OndaDecorativa`, `Divider` (linea + stella), `CorniceDeco` (wrapper art déco)
+- `caraval/TitoloDoppio` — titoli stratificati Stonehead con offset orizzontale + body Inter italic
+- `caraval/TitoloRitmico` — mix dimensioni small/large nella stessa frase
+- `caraval/TicketBiglietto` — biglietto cinema vintage anni '50 (bordo doppio + sezione "STRAPPA QUI" verticale + variant `compact`)
+- `caraval/CreditiLocandina` — `<dl>` semantica formato locandina (REGIA — Vera Rossini)
+- `caraval/CitazioneStampa` — citazione con virgolette decorative SVG
+
+**Animazioni cinematografiche (`src/components/effects/` + `src/lib/hooks/`):**
+- `FadeInOnScroll` + `useFadeInOnScroll` — Intersection Observer con `prefers-reduced-motion`
+- `RevealSipario` — due tendaggi si separano al mount (1200ms ease-cinema)
+- `useParallax` — translateY proporzionale allo scroll
+- `CustomCursor` — punto rosso lerp su mouse, solo desktop con hover, montato in `layout.tsx`
+- `ImmagineConOverlay` — wrapper hover con gradient overlay
+
+**Estensioni componenti esistenti:**
+- `Hero`: variant `manifesto-spettacolo` (asimmetrico 60/40 foto-testo) + align `left-extreme`
+- `SpettacoloCard`: variant `manifesto` (aspect 2:3, categoria verticale, stamp premio rotondo, hover rotation)
+- `Button`: prop `pulse` (animazione box-shadow rossa pulsante per CTA principali)
+
+**Showcase `/design-system` riorganizzata in 15 sezioni:**
+1 Palette · 2 Tipografia (2.1 scale + 2.2 pattern espressivi) · 3 Spacing · 4 Buttons (4.1 variants + 4.2 pulse) · 5 Cards · 6 Containers · 7 Sections (con gradient-hero) · 8 Hero · 9 SpettacoloCard (9.1 card + 9.2 manifesto) · 10 Eventi & Ticket · 11 Badges · 12 Accenti decorativi · 13 Effetti & gradients · 14 Animazioni · 15 Hero Manifesto + Crediti + Citazione.
+
+**Regola Stonehead (memoria operativa):** font display SOLO su `[A-Z0-9]`. Punteggiatura/simboli sempre Inter. Nei componenti decorativi non Unicode `★`/`—` ma SVG inline.
 
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 3** — Pagine reali (homepage, /spettacoli, /spettacoli/[slug], /imaginarium...)

@@ -11,6 +11,8 @@ type CommonProps = {
   iconLeft?: ReactNode;
   iconRight?: ReactNode;
   loading?: boolean;
+  /** Aggiunge animazione pulse rossa pulsante. Solo per variant="primary". */
+  pulse?: boolean;
   children?: ReactNode;
   className?: string;
 };
@@ -73,12 +75,19 @@ export const Button = forwardRef<HTMLElement, ButtonProps>(function Button(
     iconLeft,
     iconRight,
     loading = false,
+    pulse = false,
     className,
     children,
     ...rest
   } = props as CommonProps & Record<string, unknown>;
 
-  const cls = cn(base, variants[variant], sizes[size], className);
+  const cls = cn(
+    base,
+    variants[variant],
+    sizes[size],
+    pulse && variant === "primary" && "animate-pulse-rosso",
+    className,
+  );
   const content = (
     <>
       {loading ? <Spinner /> : iconLeft}

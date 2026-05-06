@@ -4,6 +4,7 @@ import "./globals.css";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { CustomCursor } from "@/components/effects/CustomCursor";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({
     <html lang="it" className={inter.variable}>
       <body className="bg-nero-base text-crema-base antialiased flex flex-col min-h-screen">
         <SkipLink />
+        <CustomCursor />
         <Header />
         <main id="contenuto" className="flex-1">
           {children}
