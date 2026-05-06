@@ -63,14 +63,32 @@ Corso adulti (ott–mag, 1 sera/sett), spettacolo finale a Imaginarium. 2 corsi 
 - Premio Edallo CremainScena 2023 (La Fine del Mondo)
 - Miglior Drammaturgia Originale Atelier Leà 2025 (La Fine del Mondo)
 
-### Palette / tipografia
-- `--color-nero #0a0a0a` (sfondo dominante)
-- `--color-rosso #a8174a` (accenti, CTA)
-- `--color-crema #f5e6d3` (testi, sfondi alternati)
-- Body: Inter (Google Fonts, via `next/font`)
-- Display: MCF Stonehead Demo (via `@font-face`, file in `public/fonts/`)
-- Spacing tokens: 4 / 8 / 16 / 24 / 32 / 48 / 64 / 96
+### Palette / tipografia (definitivi — Sessione 2)
+
+**Colori (CSS vars in `globals.css`, esposti come Tailwind colors):**
+- `nero-base #0a0a0a` · `nero-soft #1a1a1a` · `nero-deep #050505`
+- `rosso-base #a8174a` · `rosso-hover #c01d56` · `rosso-deep #8e1240` · `rosso-muted rgba(168,23,74,0.1)`
+- `crema-base #f5e6d3` · `crema-bright #faf0e1` · `crema-muted rgba(245,230,211,0.7)` · `crema-faint rgba(245,230,211,0.4)`
+
+**Tipografia:**
+- Body: Inter (`next/font`, var `--font-inter`)
+- Display: MCF Stonehead Demo (`@font-face`, file in `public/fonts/`, var `--font-stonehead`)
+- Scala: `text-display-xl/l/m`, `text-h1…h4`, `text-body-l/body/body-s`, `text-caption`, `text-label`
+- Riduzioni mobile via media query in `globals.css` (sotto 768px) — display-xl 56px, h1 32px, ecc.
 - Body min 16px, contrasto ≥ 4.5:1 (WCAG AA)
+- Label sempre uppercase + tracking 0.1em (utility `.uppercase-tracked`)
+
+**Spacing:** scala completa `4 / 8 / 12 / 16 / 20 / 24 / 32 / 40 / 48 / 64 / 80 / 96 / 128`.
+
+**Border radius:** `sm 4` · `md 8` · `lg 12` · `xl 24` · `full`.
+
+**Shadow:** `sm` (subtle), `md`, `lg` (drammatica), `glow-rosso`, `glow-rosso-lg`.
+
+**Transizioni:** `duration-fast 100ms`, `duration-base 200ms`, `duration-slow 400ms` con `ease-cinema` (cubic-bezier).
+
+**Container max-width:** narrow 720 / default 1280 / wide 1440. Padding orizzontale: 16/24/32 (mobile/tablet/desktop).
+
+**Doppia identità** (Imaginarium sub-route): palette inversa — `crema-base` come bg dominante, `rosso-base` accenti. Da implementare in Sessione 3+ via componente o root override della sub-route.
 
 **Doppia identità:** Imaginarium (sub-route) usa palette inversa (crema su rosso) + font Stonehead più presente.
 
@@ -90,11 +108,18 @@ Corso adulti (ott–mag, 1 sera/sett), spettacolo finale a Imaginarium. 2 corsi 
 ```
 /
 ├── src/app/                 # Next.js App Router
-│   ├── layout.tsx           # root layout, font Inter
+│   ├── layout.tsx           # root layout, font Inter, Header+Footer integrati
 │   ├── page.tsx             # homepage
-│   ├── globals.css          # variabili CSS, @font-face Stonehead
+│   ├── globals.css          # CSS vars palette, focus ring, skip link, mobile type scale
 │   ├── demo/                # pagina demo query Sanity
+│   ├── design-system/       # showcase interna design system (noindex)
 │   └── studio/[[...tool]]/  # Sanity Studio embedded
+├── src/components/
+│   ├── ui/                  # Button, Card, Container, Section
+│   ├── layout/              # SkipLink, Header, Footer, Hero
+│   └── caraval/             # CategoriaBadge, PremioBadge, SpettacoloCard, EventoCard
+├── src/lib/
+│   └── cn.ts                # helper className via clsx
 ├── sanity/
 │   ├── env.ts               # lettura env vars
 │   ├── lib/{client,image}.ts
@@ -143,8 +168,17 @@ Vercel: stessi env settati per Production e Preview.
 - [x] Vercel link + preview deploy
 - [x] CLAUDE.md (questo file)
 
+### ✅ Sessione 2 — Design System (FATTO)
+- [x] Token Tailwind finalizzati: palette estesa, scala tipografica completa, spacing/radius/shadow/transizioni
+- [x] `globals.css` con CSS vars, focus ring rosso `:focus-visible`, skip link, riduzione mobile delle scale display
+- [x] Componenti UI base (`src/components/ui/`): `Button` (4 variants × 3 size, loading, as link/a/button), `Card`, `Container`, `Section`
+- [x] Componenti layout (`src/components/layout/`): `SkipLink`, `Header` (sticky con blur on scroll, mobile overlay), `Footer` (3 colonne, fetch Sanity con fallback), `Hero` (template)
+- [x] Componenti dominio (`src/components/caraval/`): `CategoriaBadge`, `PremioBadge`, `SpettacoloCard`, `EventoCard`
+- [x] Layout root con Header/Footer integrati e skip link
+- [x] Pagina `/design-system` showcase (noindex)
+- [x] Build production pulito (`npm run build`)
+
 ### ⏳ Da fare nelle prossime sessioni
-- [ ] **Sessione 2** — Design system + componenti base (header, footer, card spettacolo, layout)
 - [ ] **Sessione 3** — Pagine reali (homepage, /spettacoli, /spettacoli/[slug], /imaginarium...)
 - [ ] **Sessione 4** — Calendario eventi + filtraggio
 - [ ] **Sessione 5** — Pagina formazione + chi siamo + ospita + contatti

@@ -1,0 +1,197 @@
+import Link from "next/link";
+import { Instagram, Facebook, Youtube, Music2, type LucideIcon } from "lucide-react";
+import { client } from "../../../sanity/lib/client";
+import { Container } from "@/components/ui/Container";
+
+type SocialLink = {
+  piattaforma: "instagram" | "facebook" | "youtube" | "tiktok";
+  url: string;
+  mostraInFooter?: boolean;
+};
+
+type ImpostazioniFooter = {
+  contattiPubblici?: { email?: string; telefono?: string };
+  datiAssociazione?: {
+    ragioneSociale?: string;
+    indirizzo?: string;
+    citta?: string;
+    cap?: string;
+    provincia?: string;
+    partitaIva?: string;
+    codiceFiscale?: string;
+  };
+  socialLinks?: SocialLink[];
+};
+
+const FALLBACK: ImpostazioniFooter = {
+  contattiPubblici: {
+    email: "info@caraval.it",
+    telefono: "",
+  },
+  datiAssociazione: {
+    ragioneSociale: "Caraval Associazione Culturale",
+    indirizzo: "",
+    citta: "Soncino",
+    cap: "",
+    provincia: "CR",
+    partitaIva: "",
+    codiceFiscale: "",
+  },
+  socialLinks: [],
+};
+
+const SITE_LINKS = [
+  { href: "/spettacoli", label: "Spettacoli" },
+  { href: "/imaginarium", label: "Imaginarium" },
+  { href: "/formazione", label: "Formazione" },
+  { href: "/chi-siamo", label: "Chi siamo" },
+  { href: "/calendario", label: "Calendario" },
+  { href: "/ospita", label: "Ospita" },
+  { href: "/archivio", label: "Archivio" },
+];
+
+const SOCIAL_ICON: Record<SocialLink["piattaforma"], LucideIcon> = {
+  instagram: Instagram,
+  facebook: Facebook,
+  youtube: Youtube,
+  tiktok: Music2,
+};
+
+async function getImpostazioni(): Promise<ImpostazioniFooter> {
+  try {
+    const data = await client.fetch<ImpostazioniFooter | null>(
+      `*[_type == "impostazioniSito"][0]{
+        contattiPubblici,
+        datiAssociazione,
+        socialLinks[]{piattaforma, url, mostraInFooter}
+      }`,
+      {},
+      { next: { revalidate: 300 } }
+    );
+    return data || FALLBACK;
+  } catch {
+    return FALLBACK;
+  }
+}
+
+export async function Footer() {
+  const impostazioni = await getImpostazioni();
+  const dati = impostazioni.datiAssociazione || {};
+  const contatti = impostazioni.contattiPubblici || {};
+  const social = (impostazioni.socialLinks || []).filter(
+    (s) => s.mostraInFooter !== false && s.url
+  );
+
+  const indirizzoCompleto = [
+    dati.indirizzo,
+    [dati.cap, dati.citta, dati.provincia].filter(Boolean).join(" "),
+  ]
+    .filter(Boolean)
+    .join(", ");
+
+  return (
+    <footer className="bg-nero-deep text-crema-base border-t border-crema-faint mt-16">
+      <Container className="py-16 md:py-20">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+          {/* Colonna 1 — Caraval */}
+          <div>
+            <h3 className="font-display text-h4 mb-4">
+              {dati.ragioneSociale || "Caraval"}
+            </h3>
+            <address className="not-italic text-body-s text-crema-muted leading-relaxed">
+              {indirizzoCompleto && <div>{indirizzoCompleto}</div>}
+              {dati.partitaIva && <div>P.IVA {dati.partitaIva}</div>}
+              {dati.codiceFiscale && dati.codiceFiscale !== dati.partitaIva && (
+                <div>C.F. {dati.codiceFiscale}</div>
+              )}
+            </address>
+          </div>
+
+          {/* Colonna 2 — Sito */}
+          <nav aria-label="Mappa del sito">
+            <h3 className="text-label uppercase-tracked mb-4 text-crema-muted">
+              Sito
+            </h3>
+            <ul className="grid grid-cols-2 gap-y-2 gap-x-6 text-body-s">
+              {SITE_LINKS.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    className="hover:text-rosso-hover transition-colors"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Colonna 3 — Contatti */}
+          <div>
+            <h3 className="text-label uppercase-tracked mb-4 text-crema-muted">
+              Contatti
+            </h3>
+            <ul className="text-body-s space-y-2">
+              {contatti.email && (
+                <li>
+                  <a
+                    href={`mailto:${contatti.email}`}
+                    className="hover:text-rosso-hover transition-colors"
+                  >
+                    {contatti.email}
+                  </a>
+                </li>
+              )}
+              {contatti.telefono && (
+                <li>
+                  <a
+                    href={`tel:${contatti.telefono.replace(/\s+/g, "")}`}
+                    className="hover:text-rosso-hover transition-colors"
+                  >
+                    {contatti.telefono}
+                  </a>
+                </li>
+              )}
+            </ul>
+            {social.length > 0 && (
+              <div className="flex gap-4 mt-6">
+                {social.map((s) => {
+                  const Icon = SOCIAL_ICON[s.piattaforma];
+                  if (!Icon) return null;
+                  return (
+                    <a
+                      key={s.piattaforma}
+                      href={s.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={s.piattaforma}
+                      className="inline-flex h-11 w-11 items-center justify-center text-crema-base hover:text-rosso-hover transition-colors"
+                    >
+                      <Icon size={22} />
+                    </a>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="mt-16 pt-6 border-t border-crema-faint flex flex-col md:flex-row gap-4 md:items-center md:justify-between text-caption text-crema-muted">
+          <div>
+            © {new Date().getFullYear()} Caraval Spettacoli — Sito di Eddidesign
+          </div>
+          <div className="flex gap-6">
+            <Link href="/privacy" className="hover:text-crema-base">
+              Privacy
+            </Link>
+            <Link href="/cookie" className="hover:text-crema-base">
+              Cookie
+            </Link>
+          </div>
+        </div>
+      </Container>
+    </footer>
+  );
+}
+
+export default Footer;
