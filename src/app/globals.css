@@ -1,0 +1,40 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@font-face {
+  font-family: "MCF Stonehead Demo";
+  src: url("/fonts/MCFStoneheadDemo.ttf") format("truetype");
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --color-nero: #0a0a0a;
+  --color-rosso: #a8174a;
+  --color-crema: #f5e6d3;
+  --font-stonehead: "MCF Stonehead Demo";
+}
+
+html {
+  background: var(--color-nero);
+  color: var(--color-crema);
+}
+
+body {
+  font-family: var(--font-inter), system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+  .label-section {
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-size: 0.85rem;
+  }
+}
