@@ -234,55 +234,19 @@ body {
   will-change: transform;
 }
 
-/* Pannello sinistro: bordo destro ondulato che si curva verso il centro */
+/* Pannello sinistro: bordo destro ondulato (curve morbide) + orlo inferiore decorativo */
 .sipario-panel--left {
   left: 0;
   transform: translateX(0);
-  clip-path: polygon(
-    0% 0%,
-    100% 0%,
-    98% 6%,
-    99.5% 12%,
-    97% 18%,
-    99% 25%,
-    96.5% 32%,
-    99% 40%,
-    97% 48%,
-    99.5% 55%,
-    96% 62%,
-    99% 70%,
-    97.5% 78%,
-    99% 85%,
-    97% 92%,
-    100% 100%,
-    0% 100%
-  );
+  clip-path: url(#sipario-clip-left);
   box-shadow: inset -30px 0 60px rgba(0, 0, 0, 0.55);
 }
 
-/* Pannello destro: bordo sinistro ondulato (specchiato) */
+/* Pannello destro: bordo sinistro ondulato (specchiato) + stesso orlo */
 .sipario-panel--right {
   right: 0;
   transform: translateX(0);
-  clip-path: polygon(
-    0% 0%,
-    100% 0%,
-    100% 100%,
-    0% 100%,
-    3% 92%,
-    1% 85%,
-    2.5% 78%,
-    1% 70%,
-    4% 62%,
-    0.5% 55%,
-    3% 48%,
-    1% 40%,
-    3.5% 32%,
-    1% 25%,
-    3% 18%,
-    0.5% 12%,
-    2% 6%
-  );
+  clip-path: url(#sipario-clip-right);
   box-shadow: inset 30px 0 60px rgba(0, 0, 0, 0.55);
 }
 
