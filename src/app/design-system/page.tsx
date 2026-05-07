@@ -201,68 +201,88 @@ export default function DesignSystemPage() {
       {/* 2 — TIPOGRAFIA */}
       <Section background="nero-soft">
         <Container>
-          <GroupTitle>2 — Tipografia (confronto font display)</GroupTitle>
+          <GroupTitle>2 — Tipografia</GroupTitle>
           <p className="text-body text-crema-muted mb-12 max-w-2xl">
-            Stonehead Demo è stato ritirato dal display generale (resta solo nel
-            logo Header) per via dei glifi alternates rotti. Tre candidati a
-            confronto: <span className="font-cinzel">Cinzel Decorative</span>,{" "}
-            <span className="font-abril">Abril Fatface</span>,{" "}
-            <span className="font-bodoni">Bodoni Moda</span>. Decisione finale a
-            cura di Edo.
+            Sistema a due font:{" "}
+            <span className="font-display">Cinzel Decorative</span> per i
+            titoli in evidenza,{" "}
+            <span className="font-sans font-semibold">Inter</span> (300/400/500/600/700)
+            per body, UI e tutto il resto. Stonehead Demo resta solo nel logo
+            Header.
           </p>
 
-          <SubTitle>2.0 — Confronto candidati (3 colonne)</SubTitle>
-          <div className="mb-16 grid grid-cols-1 lg:grid-cols-3 gap-6">
-            {[
-              { key: "cinzel", label: "Cinzel Decorative", cls: "font-cinzel" },
-              { key: "abril", label: "Abril Fatface", cls: "font-abril" },
-              { key: "bodoni", label: "Bodoni Moda", cls: "font-bodoni" },
-            ].map((f) => (
-              <div
-                key={f.key}
-                className="p-6 bg-nero-deep rounded-md border border-crema-faint space-y-5"
-              >
-                <div className="pb-3 border-b border-crema-faint">
-                  <p className="text-caption uppercase-tracked text-rosso-base">
-                    Candidato
-                  </p>
-                  <p className="text-body-l text-crema-base">{f.label}</p>
-                </div>
-                <div className={`${f.cls} text-h3 leading-tight break-words`}>
-                  ABCDEFGHIJKLMNOPQRSTUVWXYZ
-                </div>
-                <div className={`${f.cls} text-h3 leading-tight break-words`}>
-                  abcdefghijklmnopqrstuvwxyz
-                </div>
-                <div className={`${f.cls} text-h3 leading-tight`}>
-                  0123456789 &amp; ! ?
-                </div>
-                <div>
-                  <p className="text-caption uppercase-tracked text-crema-muted mb-2">
-                    Heading XL
-                  </p>
-                  <p className={`${f.cls} text-h1 leading-[1.05]`}>
-                    La Fine del Mondo
-                  </p>
-                </div>
-                <div>
-                  <p className="text-caption uppercase-tracked text-crema-muted mb-2">
-                    Heading L
-                  </p>
-                  <p className={`${f.cls} text-h2 leading-[1.1]`}>
-                    Romeo + Giulietta
-                  </p>
-                </div>
-                <div>
-                  <p className="text-caption uppercase-tracked text-crema-muted mb-2">
-                    Tagline
-                  </p>
-                  <p className={`${f.cls} text-h3 leading-tight`}>
-                    Una compagnia. Tre anime.
-                  </p>
-                </div>
+          <SubTitle>2.0 — Sistema font definitivo</SubTitle>
+          <div className="mb-16 grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div className="p-6 bg-nero-deep rounded-md border border-crema-faint space-y-5">
+              <div className="pb-3 border-b border-crema-faint">
+                <p className="text-caption uppercase-tracked text-rosso-base">
+                  Display · titoli in evidenza
+                </p>
+                <p className="text-body-l text-crema-base">Cinzel Decorative</p>
               </div>
-            ))}
+              <div className="font-display text-h3 leading-tight break-words">
+                ABCDEFGHIJKLMNOPQRSTUVWXYZ
+              </div>
+              <div className="font-display text-h3 leading-tight">
+                0123456789 &amp; ! ?
+              </div>
+              <div>
+                <p className="text-caption uppercase-tracked text-crema-muted mb-2">
+                  Heading XL
+                </p>
+                <p className="font-display text-h1 leading-[1.05]">
+                  La Fine del Mondo
+                </p>
+              </div>
+              <div>
+                <p className="text-caption uppercase-tracked text-crema-muted mb-2">
+                  Heading L
+                </p>
+                <p className="font-display text-h2 leading-[1.1]">
+                  Romeo + Giulietta
+                </p>
+              </div>
+            </div>
+
+            <div className="p-6 bg-nero-deep rounded-md border border-crema-faint space-y-5">
+              <div className="pb-3 border-b border-crema-faint">
+                <p className="text-caption uppercase-tracked text-rosso-base">
+                  Body · UI e testi
+                </p>
+                <p className="text-body-l text-crema-base">Inter</p>
+              </div>
+              <div className="space-y-2">
+                {[
+                  { w: "font-light", label: "Light · 300" },
+                  { w: "font-normal", label: "Regular · 400" },
+                  { w: "font-medium", label: "Medium · 500" },
+                  { w: "font-semibold", label: "Semibold · 600" },
+                  { w: "font-bold", label: "Bold · 700" },
+                ].map((row) => (
+                  <div
+                    key={row.w}
+                    className="grid grid-cols-[140px_1fr] gap-4 items-baseline border-b border-crema-faint/50 pb-2"
+                  >
+                    <span className="text-caption uppercase-tracked text-crema-muted">
+                      {row.label}
+                    </span>
+                    <span className={`${row.w} text-body-l text-crema-base`}>
+                      Una compagnia. Tre anime.
+                    </span>
+                  </div>
+                ))}
+              </div>
+              <div>
+                <p className="text-caption uppercase-tracked text-crema-muted mb-2">
+                  Body lungo · 16px regular
+                </p>
+                <p className="text-body text-crema-base/90 leading-relaxed">
+                  Caraval Spettacoli è la compagnia teatrale della media
+                  pianura padana che attraversa con la stessa serietà la
+                  prosa, il teatro di strada e gli spettacoli di fuoco.
+                </p>
+              </div>
+            </div>
           </div>
 
           <SubTitle>2.1 — Scale base</SubTitle>

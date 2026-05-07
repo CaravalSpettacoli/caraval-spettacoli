@@ -39,13 +39,9 @@ const config: Config = {
         },
       },
       fontFamily: {
+        // Sistema definitivo a 2 font: Cinzel Decorative per display, Inter per body/UI.
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        // font-display = candidato di default (Cinzel), può essere cambiato dopo la scelta finale
         display: ["var(--font-cinzel)", "serif"],
-        // candidati a confronto
-        cinzel: ["var(--font-cinzel)", "serif"],
-        abril: ["var(--font-abril)", "serif"],
-        bodoni: ["var(--font-bodoni)", "serif"],
         // Stonehead riservato al solo logo Header
         stonehead: ["var(--font-stonehead)", "serif"],
         mono: [
