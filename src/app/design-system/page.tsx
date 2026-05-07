@@ -894,16 +894,18 @@ export default function DesignSystemPage() {
           <GroupTitle>16 — Sipario preloader</GroupTitle>
           <p className="text-body text-crema-muted mb-8 max-w-2xl">
             Preloader teatrale full-screen montato solo sulla homepage. Aspetta
-            il <code className="font-mono">window.load</code> (font + immagini hero), rispetta un
-            tempo minimo di <code className="font-mono">800ms</code> per registrare visivamente,
-            e ha un failsafe a <code className="font-mono">3000ms</code> per non bloccare. Su{" "}
-            <code className="font-mono">prefers-reduced-motion: reduce</code> non si monta affatto.
+            il <code className="font-mono">window.load</code> con minimo{" "}
+            <code className="font-mono">1500ms</code> di permanenza del testo, e
+            failsafe a <code className="font-mono">3500ms</code>. Su{" "}
+            <code className="font-mono">prefers-reduced-motion</code> niente
+            tendaggi, solo fade-out 400ms.
           </p>
           <ul className="text-body-s text-crema-muted mb-8 space-y-1 list-disc pl-5 max-w-2xl">
-            <li>Apertura: 1500ms con easing teatrale <code className="font-mono">cubic-bezier(0.7, 0, 0.3, 1)</code></li>
-            <li>Centro fade-out + scale 0.95 nei primi 400ms</li>
-            <li>Texture velluto: strisce verticali sottili in <code className="font-mono">repeating-linear-gradient</code></li>
-            <li>Vignettatura interna lato palco per profondità</li>
+            <li>Sequenza: <strong>0–1500ms</strong> testo visibile · <strong>1500–1900ms</strong> fade testo · <strong>1900–4400ms</strong> apertura tendaggi (2500ms)</li>
+            <li>Easing apertura: <code className="font-mono">cubic-bezier(0.4, 0, 0.2, 1)</code></li>
+            <li>Bordo interno dei pannelli ondulato (15 vertici via <code className="font-mono">clip-path: polygon()</code>)</li>
+            <li>Texture velluto: bande verticali irregolari (pieghe) in <code className="font-mono">repeating-linear-gradient</code> con <code className="font-mono">mix-blend-mode: multiply</code></li>
+            <li>Profondità: gradient verticale rosso-deep → rosso-base → rosso-deep + ombra interna lato palco</li>
             <li><code className="font-mono">pointer-events: none</code> + <code className="font-mono">aria-hidden</code>: invisibile agli screen reader</li>
           </ul>
           <SiparioPreloaderDemo />

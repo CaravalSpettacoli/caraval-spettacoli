@@ -18,9 +18,9 @@ export function SiparioPreloaderDemo() {
       </Button>
       <p className="text-body-s text-crema-muted max-w-xl">
         Cliccando il bottone, il sipario si monta full-screen con{" "}
-        <code className="text-rosso-hover">mode=&quot;preview&quot;</code>: parte
-        immediatamente, salta l&apos;attesa di <code>window.load</code>, si apre
-        in 1500ms, poi si smonta automaticamente.
+        <code className="text-rosso-hover">mode=&quot;preview&quot;</code>: il
+        testo persiste 1500ms, fade 400ms, poi i tendaggi si aprono in 2500ms e
+        il componente si smonta da solo.
       </p>
       {active && (
         <Sipario mode="preview" onComplete={() => setActive(false)} />

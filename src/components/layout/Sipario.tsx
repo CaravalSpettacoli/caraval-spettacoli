@@ -1,91 +1,123 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { splitDisplay } from "@/lib/splitDisplay";
+import { useEffect, useRef, useState } from "react";
 
 interface SiparioProps {
-  /** Tempo minimo prima di iniziare l'apertura (ms). */
+  /** Tempo minimo di permanenza del testo prima del fade (ms). */
   minDuration?: number;
-  /** Failsafe: apre comunque dopo questo tempo (ms). */
+  /** Failsafe: parte comunque dopo questo tempo (ms). */
   maxDuration?: number;
   /**
    * Modalità preview: parte subito, niente attesa load.
    * Usato nello showcase per testare l'animazione.
    */
   mode?: "auto" | "preview";
-  /** Callback quando il componente si smonta */
+  /** Predisposizione audio (file non incluso). */
+  withSound?: boolean;
+  /** Callback al termine dell'animazione. */
   onComplete?: () => void;
 }
 
+const TEXT_FADE_MS = 400;
+const PANEL_OPEN_MS = 2500;
+
 export function Sipario({
-  minDuration = 800,
-  maxDuration = 3000,
+  minDuration = 1500,
+  maxDuration = 3500,
   mode = "auto",
+  withSound = false,
   onComplete,
 }: SiparioProps) {
+  const [isFading, setIsFading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const [isUnmounted, setIsUnmounted] = useState(false);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
-    // Skip totale per chi ha richiesto reduced motion (ridondante con CSS, ma evita layer DOM)
-    if (
-      typeof window !== "undefined" &&
-      window.matchMedia("(prefers-reduced-motion: reduce)").matches
-    ) {
-      setIsUnmounted(true);
-      onComplete?.();
-      return;
+    if (typeof window === "undefined") return;
+
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+
+    const timers: number[] = [];
+
+    if (reduced) {
+      // Fallback: niente movimento tendaggi, solo fade-out 400ms del contenuto e via.
+      setIsFading(true);
+      timers.push(
+        window.setTimeout(() => {
+          setIsUnmounted(true);
+          onComplete?.();
+        }, TEXT_FADE_MS)
+      );
+      return () => timers.forEach(clearTimeout);
     }
 
     const startTime = Date.now();
-    let opened = false;
-    const timers: number[] = [];
+    let started = false;
 
-    const openCurtain = () => {
-      if (opened) return;
-      opened = true;
+    const startSequence = () => {
+      if (started) return;
+      started = true;
       const elapsed = Date.now() - startTime;
-      const remainingMin = Math.max(0, minDuration - elapsed);
+      const wait = Math.max(0, minDuration - elapsed);
 
-      const t1 = window.setTimeout(() => setIsOpen(true), remainingMin);
-      const t2 = window.setTimeout(() => {
-        setIsUnmounted(true);
-        onComplete?.();
-      }, remainingMin + 1500);
-      timers.push(t1, t2);
+      // Step 1 — dopo `wait` ms (testo persiste 1500ms): fade testo (400ms)
+      timers.push(
+        window.setTimeout(() => {
+          setIsFading(true);
+          if (withSound && audioRef.current) {
+            audioRef.current.play().catch(() => {});
+          }
+        }, wait)
+      );
+      // Step 2 — dopo wait + 400ms: apertura tendaggi (2500ms)
+      timers.push(
+        window.setTimeout(() => setIsOpen(true), wait + TEXT_FADE_MS)
+      );
+      // Step 3 — dopo wait + 400 + 2500ms: smonta
+      timers.push(
+        window.setTimeout(() => {
+          setIsUnmounted(true);
+          onComplete?.();
+        }, wait + TEXT_FADE_MS + PANEL_OPEN_MS)
+      );
     };
 
     if (mode === "preview") {
-      openCurtain();
+      startSequence();
     } else if (document.readyState === "complete") {
-      openCurtain();
+      startSequence();
     } else {
-      window.addEventListener("load", openCurtain, { once: true });
+      window.addEventListener("load", startSequence, { once: true });
     }
 
-    const failsafe = window.setTimeout(openCurtain, maxDuration);
-    timers.push(failsafe);
+    timers.push(window.setTimeout(startSequence, maxDuration));
 
     return () => {
-      window.removeEventListener("load", openCurtain);
-      timers.forEach((t) => clearTimeout(t));
+      window.removeEventListener("load", startSequence);
+      timers.forEach(clearTimeout);
     };
-  }, [minDuration, maxDuration, mode, onComplete]);
+  }, [minDuration, maxDuration, mode, withSound, onComplete]);
 
   if (isUnmounted) return null;
 
   return (
     <div
-      className={`sipario-container${isOpen ? " is-open" : ""}`}
+      className={`sipario-container${isOpen ? " is-open" : ""}${isFading ? " is-fading" : ""}`}
       role="presentation"
       aria-hidden="true"
     >
-      <div className="sipario-panel sipario-panel--left" />
-      <div className="sipario-panel sipario-panel--right" />
+      <div className="sipario-panel sipario-panel--left">
+        <div className="sipario-velvet" aria-hidden="true" />
+      </div>
+      <div className="sipario-panel sipario-panel--right">
+        <div className="sipario-velvet" aria-hidden="true" />
+      </div>
+
       <div className="sipario-content">
-        <h1 className="sipario-title">
-          {splitDisplay("Pronti a entrare in scena?")}
-        </h1>
+        <h1 className="sipario-title">Pronti a entrare in scena?</h1>
         <svg
           className="sipario-divider"
           width="180"
@@ -118,6 +150,15 @@ export function Sipario({
         </svg>
         <p className="sipario-label">Caraval Spettacoli — Soncino</p>
       </div>
+
+      {withSound && (
+        <audio
+          ref={audioRef}
+          src="/sounds/curtain.mp3"
+          preload="auto"
+          aria-hidden="true"
+        />
+      )}
     </div>
   );
 }
