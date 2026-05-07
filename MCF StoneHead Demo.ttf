@@ -1,0 +1,441 @@
+# Prompt Chat 2.5 — Polish Design System Caraval Spettacoli
+
+> **Sessione 2.5:** raffinamento del design system per dargli **personalità teatrale distintiva**. Aggiunte: ticket grafico, tipografia espressiva, card manifesto, accenti decorativi, colori audaci, animazioni cinematografiche, layout manifesto.  
+> **Stato di partenza:** Sessione 2 completata, design system base funzionante in `/design-system`.  
+> **Da incollare in Claude Code** dopo aver navigato in `/Users/edoardobiondi/Desktop/SITO-CARAVAL/SITO/`.
+
+---
+
+# CONTESTO
+
+Sei la stessa istanza AI che ha completato Sessioni 1 e 2. Tutto il contesto di progetto è in `CLAUDE.md`. Leggilo per primo.
+
+**IMPORTANTE: usa la skill `frontend-design`** per questa sessione. Questa skill ti guida a creare interfacce con personalità, evitando l'estetica "AI-generic" che vediamo in tanti siti. Caraval è una compagnia teatrale con vero carattere — il sito deve riflettere quel carattere, non sembrare un template generico.
+
+Lavora in **modalità agentic** con auto-mode dopo l'approvazione del piano. Plan Mode prima di iniziare.
+
+# CONTESTO STRATEGICO (da rileggere)
+
+Caraval Spettacoli = compagnia teatrale di Soncino. Estetica obiettivo:
+- **Cinematografica e drammatica** (no estetica startup-tech)
+- **Vintage circus / teatro popolare italiano** (richiami art déco, commedia dell'arte)
+- **Mood "poster di film"** + **manifesto teatrale d'epoca**
+- **NO toni magici/fiabeschi/cartoonish**
+- **Foto di scena** sono asset visivi principali, sempre con contrasto alto
+
+Reference visivi top da imitare nei principi:
+- **Les Moustaches** (lesmoustaches.net) — tipografia massiccia, foto verticali drammatiche, sfondo nero
+- **Compagnia dei Folli** — estetica fuoco rosso/nero
+- **Manifesti teatrali italiani anni '60-'70** (Strehler, Eduardo)
+
+# IL PROBLEMA DEL FONT
+
+Il font **MCF Stonehead Demo** ha glyph "watermark" `@misterchek` solo su **alcuni caratteri speciali** (asterischi decorativi, simboli Unicode esotici). Le **lettere A-Z e numeri 0-9 sono pulite**.
+
+**Regola tassativa:** font Stonehead **solo per** lettere A-Z e numeri. Per qualunque altro carattere (punteggiatura, simboli, separatori) usare **Inter**. Mai mischiare.
+
+In CSS questo si gestisce con:
+```css
+.font-display {
+  font-family: 'MCF Stonehead Demo', serif;
+}
+.font-display-mixed {
+  /* Per testi con punteggiatura: separa il display dal resto */
+}
+```
+
+Pratica: nei componenti, separa parole-chiave da punteggiatura:
+```jsx
+<h1>
+  <span className="font-display">UNA COMPAGNIA</span>
+  <span className="font-display">TRE ANIME</span>
+  <span className="font-display">UN FESTIVAL</span>
+</h1>
+```
+
+Niente punti, virgole, separatori dentro elementi `font-display`. Gli elementi decorativi (separatori, stelle) sono SVG inline, non caratteri Unicode.
+
+---
+
+# OBIETTIVO DELLA SESSIONE 2.5
+
+Implementare 7 miglioramenti al design system che daranno personalità distintiva al sito.
+
+## 1. Componente Ticket (per biglietti acquistabili)
+
+Nuovo componente `src/components/caraval/TicketBiglietto.tsx`.
+
+**Reference visivo:** biglietto cinema/teatro vintage anni '50, stile "ADMIT ONE" classico americano. Forma rettangolare orizzontale, palette crema + rosso, tipografia serif classica. Estetica nostalgica, riconoscibile, leggibile a colpo d'occhio come "biglietto" anche senza testo.
+
+### Anatomia del ticket (descrizione precisa)
+
+**Forma e proporzioni:**
+- Rettangolo orizzontale, proporzioni circa 3:1 (es. 480px × 160px desktop, scalabile)
+- Bordo doppio: una cornice esterna spessa rosso `var(--color-rosso-base)` (3-4px) + linea interna sottile rossa (1px) con margine di 6-8px tra le due
+- Sfondo principale `var(--color-crema-base)` (`#f5e6d3`)
+- 4 angoli con piccoli intagli decorativi a "V" (cut-out triangolari) o tagli dritti che creano l'effetto "biglietto stampato"
+
+**Divisione interna:**
+- Una **linea tratteggiata verticale** rossa al ~25% della larghezza divide il biglietto in due sezioni
+  - Tecnica: `border-left: 2px dashed var(--color-rosso-base)` su un div interno
+- **Sezione laterale sinistra (~25% width)** = "matrice" del biglietto
+- **Sezione principale destra (~75% width)** = info evento
+
+**Sezione laterale (sinistra):**
+- Sfondo identico al resto (crema), niente colore alternativo
+- Testo **"STRAPPA QUI"** (in italiano) ruotato -90° con `writing-mode: vertical-rl` o `transform: rotate(-90deg)`
+- Font: Inter bold uppercase tracciato 0.15em
+- Colore: `var(--color-rosso-base)`
+- Dimensione: piccola, ~10-11px
+- Posizionato in centro verticalmente
+- Sopra "STRAPPA QUI" un piccolo simbolo decorativo SVG (es. una stella a 5 punte minuscola)
+
+**Sezione principale (destra):**
+Layout interno a 3 zone orizzontali:
+1. **Zona data** (a sinistra della sezione principale, ~30%):
+   - Numero giorno gigantesco in font-display Stonehead (es. "12") — solo cifre, niente punteggiatura
+   - Sotto, abbreviazione mese in Inter uppercase tracciato (es. "GIU")
+   - Allineamento centrato verticalmente
+2. **Zona info** (centro, ~50%):
+   - Titolo evento in Inter bold (es. "Romeo + Giulietta")
+   - Sotto, città + struttura in Inter regular body-s (es. "Brescia · Teatro Sociale")
+   - Sotto ancora, prezzo o "Ingresso libero" in label uppercase tracciato
+   - Allineamento sinistra
+3. **Zona azione** (destra, ~20%):
+   - Piccolo numero seriale fittizio in alto a destra in font-mono (es. "Nº 0247") — dettaglio decorativo
+   - In basso, freccia minimale che indica "click" → tutto il ticket è cliccabile
+
+**Tipografia precisa:**
+- Numero data: `font-family: 'MCF Stonehead Demo'; font-size: 56px; line-height: 1; color: var(--color-nero-base)`
+- Mese: `font-family: 'Inter'; font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-rosso-base)`
+- Titolo: `font-family: 'Inter'; font-weight: 700; font-size: 18px; color: var(--color-nero-base)`
+- Sottotitolo: `font-family: 'Inter'; font-size: 13px; color: var(--color-nero-base); opacity: 0.7`
+- Label prezzo: `font-family: 'Inter'; font-size: 11px; letter-spacing: 0.15em; text-transform: uppercase; color: var(--color-rosso-base)`
+- Numero seriale: `font-family: monospace; font-size: 9px; color: var(--color-rosso-base); opacity: 0.5`
+
+**Stati interattivi:**
+- Default: ombra leggera `box-shadow: 0 4px 16px rgba(0,0,0,0.15)` per dare elevazione su sfondo nero
+- Hover: rotazione `transform: rotate(-1deg) scale(1.02)` + ombra rossa estesa `box-shadow: 0 8px 32px rgba(168,23,74,0.3)` + il numero data si "alza" leggermente con `transform: translateY(-2px)` (effetto giocoso)
+- Active/click: rotazione torna a 0 con scale 0.98 (feedback "premuto")
+- Tutta l'animazione: `transition: all 300ms cubic-bezier(0.34, 1.56, 0.64, 1)` (easing con leggero rimbalzo)
+
+**Accessibilità:**
+- Tutto l'elemento è un `<a href={urlBiglietti}>` con `aria-label="Acquista biglietto per {titolo} il {data formattata}"`
+- Focus visible: outline rosso 2px con offset 4px
+- Touch target: minimo 44px altezza utile (rispettato grazie a 160px di altezza)
+- Niente testo solo decorativo (es. "STRAPPA QUI" è `aria-hidden="true"`)
+
+**Responsive:**
+- Desktop (≥768px): 480px × 160px
+- Tablet (≥640px): 100% width container, height 140px, font-size data ridotto
+- Mobile (<640px): stack verticale opzionale (variant `compact`) — sezione data sopra, info sotto, niente sezione laterale
+
+### Variante `compact` (per liste mobile)
+
+Stessa estetica ma:
+- Layout verticale: data sopra, info sotto, niente sezione laterale "STRAPPA QUI"
+- Altezza ridotta a 120px
+- Numero data ridotto a 40px
+- Bordo decorativo identico
+
+### Props TypeScript
+
+```typescript
+interface TicketBigliettoProps {
+  data: Date;
+  titolo: string;
+  citta: string;
+  struttura?: string;
+  prezzo?: string; // es. "8 €" o "Ingresso libero"
+  urlBiglietti: string;
+  numeroSeriale?: string; // opzionale, default generato es. "0247"
+  variant?: 'default' | 'compact';
+  className?: string;
+}
+```
+
+### Implementazione tecnica
+
+Usa **SVG inline** per il bordo doppio + intagli angoli (più controllo + nitidezza retina). In alternativa, due `<div>` annidati con border. Il primo approccio è più clean visivamente, il secondo più semplice da implementare. Scegli SVG se il livello di dettaglio richiesto lo giustifica.
+
+Niente immagini esterne. Tutto SVG/CSS.
+
+**Aggiungi al showcase** nella sezione "10 — EventoCard" (rinominala "10 — Eventi & Ticket") con:
+- 1 esempio default (evento prosa con biglietto a pagamento)
+- 1 esempio default (evento ingresso libero)
+- 1 esempio variant `compact` (mobile preview)
+
+## 2. Tipografia espressiva nei titoli
+
+Aggiungi nuovi pattern tipografici per dare ritmo visivo.
+
+### Pattern A — Doppio livello sovrapposto
+
+Componente `src/components/caraval/TitoloDoppio.tsx`:
+```jsx
+<TitoloDoppio
+  display="ROMEO"
+  display2="GIULIETTA"
+  body="L'Inferno dell'Amore"
+  align="left"
+/>
+```
+
+Renderizza:
+- "ROMEO" in display-xl Stonehead
+- "GIULIETTA" in display-xl Stonehead **leggermente sovrapposto** (margin-top negativo) e con offset orizzontale
+- "L'Inferno dell'Amore" in Inter italic body-l sotto, allineato
+
+Effetto: titoli "stratificati" tipo manifesto.
+
+### Pattern B — Mix dimensioni nella stessa frase
+
+Componente `src/components/caraval/TitoloRitmico.tsx`:
+```jsx
+<TitoloRitmico
+  parts={[
+    { text: 'UNA', size: 'small' },
+    { text: 'COMPAGNIA', size: 'large' },
+    { text: 'TRE', size: 'small' },
+    { text: 'ANIME', size: 'large' },
+    { text: 'UN', size: 'small' },
+    { text: 'FESTIVAL', size: 'large' },
+  ]}
+/>
+```
+
+Renderizza con `size: small` = display-m, `size: large` = display-xl. Wrapping naturale.
+
+### Pattern C — Allineamento sinistra estremo (editoriale)
+
+Aggiungi variant `align="left-extreme"` al Hero esistente: titolo grande allineato al margine sinistro container, NON centrato. Più editoriale, meno corporate.
+
+**Aggiungi nel showcase** sezione "2 — Tipografia" sottosezione "Pattern espressivi" con i 3 esempi.
+
+## 3. Card spettacolo formato manifesto
+
+**Modifica** `SpettacoloCard.tsx` esistente: aggiungi variant `manifesto` (la default rimane `card`).
+
+Layout `manifesto`:
+- **Foto cover formato verticale 2:3** (proporzioni poster cinema, non 16:9). Se foto assente, placeholder con `aspect-ratio: 2/3`.
+- **Etichetta categoria** ruotata di 90° sul lato sinistro della card (scritta verticale tipo cinema poster). Tecnica: `writing-mode: vertical-rl` + `text-orientation: mixed`.
+- **Titolo grande** sovrapposto alla parte bassa dell'immagine con gradient nero-trasparente sotto (effetto poster cinema)
+- **Premio come "stamp" rotondo** in alto a destra (cerchio rosso 80x80 con testo dentro tipo "WINNER 2023" in Stonehead piccolo)
+- **Hover:** zoom immagine + leggera rotazione card -1° + glow rosso
+
+Props:
+```typescript
+interface SpettacoloCardProps {
+  spettacolo: SpettacoloData;
+  variant?: 'card' | 'manifesto';
+  size?: 'sm' | 'md' | 'lg';
+}
+```
+
+**Aggiorna showcase**: sezione "9 — SpettacoloCard" mostra ora **entrambi i variant** affiancati per comparazione.
+
+## 4. Accenti decorativi (SVG library)
+
+Crea cartella `src/components/decorative/` con elementi SVG inline riutilizzabili. **Non immagini esterne**, tutto SVG inline per controllo colore via `currentColor`.
+
+Elementi da creare:
+
+### `Stella5Punte.tsx`
+SVG di stella a 5 punte stile commedia dell'arte (non perfetta, leggermente irregolare per dare carattere).
+Props: `size`, `color`, `className`.
+
+### `CorniceDeco.tsx`
+Cornice decorativa art déco sottile come wrapper: 4 angoli con motivo + linee laterali.
+Props: `children`, `color`, `padding`.
+
+### `MascheraTeatrale.tsx`
+SVG di maschera stilizzata (commedia/tragedia). Stile minimal, line-art.
+Props: `tipo: 'commedia' | 'tragedia'`, `size`, `color`.
+
+### `Fiamma.tsx`
+SVG di fiamma stilizzata per spettacoli di fuoco. Stile minimal, non realistico.
+Props: `size`, `color`.
+
+### `OndaDecorativa.tsx`
+Linea decorativa ondulata come separatore sezioni. Lunga.
+Props: `width`, `color`, `variant: 'sottile' | 'spessa'`.
+
+### `Divider.tsx`
+Separatore con stella centrale: `─── ★ ───`. Versione SVG, no caratteri Unicode.
+Props: `color`, `width`.
+
+**Aggiungi nel showcase** nuova sezione "12 — Accenti decorativi" con tutti gli elementi SVG visualizzati.
+
+## 5. Colori più audaci nei dettagli
+
+Aggiungi al sistema di token (Tailwind config + CSS vars):
+
+### Gradient
+```css
+--gradient-hero: linear-gradient(180deg, var(--color-nero-deep) 0%, var(--color-nero-base) 50%, rgba(168,23,74,0.15) 100%);
+--gradient-overlay-rosso: linear-gradient(0deg, rgba(168,23,74,0.4) 0%, transparent 100%);
+--gradient-overlay-nero: linear-gradient(0deg, var(--color-nero-base) 0%, transparent 70%);
+```
+
+Tailwind utilities: `bg-gradient-hero`, `bg-gradient-overlay-rosso`, `bg-gradient-overlay-nero`.
+
+### Pulse animation per CTA principali
+```css
+@keyframes pulse-rosso {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(168,23,74,0.4); }
+  50% { box-shadow: 0 0 0 16px rgba(168,23,74,0); }
+}
+.animate-pulse-rosso {
+  animation: pulse-rosso 2s ease-in-out infinite;
+}
+```
+
+Aggiungi al Button variant `primary` un'opzione `pulse: boolean` per attivare l'effetto sui CTA principali (es. "Vai ai biglietti" in homepage).
+
+### Hover overlay rosso su immagini
+Componente helper `<ImmagineConOverlay>` che applica `bg-gradient-overlay-rosso` semi-trasparente al hover (transizione 400ms).
+
+### Shadow drammatiche
+Già presenti `shadow-md` e `shadow-lg`, aggiungi `shadow-poster`:
+```css
+--shadow-poster: 0 32px 80px rgba(0,0,0,0.7), 0 8px 24px rgba(168,23,74,0.2);
+```
+Per blocchi principali tipo card spettacolo manifesto.
+
+**Aggiungi nel showcase** sezione "13 — Effetti & Animazioni" con esempi di pulse, gradient, overlay.
+
+## 6. Animazioni cinematografiche
+
+Aggiungi animazioni con `framer-motion` (NO, usa CSS pure per non aggiungere dipendenze pesanti) o `tailwindcss-animate` (già installato).
+
+### Fade-in lento on-scroll
+Hook custom `useFadeInOnScroll()` (Intersection Observer) + classe utility `.fade-in-on-scroll` che aggiunge `opacity-0 translate-y-4` di default e `opacity-100 translate-y-0` quando entra in viewport (transition 800ms ease-out).
+
+Applica di default a tutti gli H1, H2 della pagina.
+
+### Reveal "alza il sipario" per sezioni hero
+Componente `<RevealSipario>`: la sezione contenente è inizialmente coperta da due tendaggi (`<div>` con bg nero) che al mount si separano (uno verso sinistra, uno verso destra) con animazione 1200ms cubic-bezier elegante.
+
+Tecnica: due `<div>` absolute, transform translateX(-100%) e translateX(100%) all'animation finale.
+
+### Parallax sottile su hero image
+Hook `useParallax(speed: number)` che applica `transform: translateY(-scrollY * speed)` a un elemento. Speed default 0.3 = movimento sottile.
+
+Applica al background image dell'Hero template.
+
+### Cursor decorativo (opzionale, solo desktop)
+Su desktop (no touch), un piccolo punto rosso che segue il cursor con leggero delay. Estetico, non funzionale.
+Component `<CustomCursor>` montato in layout root, disabled su mobile via media query `(hover: hover)`.
+
+**Aggiungi nel showcase** sezione "14 — Animazioni" con demo interattive di ogni effetto.
+
+## 7. Layout manifesto per pagine spettacolo (template)
+
+Modifica `Hero.tsx` aggiungendo variant `manifesto-spettacolo`:
+
+Layout asimmetrico:
+- **Foto a destra 60% width**, full-height (90vh)
+- **Testo a sinistra 40% width**, sovrapposto leggermente alla foto con z-index
+- Titolo gigantesco (display-xl), allineato sinistra
+- Sottotitolo Inter italic
+- Sotto sottotitolo: lista crediti formattata "tipo locandina"
+  ```
+  REGIA — Vera Rossini
+  DRAMMATURGIA — Vera Rossini su Shakespeare
+  IN SCENA — [nomi attori]
+  ```
+- Eventuale "stamp" premio sovrapposto angolo immagine
+
+Aggiungi nuovo componente `src/components/caraval/CreditiLocandina.tsx`:
+```jsx
+<CreditiLocandina
+  crediti={[
+    { ruolo: 'REGIA', nome: 'Vera Rossini' },
+    { ruolo: 'DRAMMATURGIA', nome: 'Alessio Rosin' },
+    ...
+  ]}
+/>
+```
+Stile: ogni riga con label uppercase tracciato + em-dash + nome in Inter regular.
+
+Aggiungi anche componente `<CitazioneStampa>`:
+```jsx
+<CitazioneStampa
+  testo="Una drammaturgia originale che colpisce."
+  fonte="La Provincia di Cremona"
+  data="2023"
+/>
+```
+Stile: virgolette giganti decorative in Stonehead, citazione in Inter italic, fonte in label uppercase.
+
+**Aggiungi nel showcase** sezione "15 — Hero Manifesto" con esempio completo.
+
+---
+
+# SCALETTA SHOWCASE FINALE
+
+Aggiorna `src/app/design-system/page.tsx` per riflettere TUTTI i miglioramenti. Nuova struttura:
+
+```
+1. Palette colori (esistente)
+2. Tipografia
+   - 2.1 Scale base (esistente)
+   - 2.2 NUOVO: Pattern espressivi (TitoloDoppio, TitoloRitmico, allineamento estremo)
+3. Spacing (esistente)
+4. Buttons
+   - 4.1 Variants base (esistente)
+   - 4.2 NUOVO: Button con pulse animation
+5. Cards (esistente)
+6. Containers (esistente)
+7. Sections (esistente, aggiungi variant gradient hero)
+8. Hero (esistente, aggiungi variant manifesto-spettacolo)
+9. SpettacoloCard
+   - 9.1 Variant card (esistente)
+   - 9.2 NUOVO: Variant manifesto
+10. EventoCard & Ticket
+    - 10.1 EventoCard standard (esistente)
+    - 10.2 NUOVO: TicketBiglietto
+11. Badges (esistente)
+12. NUOVO: Accenti decorativi (Stella, Cornice, Maschera, Fiamma, Onda, Divider)
+13. NUOVO: Effetti & gradients (overlay, pulse, shadow-poster)
+14. NUOVO: Animazioni (fade-in, sipario, parallax, cursor)
+15. NUOVO: CreditiLocandina + CitazioneStampa
+```
+
+# COSA NON FARE
+
+- ❌ NON aggiungere dipendenze pesanti (no framer-motion, no GSAP) — usa CSS pure + tailwindcss-animate
+- ❌ NON cambiare la palette di base (nero/rosso/crema sono fissi)
+- ❌ NON usare immagini esterne come placeholder — solo div colorati con label
+- ❌ NON toccare la logica Sanity né gli schemi
+- ❌ NON usare caratteri Unicode decorativi nei testi (sono SVG)
+
+# SKILLS DA USARE
+
+**Skill `frontend-design`** è **OBBLIGATORIA** per questa sessione. Caricala con `view /mnt/skills/public/frontend-design/SKILL.md` come PRIMO comando, segui le sue indicazioni per creare componenti distintivi.
+
+# WORKFLOW
+
+1. **Plan Mode**: presenta piano dettagliato
+2. **Skill load**: leggi `frontend-design/SKILL.md` prima di toccare codice
+3. **Esegui in fasi** (1, 2, 3...) con commit semantici per ogni fase completata
+4. **Test visivo intermedio**: dopo ogni fase, smoke check (riportami se non puoi avviare il dev server)
+5. **Aggiorna `CLAUDE.md`** con i nuovi token + componenti
+6. **Build check finale** + push GitHub
+7. **Nota in CLAUDE.md** che la sessione 2.5 è completata e il design system è "personalizzato"
+
+# OUTPUT ATTESO
+
+Al termine voglio:
+- ✅ Pagina `/design-system` con 15 sezioni (le 11 originali + 4 nuove)
+- ✅ Tutti i nuovi componenti funzionanti e testati nel build
+- ✅ Tipografia che appare "teatrale" e non "tech-startup"
+- ✅ Almeno 1 elemento decorativo SVG visibile per ogni famiglia (stelle, cornici, maschere, fiamme, onde)
+- ✅ TicketBiglietto realistico, riconoscibile come "biglietto"
+- ✅ Variant manifesto della SpettacoloCard distintivo dalla card base
+- ✅ Animazioni fluide (fade-in, sipario, parallax) testate sulla showcase
+- ✅ CLAUDE.md aggiornato con sezione "5.x Componenti distintivi" e descrizione del polish
+
+# PARTI
+
+Plan Mode → Skill load → esegui. Vai.

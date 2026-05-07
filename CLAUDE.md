@@ -287,8 +287,63 @@ Riparazione finale prima delle pagine reali. Branch `polish/sessione-2-7`.
 - Border radius del Ticket: 10px (era 4px).
 - Sipario: pulito > stilizzato. Niente onde decorative su bordi.
 
+### ✅ Sessione 3 — Homepage + Hub Imaginarium (FATTO)
+Prime due pagine reali Sanity-driven. Branch `feat/sessione-3-homepage-imaginarium`.
+
+**Schemi Sanity nuovi:**
+- `homepageHero` (singleton) — fotoSfondo, heading, subheading, 2 CTA. ID fisso `homepageHero`.
+- `homepageCopy` (singleton) — tutti i testi sezioni Premi / Imaginarium preview / Repertorio / Officina / Ospita / Contatti, organizzati in groups Studio.
+- `premio` (collection) — anno, nomePremio, rassegna, spettacoloAssociato→spettacolo, motivazione, ordineHomepage, mostraInHomepage.
+
+**Schemi estesi:**
+- `spettacolo` — aggiunti `mostraInHomepage`, `ordineHomepage`, `referenteContatto`→membro, `premiAssociati`→[premio], `regia`, `produzione`. Resi optional (in fieldset "Contenuti consigliati"): `immagineCover`, `descrizioneBreve`, `annoCreazione`, `descrizioneNarrativa` — non più bloccanti per la demo. Vecchio array `premi` inline marcato come DEPRECATO.
+- `membro` — aggiunti `referenteAreaTesto`, `telefonoPubblico`, `emailPubblica`. `foto` resa optional.
+- `corso` — aggiunti `statoCorso` (enum), `dataChiusuraIscrizioni`, `spettacoloFinaleLinked`, `referenteIscrizioni`. Vecchio `spettacoloFinaleRif` marcato DEPRECATO.
+- `edizioneImaginarium` — aggiunti `mostraInHomepage`, `locationPrincipale`, `descrizioneBreve`, `patrocinio`/`sponsor`/`partnerLista` (3 array di string separati). `descrizione` e `immagineCover` resi optional. Vecchio `partner` (con tipo discriminator) marcato DEPRECATO.
+- `spettacoloImaginarium` — aggiunti `linkCompagniaEsterna`, `locationSpecifica`. `descrizione`, `immagineCover`, `comeParteciapare` resi optional.
+
+**Singleton handling:** `homepageHero` e `homepageCopy` aggiunti a `singletonTypes`, listati in `sanity/structure.ts`, registrati in `sanity/schemas/index.ts`.
+
+**Seed demo content:** script idempotente in `sanity/scripts/seed-demo-content.ts`, eseguibile con `npm run sanity:seed`. Crea `_id` deterministici (`spettacolo-romeo-giulietta`, `premio-edallo-2022`, `edizione-imaginarium-2026`...). Popola:
+- 2 singleton (`homepageHero`, `homepageCopy`) con copy esatto da `COPY_HOMEPAGE.md`
+- 2 membri (Vera Rossini, Nicola Pignoli con recapiti pubblici)
+- 11 spettacoli (10 in repertorio + Miseria e Nobiltà archivio): Romeo+Giulietta e Miseria popolati 100%, gli altri minimi (titolo + categoria + ordine + referente Nicola sui fuochi)
+- 3 premi (Edallo 2022/2023, Atelier Leà 2025) linkati ai relativi spettacoli; patch su Romeo/Fine del Mondo/Miseria per popolare `premiAssociati`
+- 3 edizioni Imaginarium (2026 piena con location/sponsor/partner, 2025 e 2024 placeholder)
+- 6 spettacoli Imaginarium 2026 linkati all'edizione corrente
+- 2 corsi Officina con spettacolo finale linkato
+
+**Importante:** lo script seed NON è stato eseguito da Claude — richiede `SANITY_API_WRITE_TOKEN`. Edo lo esegue con `npm run sanity:seed` per popolare il dataset.
+
+**Componenti nuovi:**
+- `src/components/ui/PlaceholderImage.tsx` — usato per ogni spettacolo senza foto.
+- `src/components/caraval/HeroHomepage.tsx` — 80vh, foto Sanity opzionale, gradient overlay, CTA primary `pulse` + CTA secondaria sottolineata.
+- `src/components/caraval/StripPremi.tsx` — bg `nero-soft`, heading sx + 3 card a dx con bordo rosso 1px, anno Cinzel grande.
+- `src/components/caraval/ImaginariumPreview.tsx` — palette inversa `bg-crema-base`, logo testuale "IMAGINARIUM" Cinzel, programma 2x3, strip patrocinio/sponsor/partner.
+- `src/components/caraval/RepertorioPreview.tsx` — bg nero, 2 colonne raggruppate per categoria (prosa | fuoco+strada).
+- `src/components/caraval/OfficinaTeaser.tsx` — bg `nero-soft`, layout asimmetrico testo + 2 maschere teatrali decorative.
+- `src/components/caraval/OspitaTeaser.tsx` — bg rosso pieno, testi crema, CTA bianca, onde decorative.
+- `src/components/caraval/ContattiPrelude.tsx` — 2 CTA grandi affiancate (mailto + tel) lette da `impostazioniSito.contattiPubblici`.
+- `src/components/imaginarium/HeroImaginarium.tsx` · `ProgrammaCompleto.tsx` · `SponsorPartnerStrip.tsx` · `EdizioniPassate.tsx`.
+
+**Pagine:**
+- `src/app/page.tsx` riscritta come Server Component con `Promise.all` di 7 fetch GROQ. Tutti i testi da Sanity, niente hardcoded. `revalidate = 60`.
+- `src/app/imaginarium/page.tsx` — hub edizione corrente (palette inversa scoped via wrapper `theme-imaginarium`).
+- `src/app/imaginarium/[anno]/page.tsx` — route dinamica: `notFound()` se anno non esiste, "Programma in caricamento" se popolata ma senza spettacoli, layout completo se piena.
+
+**CSS:** aggiunta classe `.theme-imaginarium` in `globals.css` per scope locale palette inversa.
+
+**Verifica:**
+- `npx tsc --noEmit` pulito · `npm run lint` pulito · `npm run build` pulito (8 rotte generate).
+- Screenshot Chrome MCP desktop+mobile salvati in `.screenshots/`. Le pagine renderizzano "graceful empty" finché il seed non viene eseguito — è il comportamento atteso (Sanity-driven senza dati = niente da mostrare).
+
+**Decisioni autonome:**
+- Mantenuto `corrente` boolean su `edizioneImaginarium` (esistente) e aggiunto `mostraInHomepage` come campo separato — più flessibile per scenari "anteprima dell'edizione futura mentre la corrente è ancora attiva".
+- I campi legacy (`spettacolo.premi`, `corso.spettacoloFinaleRif`, `edizioneImaginarium.partner`) lasciati con description "DEPRECATO" invece che rimossi — zero rischio di rompere document esistenti.
+- Logo Imaginarium: testo Cinzel "IMAGINARIUM" come placeholder finché non arriva l'asset.
+- Spacing sezioni usa la `<Section>` esistente (`py-12 md:py-20 lg:py-24`) invece di nuovi token — ritmo coerente con design system.
+
 ### ⏳ Da fare nelle prossime sessioni
-- [ ] **Sessione 3** — Pagine reali (homepage, /spettacoli, /spettacoli/[slug], /imaginarium...)
 - [ ] **Sessione 4** — Calendario eventi + filtraggio
 - [ ] **Sessione 5** — Pagina formazione + chi siamo + ospita + contatti
 - [ ] **Sessione 6** — Iubenda + Umami analytics + accessibilità WCAG AA

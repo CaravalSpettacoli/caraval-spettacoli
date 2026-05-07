@@ -4,6 +4,20 @@ export default defineType({
   name: "spettacolo",
   title: "Spettacolo",
   type: "document",
+  fieldsets: [
+    {
+      name: "homepage",
+      title: "Visibilità in homepage",
+      options: { collapsible: true, collapsed: false },
+    },
+    {
+      name: "contenutiConsigliati",
+      title: "Contenuti consigliati",
+      description:
+        "Campi non bloccanti per la demo, ma necessari per avere una scheda spettacolo completa. Vera, popolali quando hai tempo.",
+      options: { collapsible: true, collapsed: false },
+    },
+  ],
   fields: [
     defineField({
       name: "titolo",
@@ -39,12 +53,27 @@ export default defineType({
       initialValue: true,
       description: "Se disattivato, lo spettacolo va in archivio",
     }),
+    defineField({
+      name: "mostraInHomepage",
+      title: "Mostra in homepage (sezione Repertorio)",
+      type: "boolean",
+      initialValue: false,
+      fieldset: "homepage",
+    }),
+    defineField({
+      name: "ordineHomepage",
+      title: "Ordine in homepage",
+      type: "number",
+      description: "Numero crescente: 1 = primo della colonna",
+      fieldset: "homepage",
+    }),
     defineField({ name: "sottotitolo", title: "Sottotitolo", type: "string" }),
     defineField({
       name: "annoCreazione",
       title: "Anno di creazione",
       type: "number",
-      validation: (r) => r.required().min(1900).max(new Date().getFullYear() + 1),
+      validation: (r) => r.min(1900).max(new Date().getFullYear() + 1),
+      fieldset: "contenutiConsigliati",
     }),
     defineField({
       name: "immagineCover",
@@ -56,10 +85,9 @@ export default defineType({
           name: "alt",
           title: "Testo alternativo",
           type: "string",
-          validation: (r) => r.required(),
         }),
       ],
-      validation: (r) => r.required(),
+      fieldset: "contenutiConsigliati",
     }),
     defineField({
       name: "gallery",
@@ -86,21 +114,15 @@ export default defineType({
       title: "Descrizione breve (max 200 caratteri, per SEO)",
       type: "text",
       rows: 3,
-      validation: (r) => r.required().max(200),
+      validation: (r) => r.max(200),
+      fieldset: "contenutiConsigliati",
     }),
     defineField({
       name: "descrizioneNarrativa",
       title: "Descrizione narrativa",
       type: "array",
       of: [{ type: "block" }],
-      validation: (r) =>
-        r.custom((value, ctx) => {
-          const doc = ctx.document as { inRepertorio?: boolean } | undefined;
-          if (doc?.inRepertorio !== false && (!value || value.length === 0)) {
-            return "Obbligatoria per spettacoli in repertorio";
-          }
-          return true;
-        }),
+      fieldset: "contenutiConsigliati",
     }),
     defineField({
       name: "schedaTecnica",
@@ -130,9 +152,36 @@ export default defineType({
       ],
     }),
     defineField({
-      name: "premi",
-      title: "Premi",
+      name: "regia",
+      title: "Regia",
+      type: "string",
+    }),
+    defineField({
+      name: "produzione",
+      title: "Produzione",
+      type: "string",
+      initialValue: "Caraval Spettacoli",
+    }),
+    defineField({
+      name: "premiAssociati",
+      title: "Premi associati",
       type: "array",
+      of: [defineArrayMember({ type: "reference", to: [{ type: "premio" }] })],
+    }),
+    defineField({
+      name: "referenteContatto",
+      title: "Referente contatto",
+      type: "reference",
+      to: [{ type: "membro" }],
+      description:
+        "Per spettacoli di fuoco usa Nicola. Per il resto, default Vera o non specificato.",
+    }),
+    defineField({
+      name: "premi",
+      title: "Premi (legacy)",
+      type: "array",
+      description:
+        "CAMPO DEPRECATO — usa premiAssociati. Mantenuto per retrocompatibilità.",
       of: [
         defineArrayMember({
           type: "object",
@@ -179,4 +228,11 @@ export default defineType({
   preview: {
     select: { title: "titolo", subtitle: "categoria", media: "immagineCover" },
   },
+  orderings: [
+    {
+      title: "Ordine homepage",
+      name: "ordineHomepage",
+      by: [{ field: "ordineHomepage", direction: "asc" }],
+    },
+  ],
 });

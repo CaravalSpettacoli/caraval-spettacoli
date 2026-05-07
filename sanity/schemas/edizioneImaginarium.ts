@@ -36,6 +36,14 @@ export default defineType({
           return others ? "Esiste già un'edizione corrente" : true;
         }),
     }),
+    defineField({
+      name: "mostraInHomepage",
+      title: "Mostra in homepage (preview Imaginarium)",
+      type: "boolean",
+      initialValue: false,
+      description:
+        "Tipicamente sincronizzato con `corrente`. Se più edizioni hanno questo flag attivo, viene scelta quella con anno più recente.",
+    }),
     defineField({ name: "titoloEdizione", title: "Titolo edizione", type: "string" }),
     defineField({ name: "tema", title: "Tema", type: "string" }),
     defineField({
@@ -51,11 +59,24 @@ export default defineType({
       validation: (r) => r.required(),
     }),
     defineField({
+      name: "locationPrincipale",
+      title: "Location principale",
+      type: "string",
+      description: 'Es. "Rocca Sforzesca, Soncino"',
+    }),
+    defineField({
       name: "descrizione",
       title: "Descrizione",
       type: "array",
       of: [{ type: "block" }],
-      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: "descrizioneBreve",
+      title: "Descrizione breve (1 riga)",
+      type: "text",
+      rows: 2,
+      description:
+        "Per i box edizioni passate. Se vuoto, viene mostrato \"Programma in caricamento\".",
     }),
     defineField({
       name: "immagineCover",
@@ -67,10 +88,8 @@ export default defineType({
           name: "alt",
           title: "Testo alternativo",
           type: "string",
-          validation: (r) => r.required(),
         }),
       ],
-      validation: (r) => r.required(),
     }),
     defineField({
       name: "locandina",
@@ -85,9 +104,29 @@ export default defineType({
       options: { accept: "application/pdf" },
     }),
     defineField({
-      name: "partner",
-      title: "Partner / sponsor / patrocini",
+      name: "patrocinio",
+      title: "Patrocinio (lista)",
       type: "array",
+      of: [{ type: "string" }],
+    }),
+    defineField({
+      name: "sponsor",
+      title: "Sponsor (lista)",
+      type: "array",
+      of: [{ type: "string" }],
+    }),
+    defineField({
+      name: "partnerLista",
+      title: "Partner (lista)",
+      type: "array",
+      of: [{ type: "string" }],
+    }),
+    defineField({
+      name: "partner",
+      title: "Partner / sponsor / patrocini (legacy con loghi)",
+      type: "array",
+      description:
+        "CAMPO DEPRECATO — usa patrocinio/sponsor/partnerLista. Mantenuto per quando arriveranno i loghi.",
       of: [
         defineArrayMember({
           type: "object",

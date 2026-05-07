@@ -1,39 +1,131 @@
+import { client } from "@/../sanity/lib/client";
 import { Sipario } from "@/components/layout/Sipario";
+import { HeroHomepage, type HeroHomepageData } from "@/components/caraval/HeroHomepage";
+import {
+  StripPremi,
+  type PremioItem,
+} from "@/components/caraval/StripPremi";
+import {
+  ImaginariumPreview,
+  type EdizioneCorrente,
+  type SpettacoloImag,
+} from "@/components/caraval/ImaginariumPreview";
+import {
+  RepertorioPreview,
+  type SpettacoloRepertorio,
+} from "@/components/caraval/RepertorioPreview";
+import { OfficinaTeaser } from "@/components/caraval/OfficinaTeaser";
+import { OspitaTeaser } from "@/components/caraval/OspitaTeaser";
+import { ContattiPrelude } from "@/components/caraval/ContattiPrelude";
 
-export default function Home() {
+type HomepageCopy = {
+  premiHeading?: string;
+  imaginariumPreviewBody?: string;
+  imaginariumPreviewCtaTesto?: string;
+  repertorioEyebrow?: string;
+  repertorioHeading?: string;
+  repertorioIntro?: string;
+  repertorioCtaTesto?: string;
+  repertorioCtaLink?: string;
+  officinaEyebrow?: string;
+  officinaHeading?: string;
+  officinaBody?: string;
+  officinaTagline?: string;
+  officinaCtaTesto?: string;
+  officinaCtaLink?: string;
+  ospitaHeading?: string;
+  ospitaBody?: string;
+  ospitaCtaTesto?: string;
+  ospitaCtaLink?: string;
+  contattiHeading?: string;
+  contattiBody?: string;
+};
+
+type ImpostazioniContatti = {
+  contattiPubblici?: { email?: string; telefono?: string };
+};
+
+export const revalidate = 60;
+
+async function getHomepageData() {
+  const [
+    hero,
+    copy,
+    premi,
+    edizioneCorrente,
+    spettacoliCorrente,
+    repertorio,
+    impostazioni,
+  ] = await Promise.all([
+    client.fetch<HeroHomepageData | null>(
+      `*[_type == "homepageHero"][0]{
+        heading, subheading,
+        ctaPrimariaTesto, ctaPrimariaLink,
+        ctaSecondariaTesto, ctaSecondariaLink,
+        fotoSfondo
+      }`
+    ),
+    client.fetch<HomepageCopy | null>(`*[_type == "homepageCopy"][0]`),
+    client.fetch<PremioItem[]>(
+      `*[_type == "premio" && mostraInHomepage == true] | order(ordineHomepage asc){
+        _id, anno, nomePremio, rassegna, motivazione,
+        spettacoloAssociato->{titolo, slug}
+      }`
+    ),
+    client.fetch<EdizioneCorrente | null>(
+      `*[_type == "edizioneImaginarium" && mostraInHomepage == true] | order(anno desc)[0]{
+        anno, titoloEdizione, dataInizio, dataFine,
+        locationPrincipale, patrocinio, sponsor, partnerLista
+      }`
+    ),
+    client.fetch<SpettacoloImag[]>(
+      `*[_type == "spettacoloImaginarium" && edizioneRif->mostraInHomepage == true] | order(dataInizio asc){
+        _id, titolo, dataInizio, linkCompagniaEsterna,
+        compagnia { nome, urlSitoCompagnia }
+      }`
+    ),
+    client.fetch<SpettacoloRepertorio[]>(
+      `*[_type == "spettacolo" && inRepertorio == true && mostraInHomepage == true] | order(ordineHomepage asc){
+        _id, titolo, sottotitolo, slug, categoria,
+        descrizioneBreve, ordineHomepage
+      }`
+    ),
+    client.fetch<ImpostazioniContatti | null>(
+      `*[_id == "impostazioniSito"][0]{
+        contattiPubblici { email, telefono }
+      }`
+    ),
+  ]);
+
+  return {
+    hero,
+    copy,
+    premi,
+    edizioneCorrente,
+    spettacoliCorrente,
+    repertorio,
+    contatti: impostazioni?.contattiPubblici ?? null,
+  };
+}
+
+export default async function HomePage() {
+  const data = await getHomepageData();
+
   return (
     <>
       <Sipario />
-    <main className="min-h-screen flex flex-col items-center justify-center px-6 py-16">
-      <span className="label-section text-rosso mb-8">Soncino · Compagnia teatrale</span>
-      <h1 className="font-display text-5xl md:text-7xl text-crema text-center">
-        CARAVAL SPETTACOLI
-      </h1>
-      <p className="mt-8 max-w-xl text-center text-crema/80 text-lg">
-        Una compagnia. Tre anime. Un festival.
-      </p>
-      <p className="mt-4 max-w-2xl text-center text-crema/60">
-        Prosa, teatro di strada, spettacoli di fuoco. Ogni estate, nei borghi della
-        media pianura, c&apos;è Imaginarium.
-      </p>
-      <div className="mt-12 flex gap-4">
-        <a
-          href="/demo"
-          className="px-6 py-3 bg-rosso text-crema rounded-sm hover:opacity-90 transition"
-        >
-          Demo Sanity
-        </a>
-        <a
-          href="/studio"
-          className="px-6 py-3 border border-crema/40 text-crema rounded-sm hover:bg-crema/10 transition"
-        >
-          Studio CMS
-        </a>
-      </div>
-      <footer className="mt-24 text-xs text-crema/40">
-        Sessione 1 — setup tecnico. Il design arriverà nelle sessioni successive.
-      </footer>
-    </main>
+      <HeroHomepage data={data.hero} />
+      <StripPremi premi={data.premi} heading={data.copy?.premiHeading} />
+      <ImaginariumPreview
+        edizione={data.edizioneCorrente}
+        spettacoli={data.spettacoliCorrente}
+        body={data.copy?.imaginariumPreviewBody}
+        ctaTesto={data.copy?.imaginariumPreviewCtaTesto}
+      />
+      <RepertorioPreview spettacoli={data.repertorio} copy={data.copy} />
+      <OfficinaTeaser copy={data.copy} />
+      <OspitaTeaser copy={data.copy} />
+      <ContattiPrelude copy={data.copy} contatti={data.contatti} />
     </>
   );
 }
