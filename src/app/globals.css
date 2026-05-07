@@ -203,23 +203,31 @@ body {
 }
 
 /* === Custom cursor: nasconde il cursore standard quando il dot rosso è attivo ===
-   Si attiva solo quando CustomCursor monta `data-custom-cursor="true"` sul body
-   (cioè solo su dispositivi con hover/pointer fine e niente prefers-reduced-motion).
-   Esclude esplicitamente campi form (input/textarea/select) e dialog
-   contenteditable, dove il cursore standard è importante per UX. */
+   Attivo solo quando CustomCursor monta `data-custom-cursor="true"` sul body.
+   `!important` perché Tailwind/utility-classes possono sovrascrivere `cursor`. */
 @media (hover: hover) and (pointer: fine) {
   body[data-custom-cursor="true"],
   body[data-custom-cursor="true"] a,
   body[data-custom-cursor="true"] button,
   body[data-custom-cursor="true"] [role="button"],
-  body[data-custom-cursor="true"] label {
-    cursor: none;
-  }
   body[data-custom-cursor="true"] input,
   body[data-custom-cursor="true"] textarea,
   body[data-custom-cursor="true"] select,
+  body[data-custom-cursor="true"] label,
+  body[data-custom-cursor="true"] summary,
+  body[data-custom-cursor="true"] [tabindex] {
+    cursor: none !important;
+  }
+  /* Eccezione: campi di testo dove il caret-style aiuta la digitazione. */
+  body[data-custom-cursor="true"] input[type="text"],
+  body[data-custom-cursor="true"] input[type="email"],
+  body[data-custom-cursor="true"] input[type="tel"],
+  body[data-custom-cursor="true"] input[type="search"],
+  body[data-custom-cursor="true"] input[type="url"],
+  body[data-custom-cursor="true"] input[type="password"],
+  body[data-custom-cursor="true"] textarea,
   body[data-custom-cursor="true"] [contenteditable="true"] {
-    cursor: auto;
+    cursor: text !important;
   }
 }
 
@@ -255,19 +263,17 @@ body {
   will-change: transform;
 }
 
-/* Pannello sinistro: bordo destro ondulato (curve morbide) + orlo inferiore decorativo */
+/* Pannello sinistro: bordo dritto, ombra interna lato palco */
 .sipario-panel--left {
   left: 0;
   transform: translateX(0);
-  clip-path: url(#sipario-clip-left);
   box-shadow: inset -30px 0 60px rgba(0, 0, 0, 0.55);
 }
 
-/* Pannello destro: bordo sinistro ondulato (specchiato) + stesso orlo */
+/* Pannello destro: speculare */
 .sipario-panel--right {
   right: 0;
   transform: translateX(0);
-  clip-path: url(#sipario-clip-right);
   box-shadow: inset 30px 0 60px rgba(0, 0, 0, 0.55);
 }
 

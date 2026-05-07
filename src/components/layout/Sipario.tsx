@@ -109,23 +109,6 @@ export function Sipario({
       role="presentation"
       aria-hidden="true"
     >
-      {/* clipPath definitions: bordo interno + orlo inferiore ondulati. */}
-      <svg
-        width="0"
-        height="0"
-        style={{ position: "absolute" }}
-        aria-hidden="true"
-      >
-        <defs>
-          <clipPath id="sipario-clip-left" clipPathUnits="objectBoundingBox">
-            <path d={buildCurtainPath("left")} />
-          </clipPath>
-          <clipPath id="sipario-clip-right" clipPathUnits="objectBoundingBox">
-            <path d={buildCurtainPath("right")} />
-          </clipPath>
-        </defs>
-      </svg>
-
       <div className="sipario-panel sipario-panel--left">
         <div className="sipario-velvet" aria-hidden="true" />
       </div>
@@ -178,62 +161,6 @@ export function Sipario({
       )}
     </div>
   );
-}
-
-/**
- * Costruisce il path SVG (clipPathUnits="objectBoundingBox", coords 0–1) che
- * dà al pannello un bordo interno laterale ondulato (5 onde) e un orlo
- * inferiore decorativo (8 onde) — entrambi con curve quadratiche, niente
- * angoli a punta.
- */
-function buildCurtainPath(side: "left" | "right"): string {
-  const sideWaves = 5;
-  const bottomWaves = 8;
-  const sideAmp = 0.012; // ≈8–10px su pannelli da ~700px
-  const bottomAmp = 0.008; // ≈6–8px su pannelli da ~1000px
-
-  const fmt = (n: number) => n.toFixed(4);
-  const sideSteps = sideWaves * 2;
-  const bottomSteps = bottomWaves * 2;
-  let d: string;
-
-  if (side === "left") {
-    // (0,0) → (1,0) lungo il top, (1,0) → (1,1) bordo destro ondulato,
-    // (1,1) → (0,1) orlo inferiore ondulato, Z chiude lungo il bordo sinistro.
-    d = "M 0 0 L 1 0";
-    for (let i = 0; i < sideSteps; i++) {
-      const yEnd = (i + 1) / sideSteps;
-      const yCtrl = (i + 0.5) / sideSteps;
-      const xCtrl = i % 2 === 0 ? 1 - sideAmp : 1 + sideAmp;
-      d += ` Q ${fmt(xCtrl)} ${fmt(yCtrl)} 1 ${fmt(yEnd)}`;
-    }
-    for (let i = 0; i < bottomSteps; i++) {
-      const xEnd = 1 - (i + 1) / bottomSteps;
-      const xCtrl = 1 - (i + 0.5) / bottomSteps;
-      const yCtrl = i % 2 === 0 ? 1 - bottomAmp : 1 + bottomAmp;
-      d += ` Q ${fmt(xCtrl)} ${fmt(yCtrl)} ${fmt(xEnd)} 1`;
-    }
-    d += " Z";
-  } else {
-    // (1,0) → (0,0) lungo il top, (0,0) → (0,1) bordo sinistro ondulato,
-    // (0,1) → (1,1) orlo inferiore ondulato, Z chiude lungo il bordo destro.
-    d = "M 1 0 L 0 0";
-    for (let i = 0; i < sideSteps; i++) {
-      const yEnd = (i + 1) / sideSteps;
-      const yCtrl = (i + 0.5) / sideSteps;
-      const xCtrl = i % 2 === 0 ? sideAmp : -sideAmp;
-      d += ` Q ${fmt(xCtrl)} ${fmt(yCtrl)} 0 ${fmt(yEnd)}`;
-    }
-    for (let i = 0; i < bottomSteps; i++) {
-      const xEnd = (i + 1) / bottomSteps;
-      const xCtrl = (i + 0.5) / bottomSteps;
-      const yCtrl = i % 2 === 0 ? 1 - bottomAmp : 1 + bottomAmp;
-      d += ` Q ${fmt(xCtrl)} ${fmt(yCtrl)} ${fmt(xEnd)} 1`;
-    }
-    d += " Z";
-  }
-
-  return d;
 }
 
 export default Sipario;

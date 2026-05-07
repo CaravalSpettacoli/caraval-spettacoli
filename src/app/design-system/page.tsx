@@ -903,7 +903,7 @@ export default function DesignSystemPage() {
           <ul className="text-body-s text-crema-muted mb-8 space-y-1 list-disc pl-5 max-w-2xl">
             <li>Sequenza: <strong>0–1500ms</strong> testo visibile · <strong>1500–1900ms</strong> fade testo · <strong>1900–4400ms</strong> apertura tendaggi (2500ms)</li>
             <li>Easing apertura: <code className="font-mono">cubic-bezier(0.4, 0, 0.2, 1)</code></li>
-            <li>Bordo interno dei pannelli con onda morbida (5 onde laterali, curve <code className="font-mono">Q</code>) e orlo inferiore decorativo (8 onde) via <code className="font-mono">&lt;clipPath&gt;</code> SVG</li>
+            <li>Pannelli rettangolari puliti, bordo interno dritto</li>
             <li>Texture velluto: bande verticali irregolari (pieghe) in <code className="font-mono">repeating-linear-gradient</code> con <code className="font-mono">mix-blend-mode: multiply</code></li>
             <li>Profondità: gradient verticale rosso-deep → rosso-base → rosso-deep + ombra interna lato palco</li>
             <li><code className="font-mono">pointer-events: none</code> + <code className="font-mono">aria-hidden</code>: invisibile agli screen reader</li>
