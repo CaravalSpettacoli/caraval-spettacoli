@@ -27,17 +27,31 @@ export default defineType({
           { title: "Bambini", value: "bambini" },
           { title: "Adolescenti", value: "adolescenti" },
           { title: "Professionisti", value: "professionisti" },
+          { title: "Scuole", value: "scuole" },
+          { title: "Altro", value: "altro" },
         ],
         layout: "radio",
       },
       validation: (r) => r.required(),
     }),
     defineField({
+      name: "statoCorso",
+      title: "Stato del corso",
+      type: "string",
+      options: {
+        list: [
+          { title: "In corso", value: "in_corso" },
+          { title: "Iscrizioni aperte", value: "iscrizioni_aperte" },
+          { title: "Concluso", value: "concluso" },
+        ],
+        layout: "radio",
+      },
+    }),
+    defineField({
       name: "descrizione",
       title: "Descrizione",
       type: "array",
       of: [{ type: "block" }],
-      validation: (r) => r.required(),
     }),
     defineField({
       name: "immagineCover",
@@ -48,6 +62,11 @@ export default defineType({
     }),
     defineField({ name: "dataInizio", title: "Data inizio", type: "date" }),
     defineField({ name: "dataFine", title: "Data fine", type: "date" }),
+    defineField({
+      name: "dataChiusuraIscrizioni",
+      title: "Data chiusura iscrizioni",
+      type: "date",
+    }),
     defineField({
       name: "frequenza",
       title: "Frequenza (es. \"una sera a settimana\")",
@@ -74,9 +93,23 @@ export default defineType({
     }),
     defineField({
       name: "spettacoloFinaleRif",
-      title: "Spettacolo finale (riferimento)",
+      title: "Spettacolo finale (legacy)",
       type: "reference",
       to: [{ type: "spettacoloImaginarium" }],
+      description:
+        "CAMPO DEPRECATO — usa spettacoloFinaleLinked. Mantenuto per retrocompatibilità.",
+    }),
+    defineField({
+      name: "spettacoloFinaleLinked",
+      title: "Spettacolo finale linkato",
+      type: "reference",
+      to: [{ type: "spettacoloImaginarium" }],
+    }),
+    defineField({
+      name: "referenteIscrizioni",
+      title: "Referente iscrizioni",
+      type: "reference",
+      to: [{ type: "membro" }],
     }),
   ],
   preview: {

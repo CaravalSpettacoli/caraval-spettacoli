@@ -58,18 +58,29 @@ export default defineType({
       ],
     }),
     defineField({
+      name: "linkCompagniaEsterna",
+      title: "Link compagnia (esterno)",
+      type: "url",
+      description:
+        "Alias di compagnia.urlSitoCompagnia, popolato per linkare il nome della compagnia nella card programma.",
+    }),
+    defineField({
       name: "dataInizio",
-      title: "Data inizio",
+      title: "Data e ora inizio",
       type: "datetime",
       validation: (r) => r.required(),
     }),
     defineField({ name: "luogo", title: "Luogo", type: "luogo" }),
     defineField({
+      name: "locationSpecifica",
+      title: "Location specifica (testo libero)",
+      type: "string",
+    }),
+    defineField({
       name: "descrizione",
       title: "Descrizione",
       type: "array",
       of: [{ type: "block" }],
-      validation: (r) => r.required(),
     }),
     defineField({
       name: "immagineCover",
@@ -81,10 +92,8 @@ export default defineType({
           name: "alt",
           title: "Testo alternativo",
           type: "string",
-          validation: (r) => r.required(),
         }),
       ],
-      validation: (r) => r.required(),
     }),
     defineField({
       name: "gallery",
@@ -103,7 +112,6 @@ export default defineType({
       name: "comeParteciapare",
       title: "Come partecipare",
       type: "comeParteciapare",
-      validation: (r) => r.required(),
     }),
     defineField({ name: "noteSpeciali", title: "Note speciali", type: "text", rows: 3 }),
   ],

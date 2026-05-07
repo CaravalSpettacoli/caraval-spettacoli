@@ -13,7 +13,21 @@ export const structure: StructureResolver = (S) =>
             .documentId("impostazioniSito")
         ),
       S.divider(),
+      S.listItem()
+        .title("Homepage — Hero")
+        .id("homepageHero")
+        .child(
+          S.document().schemaType("homepageHero").documentId("homepageHero")
+        ),
+      S.listItem()
+        .title("Homepage — Copy sezioni")
+        .id("homepageCopy")
+        .child(
+          S.document().schemaType("homepageCopy").documentId("homepageCopy")
+        ),
+      S.divider(),
       S.documentTypeListItem("spettacolo").title("Spettacoli"),
+      S.documentTypeListItem("premio").title("Premi"),
       S.documentTypeListItem("evento").title("Eventi (calendario)"),
       S.divider(),
       S.documentTypeListItem("edizioneImaginarium").title("Edizioni Imaginarium"),

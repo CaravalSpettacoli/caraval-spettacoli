@@ -8,6 +8,7 @@
     "start": "next start",
     "lint": "next lint",
     "seed": "tsx sanity/seed.ts",
+    "sanity:seed": "tsx sanity/scripts/seed-demo-content.ts",
     "clean": "rm -rf .next"
   },
   "dependencies": {

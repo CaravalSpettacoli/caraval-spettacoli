@@ -9,8 +9,11 @@ import edizioneImaginarium from "./edizioneImaginarium";
 import spettacoloImaginarium from "./spettacoloImaginarium";
 import corso from "./corso";
 import membro from "./membro";
+import premio from "./premio";
 import { paginaChiSiamo, paginaOspita } from "./paginaInfo";
 import impostazioniSito from "./impostazioniSito";
+import homepageHero from "./homepageHero";
+import homepageCopy from "./homepageCopy";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   luogo,
@@ -21,13 +24,18 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   spettacoloImaginarium,
   corso,
   membro,
+  premio,
   paginaChiSiamo,
   paginaOspita,
   impostazioniSito,
+  homepageHero,
+  homepageCopy,
 ];
 
 export const singletonTypes = new Set([
   "paginaChiSiamo",
   "paginaOspita",
   "impostazioniSito",
+  "homepageHero",
+  "homepageCopy",
 ]);

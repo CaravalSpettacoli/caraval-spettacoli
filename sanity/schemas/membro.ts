@@ -36,16 +36,31 @@ export default defineType({
           name: "alt",
           title: "Alt",
           type: "string",
-          validation: (r) => r.required(),
         }),
       ],
-      validation: (r) => r.required(),
     }),
     defineField({
       name: "ordinamento",
       title: "Ordinamento",
       type: "number",
-      validation: (r) => r.required(),
+    }),
+    defineField({
+      name: "referenteAreaTesto",
+      title: "Area di riferimento (testo libero)",
+      type: "string",
+      description:
+        'Es. "Spettacoli di fuoco e rievocazioni" oppure "Formazione, regia, generale".',
+    }),
+    defineField({
+      name: "telefonoPubblico",
+      title: "Telefono pubblico",
+      type: "string",
+      description: "Mostrato sulle schede dove questo membro è referente contatto.",
+    }),
+    defineField({
+      name: "emailPubblica",
+      title: "Email pubblica",
+      type: "string",
     }),
   ],
   orderings: [
