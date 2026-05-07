@@ -11,7 +11,7 @@ import { SpettacoloCard } from "@/components/caraval/SpettacoloCard";
 import { EventoCard } from "@/components/caraval/EventoCard";
 import { TitoloDoppio } from "@/components/caraval/TitoloDoppio";
 import { TitoloRitmico } from "@/components/caraval/TitoloRitmico";
-import { TicketBiglietto } from "@/components/caraval/TicketBiglietto";
+import { Ticket } from "@/components/caraval/Ticket";
 import { CreditiLocandina } from "@/components/caraval/CreditiLocandina";
 import { CitazioneStampa } from "@/components/caraval/CitazioneStampa";
 import { Stella5Punte } from "@/components/decorative/Stella5Punte";
@@ -566,108 +566,42 @@ export default function DesignSystemPage() {
             ))}
           </div>
 
-          <SubTitle>10.2 — TicketBiglietto · 3 stili a confronto</SubTitle>
+          <SubTitle>10.2 — Ticket</SubTitle>
           <p className="text-body-s text-crema-muted mb-8 max-w-2xl">
-            Stesso evento mock renderizzato in 3 stili. Sceglierne uno (gli altri
-            due verranno rimossi in Sessione 3). Hover: lift + shadow rossa + lieve
-            rotazione. Click: animazione &ldquo;strappo&rdquo; sulla matrice
-            laterale prima del redirect (skip su <code className="font-mono">prefers-reduced-motion</code>).
+            Componente unico con filigrana SVG ondulata di sfondo (opacity 0.07),
+            bordo rosso 1.5px, perforazione laterale a 8 puntini, stub
+            &ldquo;INGRESSO&rdquo; ruotato. Hover: lift di 4px + shadow leggera.
+            Click: animazione &ldquo;strappo&rdquo; sullo stub sinistro (skip su{" "}
+            <code className="font-mono">prefers-reduced-motion</code>).
           </p>
-          <div className="space-y-12 mb-16">
-            <div>
-              <div className="mb-4">
-                <p className="text-label uppercase-tracked text-rosso-hover">
-                  Stile A
-                </p>
-                <h4 className="text-h4 mt-1">Manifesto teatrale italiano vintage</h4>
-                <p className="text-body-s text-crema-muted mt-2 max-w-xl">
-                  Bordo doppio rosso, ornamenti floreali stilizzati agli angoli,
-                  Georgia italic per i testi minori, fondo crema con leggera
-                  texture &ldquo;carta vecchia&rdquo;, &ldquo;INGRESSO&rdquo; in
-                  italico ruotato, seriale tipo timbrato.
-                </p>
-              </div>
-              <TicketBiglietto
-                style="A"
-                data="2026-07-12"
-                titolo="Romeo + Giulietta"
-                citta="Brescia"
-                struttura="Teatro Sociale"
-                prezzo="12 €"
-                urlBiglietti="https://example.com/ticket"
-              />
-            </div>
-
-            <div>
-              <div className="mb-4">
-                <p className="text-label uppercase-tracked text-rosso-hover">
-                  Stile B
-                </p>
-                <h4 className="text-h4 mt-1">Art Deco puro</h4>
-                <p className="text-body-s text-crema-muted mt-2 max-w-xl">
-                  Cornice geometrica con linee parallele a raggiera, motivi a
-                  ventaglio, divisore zigzag/chevron, &ldquo;INGRESSO&rdquo; in
-                  Stonehead ruotato, seriale alto a destra in etichetta meccanica.
-                </p>
-              </div>
-              <TicketBiglietto
-                style="B"
-                data="2026-07-12"
-                titolo="Romeo + Giulietta"
-                citta="Brescia"
-                struttura="Teatro Sociale"
-                prezzo="12 €"
-                urlBiglietti="https://example.com/ticket"
-              />
-            </div>
-
-            <div>
-              <div className="mb-4">
-                <p className="text-label uppercase-tracked text-rosso-hover">
-                  Stile C — default
-                </p>
-                <h4 className="text-h4 mt-1">Mix art deco + dettagli teatrali</h4>
-                <p className="text-body-s text-crema-muted mt-2 max-w-xl">
-                  Cornice doppia con angoli geometrici, maschera teatrale in alto
-                  centro, divisore tratteggiato con stella centrale,
-                  &ldquo;INGRESSO&rdquo; in Inter uppercase tracked.
-                </p>
-              </div>
-              <TicketBiglietto
-                style="C"
-                data="2026-07-12"
-                titolo="Romeo + Giulietta"
-                citta="Brescia"
-                struttura="Teatro Sociale"
-                prezzo="12 €"
-                urlBiglietti="https://example.com/ticket"
-              />
-            </div>
-          </div>
-
-          <SubTitle>10.3 — Esempi aggiuntivi (stile C)</SubTitle>
-          <div className="flex flex-col gap-8 items-start">
-            <TicketBiglietto
-              data="2026-06-04"
-              titolo="Imaginarium Apertura"
-              citta="Soncino"
-              struttura="Rocca Sforzesca"
-              prezzo="Ingresso libero"
-              urlBiglietti="https://example.com/info"
-            />
+          <div className="space-y-10 mb-16">
             <div>
               <p className="text-caption uppercase-tracked text-crema-muted mb-3">
-                variant compact (mobile)
+                Desktop · larghezza piena
               </p>
-              <TicketBiglietto
-                variant="compact"
-                data="2026-08-20"
-                titolo="Cubiculum Diaboli"
-                citta="Cremona"
-                struttura="Piazza del Comune"
-                prezzo="Ingresso libero"
-                urlBiglietti="https://example.com/info"
+              <Ticket
+                data="2026-07-12"
+                titolo="Romeo + Giulietta"
+                citta="Brescia"
+                struttura="Teatro Sociale"
+                prezzo="12 €"
+                urlBiglietti="https://example.com/ticket"
               />
+            </div>
+            <div>
+              <p className="text-caption uppercase-tracked text-crema-muted mb-3">
+                Mobile · max-w-sm (aspect 3:1)
+              </p>
+              <div className="max-w-sm">
+                <Ticket
+                  data="2026-08-20"
+                  titolo="Cubiculum Diaboli"
+                  citta="Cremona"
+                  struttura="Piazza del Comune"
+                  prezzo="Ingresso libero"
+                  urlBiglietti="https://example.com/info"
+                />
+              </div>
             </div>
           </div>
         </Container>
