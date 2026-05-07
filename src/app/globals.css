@@ -14,7 +14,7 @@
     "ss03" 0, "ss04" 0, "ss05" 0, "calt" 0, "swsh" 0, "ornm" 0;
 }
 
-.font-display {
+.font-stonehead {
   font-feature-settings: "liga" 0, "dlig" 0, "salt" 0, "ss01" 0, "ss02" 0,
     "ss03" 0, "ss04" 0, "ss05" 0, "calt" 0, "swsh" 0, "ornm" 0;
 }
@@ -287,10 +287,8 @@ body {
   font-size: clamp(36px, 6vw, 72px);
   margin: 0;
   line-height: 1;
-  letter-spacing: -0.01em;
-  font-family: var(--font-stonehead), serif;
-  font-feature-settings: "liga" 0, "dlig" 0, "salt" 0, "ss01" 0, "ss02" 0,
-    "ss03" 0, "ss04" 0, "ss05" 0, "calt" 0, "swsh" 0, "ornm" 0;
+  letter-spacing: 0.02em;
+  font-family: var(--font-cinzel), serif;
 }
 .sipario-divider {
   display: block;

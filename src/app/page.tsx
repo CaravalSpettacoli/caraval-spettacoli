@@ -6,10 +6,7 @@ export default function Home() {
       <Sipario />
     <main className="min-h-screen flex flex-col items-center justify-center px-6 py-16">
       <span className="label-section text-rosso mb-8">Soncino · Compagnia teatrale</span>
-      <h1
-        className="font-display text-5xl md:text-7xl text-crema text-center"
-        style={{ fontFamily: "var(--font-stonehead)" }}
-      >
+      <h1 className="font-display text-5xl md:text-7xl text-crema text-center">
         CARAVAL SPETTACOLI
       </h1>
       <p className="mt-8 max-w-xl text-center text-crema/80 text-lg">

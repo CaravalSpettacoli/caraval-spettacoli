@@ -201,27 +201,68 @@ export default function DesignSystemPage() {
       {/* 2 — TIPOGRAFIA */}
       <Section background="nero-soft">
         <Container>
-          <GroupTitle>2 — Tipografia</GroupTitle>
+          <GroupTitle>2 — Tipografia (confronto font display)</GroupTitle>
           <p className="text-body text-crema-muted mb-12 max-w-2xl">
-            Display: <span className="font-display">MCF Stonehead Demo</span> ·
-            Body/UI: Inter. Body mai sotto i 16px. Stonehead solo su lettere
-            A-Z e numeri 0-9 — punteggiatura sempre in Inter.
+            Stonehead Demo è stato ritirato dal display generale (resta solo nel
+            logo Header) per via dei glifi alternates rotti. Tre candidati a
+            confronto: <span className="font-cinzel">Cinzel Decorative</span>,{" "}
+            <span className="font-abril">Abril Fatface</span>,{" "}
+            <span className="font-bodoni">Bodoni Moda</span>. Decisione finale a
+            cura di Edo.
           </p>
 
-          <SubTitle>2.0 — Test alfabeto Stonehead</SubTitle>
-          <div className="mb-16 space-y-3 p-6 bg-nero-deep rounded-md border border-crema-faint">
-            <p className="text-caption uppercase-tracked text-crema-muted">
-              Verifica anti-watermark: ogni lettera/cifra deve essere pulita
-            </p>
-            <div className="font-display text-display-m leading-[1] tracking-wide">
-              A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
-            </div>
-            <div className="font-display text-display-m leading-[1] tracking-wide">
-              0 1 2 3 4 5 6 7 8 9
-            </div>
-            <p className="text-caption text-crema-muted/80 italic">
-              Se vedi &ldquo;@misterchek&rdquo; o glyph strani, font-feature-settings non sta agendo.
-            </p>
+          <SubTitle>2.0 — Confronto candidati (3 colonne)</SubTitle>
+          <div className="mb-16 grid grid-cols-1 lg:grid-cols-3 gap-6">
+            {[
+              { key: "cinzel", label: "Cinzel Decorative", cls: "font-cinzel" },
+              { key: "abril", label: "Abril Fatface", cls: "font-abril" },
+              { key: "bodoni", label: "Bodoni Moda", cls: "font-bodoni" },
+            ].map((f) => (
+              <div
+                key={f.key}
+                className="p-6 bg-nero-deep rounded-md border border-crema-faint space-y-5"
+              >
+                <div className="pb-3 border-b border-crema-faint">
+                  <p className="text-caption uppercase-tracked text-rosso-base">
+                    Candidato
+                  </p>
+                  <p className="text-body-l text-crema-base">{f.label}</p>
+                </div>
+                <div className={`${f.cls} text-h3 leading-tight break-words`}>
+                  ABCDEFGHIJKLMNOPQRSTUVWXYZ
+                </div>
+                <div className={`${f.cls} text-h3 leading-tight break-words`}>
+                  abcdefghijklmnopqrstuvwxyz
+                </div>
+                <div className={`${f.cls} text-h3 leading-tight`}>
+                  0123456789 &amp; ! ?
+                </div>
+                <div>
+                  <p className="text-caption uppercase-tracked text-crema-muted mb-2">
+                    Heading XL
+                  </p>
+                  <p className={`${f.cls} text-h1 leading-[1.05]`}>
+                    La Fine del Mondo
+                  </p>
+                </div>
+                <div>
+                  <p className="text-caption uppercase-tracked text-crema-muted mb-2">
+                    Heading L
+                  </p>
+                  <p className={`${f.cls} text-h2 leading-[1.1]`}>
+                    Romeo + Giulietta
+                  </p>
+                </div>
+                <div>
+                  <p className="text-caption uppercase-tracked text-crema-muted mb-2">
+                    Tagline
+                  </p>
+                  <p className={`${f.cls} text-h3 leading-tight`}>
+                    Una compagnia. Tre anime.
+                  </p>
+                </div>
+              </div>
+            ))}
           </div>
 
           <SubTitle>2.1 — Scale base</SubTitle>

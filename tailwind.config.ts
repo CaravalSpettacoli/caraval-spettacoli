@@ -40,7 +40,14 @@ const config: Config = {
       },
       fontFamily: {
         sans: ["var(--font-inter)", "system-ui", "sans-serif"],
-        display: ["var(--font-stonehead)", "serif"],
+        // font-display = candidato di default (Cinzel), può essere cambiato dopo la scelta finale
+        display: ["var(--font-cinzel)", "serif"],
+        // candidati a confronto
+        cinzel: ["var(--font-cinzel)", "serif"],
+        abril: ["var(--font-abril)", "serif"],
+        bodoni: ["var(--font-bodoni)", "serif"],
+        // Stonehead riservato al solo logo Header
+        stonehead: ["var(--font-stonehead)", "serif"],
         mono: [
           "ui-monospace",
           "SFMono-Regular",

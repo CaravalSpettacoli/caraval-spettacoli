@@ -338,7 +338,7 @@ export function TicketBiglietto(props: TicketBigliettoProps) {
     B: {
       shellClass:
         "border-[2px] border-rosso-base outline outline-1 outline-offset-[3px] outline-rosso-base/60",
-      ingressoFontFamily: "var(--font-stonehead), serif",
+      ingressoFontFamily: "var(--font-cinzel), serif",
       ingressoUseDisplay: true,
       cornerColor: "text-rosso-base",
       Corner: CornerArtDeco,
