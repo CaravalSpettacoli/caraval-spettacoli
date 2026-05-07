@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { urlFor } from "@/../sanity/lib/image";
+import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
 
 export type HeroHomepageData = {
   heading?: string;
@@ -28,10 +29,7 @@ export function HeroHomepage({ data }: { data: HeroHomepageData | null }) {
       .url();
 
   return (
-    <section
-      className="relative w-full overflow-hidden bg-nero-deep"
-      style={{ minHeight: "80vh" }}
-    >
+    <section className="relative w-full overflow-hidden bg-nero-deep min-h-[80vh] flex items-center">
       {fotoUrl ? (
         <Image
           src={fotoUrl}
@@ -42,18 +40,21 @@ export function HeroHomepage({ data }: { data: HeroHomepageData | null }) {
           className="object-cover"
         />
       ) : (
-        <div aria-hidden className="absolute inset-0 bg-gradient-hero" />
+        <div aria-hidden className="absolute inset-0">
+          <PlaceholderImage
+            title=""
+            aspectRatio="auto"
+            className="absolute inset-0 h-full"
+          />
+        </div>
       )}
-      {/* Overlay scuro per contrasto */}
+      {/* Overlay scuro gradient per contrasto sui testi */}
       <div
         aria-hidden
-        className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.55)_0%,rgba(0,0,0,0.7)_100%)]"
+        className="absolute inset-0 bg-gradient-to-b from-black/40 via-black/60 to-black/80"
       />
 
-      <div
-        className="relative flex flex-col justify-end"
-        style={{ minHeight: "80vh" }}
-      >
+      <div className="relative w-full">
         <Container className="py-20 md:py-24">
           <h1
             className="font-display text-crema-base leading-[1.05] tracking-tight max-w-[18ch]"

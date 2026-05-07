@@ -53,10 +53,10 @@ export function Header() {
       <div className="mx-auto flex h-16 md:h-20 max-w-container-wide items-center justify-between px-4 md:px-6 lg:px-8">
         <Link
           href="/"
-          className="font-stonehead text-h3 md:text-h2 leading-none tracking-tight text-crema-base hover:text-crema-bright transition-colors"
+          className="font-stonehead text-h4 md:text-h3 leading-none tracking-tight text-crema-base hover:text-crema-bright transition-colors"
           aria-label="Caraval Spettacoli — home"
         >
-          CARAVAL
+          CARAVAL SPETTACOLI
         </Link>
 
         <nav
