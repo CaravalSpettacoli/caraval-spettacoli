@@ -115,11 +115,14 @@ Corso adulti (ott–mag, 1 sera/sett), spettacolo finale a Imaginarium. 2 corsi 
 │   ├── design-system/       # showcase interna design system (noindex)
 │   └── studio/[[...tool]]/  # Sanity Studio embedded
 ├── src/components/
-│   ├── ui/                  # Button, Card, Container, Section
-│   ├── layout/              # SkipLink, Header, Footer, Hero
-│   └── caraval/             # CategoriaBadge, PremioBadge, SpettacoloCard, EventoCard
+│   ├── ui/                  # Button (con prop pulse), Card, Container, Section
+│   ├── layout/              # SkipLink, Header, Footer, Hero (variant manifesto-spettacolo)
+│   ├── caraval/             # CategoriaBadge, PremioBadge, SpettacoloCard (variant manifesto), EventoCard, TicketBiglietto, TitoloDoppio, TitoloRitmico, CreditiLocandina, CitazioneStampa
+│   ├── decorative/          # SVG inline: Stella5Punte, MascheraTeatrale, Fiamma, OndaDecorativa, Divider, CorniceDeco
+│   └── effects/             # FadeInOnScroll, RevealSipario, CustomCursor, ImmagineConOverlay
 ├── src/lib/
-│   └── cn.ts                # helper className via clsx
+│   ├── cn.ts                # helper className via clsx
+│   └── hooks/               # useFadeInOnScroll, useParallax
 ├── sanity/
 │   ├── env.ts               # lettura env vars
 │   ├── lib/{client,image}.ts
@@ -177,6 +180,112 @@ Vercel: stessi env settati per Production e Preview.
 - [x] Layout root con Header/Footer integrati e skip link
 - [x] Pagina `/design-system` showcase (noindex)
 - [x] Build production pulito (`npm run build`)
+
+### ✅ Sessione 2.5 — Polish Design System (FATTO)
+Personalità teatrale distintiva. Niente più "tech-startup": vintage circus, manifesti d'epoca, cinema poster.
+
+**Token nuovi (`tailwind.config.ts` + `globals.css`):**
+- Gradients: `bg-gradient-hero`, `bg-gradient-overlay-rosso`, `bg-gradient-overlay-nero` (CSS vars)
+- Shadow: `shadow-poster` (drammatica per blocchi principali)
+- Easing: `ease-bounce-soft` (cubic-bezier 0.34, 1.56, 0.64, 1) per micro-interazioni giocose
+- Duration: `duration-cinematic` (800ms) e `duration-sipario` (1200ms)
+- Animation utilities: `animate-pulse-rosso`, `animate-fade-in-up`, `animate-sipario-left/right`
+- `font-mono` (system stack) per dettagli tipo numero seriale ticket
+
+**Componenti distintivi (`src/components/`):**
+- `decorative/` — libreria SVG inline con `currentColor`: `Stella5Punte`, `MascheraTeatrale` (commedia/tragedia), `Fiamma`, `OndaDecorativa`, `Divider` (linea + stella), `CorniceDeco` (wrapper art déco)
+- `caraval/TitoloDoppio` — titoli stratificati Stonehead con offset orizzontale + body Inter italic
+- `caraval/TitoloRitmico` — mix dimensioni small/large nella stessa frase
+- `caraval/TicketBiglietto` — biglietto cinema vintage anni '50 (bordo doppio + sezione "STRAPPA QUI" verticale + variant `compact`)
+- `caraval/CreditiLocandina` — `<dl>` semantica formato locandina (REGIA — Vera Rossini)
+- `caraval/CitazioneStampa` — citazione con virgolette decorative SVG
+
+**Animazioni cinematografiche (`src/components/effects/` + `src/lib/hooks/`):**
+- `FadeInOnScroll` + `useFadeInOnScroll` — Intersection Observer con `prefers-reduced-motion`
+- `RevealSipario` — due tendaggi si separano al mount (1200ms ease-cinema)
+- `useParallax` — translateY proporzionale allo scroll
+- `CustomCursor` — punto rosso lerp su mouse, solo desktop con hover, montato in `layout.tsx`
+- `ImmagineConOverlay` — wrapper hover con gradient overlay
+
+**Estensioni componenti esistenti:**
+- `Hero`: variant `manifesto-spettacolo` (asimmetrico 60/40 foto-testo) + align `left-extreme`
+- `SpettacoloCard`: variant `manifesto` (aspect 2:3, categoria verticale, stamp premio rotondo, hover rotation)
+- `Button`: prop `pulse` (animazione box-shadow rossa pulsante per CTA principali)
+
+**Showcase `/design-system` riorganizzata in 15 sezioni:**
+1 Palette · 2 Tipografia (2.1 scale + 2.2 pattern espressivi) · 3 Spacing · 4 Buttons (4.1 variants + 4.2 pulse) · 5 Cards · 6 Containers · 7 Sections (con gradient-hero) · 8 Hero · 9 SpettacoloCard (9.1 card + 9.2 manifesto) · 10 Eventi & Ticket · 11 Badges · 12 Accenti decorativi · 13 Effetti & gradients · 14 Animazioni · 15 Hero Manifesto + Crediti + Citazione.
+
+**Regola Stonehead (memoria operativa):** font display SOLO su `[A-Z0-9]`. Punteggiatura/simboli sempre Inter. Nei componenti decorativi non Unicode `★`/`—` ma SVG inline.
+
+### ✅ Sessione 2.6 — Polish Chirurgico (FATTO)
+Bug fix critici e raffinamenti dopo Sessione 2.5. Calma e profondità: meno cose, fatte bene.
+
+**Bug fix:**
+- **Font Stonehead `@misterchek` watermark risolto**: `font-feature-settings: "liga" 0, "dlig" 0, "salt" 0, "ss01-05" 0, "calt" 0, "swsh" 0, "ornm" 0` su `@font-face` + `.font-display` in `globals.css`. Test alfabeto in `/design-system` § 2.0.
+- **Helper `splitDisplay(text)`** in `src/lib/splitDisplay.tsx`: uppercase + wrap automatico di punteggiatura/non-A-Z in `<span class="font-sans">`. Applicato a `Hero`, `SpettacoloCard`, `EventoCard`, `TitoloDoppio`, `TitoloRitmico`, `Header` (mobile nav), `Sipario`, demo page.
+- **Pulse rosso non più infinito**: 3 cicli con `animation-delay: 800ms`; hover riavvia 1 ciclo. Skip su `prefers-reduced-motion`.
+- **Script `npm run clean`** (`rm -rf .next`) per ChunkLoadError.
+
+**Animazioni più morbide:**
+- `FadeInOnScroll` ora usa la classe `.fade-in-on-scroll` (1000ms `cubic-bezier(0.25, 0.46, 0.45, 0.94)`, translateY 24px) — sostituisce il vecchio `duration-cinematic`/`ease-cinema` che era brusco.
+- `useParallax` default speed `0.15` (era 0.3) + early return su mobile (≤768px) e `prefers-reduced-motion`.
+- Bottone Replay sipario in `/design-system` § 14 (già presente da 2.5 via `replayKey`).
+
+**Sipario preloader homepage** (`src/components/layout/Sipario.tsx`):
+- Full-screen overlay con due tendaggi rossi (gradiente `var(--color-rosso-deep) → var(--color-rosso-base)`) e texture velluto (strisce verticali) + vignettatura interna lato palco.
+- Centro: "PRONTI A ENTRARE IN SCENA" in Stonehead, divisore SVG, label "CARAVAL SPETTACOLI — SONCINO".
+- State machine: aspetta `window.load`, `minDuration=800ms`, failsafe `maxDuration=3000ms`. Apertura 1500ms con `cubic-bezier(0.7, 0, 0.3, 1)`. Smonta dopo l'animazione (no DOM residuo).
+- Skip totale su `prefers-reduced-motion`. `pointer-events: none` + `aria-hidden`.
+- Modalità `mode="preview"` per il showcase: parte subito, niente attesa load.
+- Integrato in `src/app/page.tsx`. Sezione 16 in `/design-system` con anteprima.
+
+**TicketBiglietto rifatto con 3 stili A/B/C** (prop `style`):
+- **A — Manifesto vintage italiano**: bordo doppio rosso, ornamenti floreali agli angoli, Georgia italic per testi minori, fondo crema con texture "carta vecchia", divisore tratteggiato a cerchietti, "INGRESSO" in italico ruotato.
+- **B — Art Deco puro**: cornice geometrica con linee multiple + outline esterna, ornamenti a ventaglio agli angoli, divisore zigzag/chevron, "INGRESSO" in Stonehead ruotato, seriale alto in etichetta meccanica.
+- **C — Mix (default)**: cornice doppia + maschera teatrale stilizzata in alto centro, divisore tratteggiato con stella centrale, "INGRESSO" in Inter uppercase tracked.
+- Hover comune: lift `-8px` + scale `1.02` + rotate `-1deg` + shadow rossa `0 16px 48px rgba(168,23,74,0.3)` + sezione INGRESSO bg `rosso-muted` + data si alza ulteriormente.
+- Click "strappo": classe `is-tearing` su INGRESSO (`translateX(-20px) rotate(-3deg)` + opacity 0.5 in 380ms) prima dell'apertura URL. Skip su `prefers-reduced-motion`.
+- Confronto a 3 affiancati in `/design-system` § 10.2 per scelta visiva.
+
+**Decorativi 3 varianti A/B/C** (prop `style`):
+- `Stella5Punte`, `MascheraTeatrale`, `Fiamma`, `OndaDecorativa`, `Divider`, `CorniceDeco` — ognuno con 3 versioni stilistiche. Showcase aggiornato in § 12 (sub-sezioni 12.1–12.6).
+
+**Regola Stonehead rinforzata:**
+- Stonehead solo su caratteri `[A-Z0-9 ]`. Per testi dinamici da Sanity → sempre `splitDisplay(text)` che fa uppercase + spezza punteggiatura in Inter.
+- Per testi statici con punteggiatura → `<span className="font-display">PAROLA</span><span className="font-sans"> — </span>...`.
+
+### ✅ Sessione 2.7 — Polish Definitivo (FATTO)
+Riparazione finale prima delle pagine reali. Branch `polish/sessione-2-7`.
+
+**Sistema font (definitivo, 2 font):**
+- Display: **Cinzel Decorative** (400/700/900) caricato via `next/font/google` → `--font-cinzel`. Mappato su `font-display` di Tailwind.
+- Body/UI: **Inter** (300/400/500/600/700) → `--font-inter`. Mappato su `font-sans` e default `body`.
+- **Stonehead Demo è ritirato dal display generale**. Resta solo nel logo Header tramite l'utility `font-stonehead`. Tutti gli altri usi sono passati a `font-display` (Cinzel).
+- Le feature-settings anti-watermark restano applicate sull'@font-face e sulla classe `.font-stonehead` in `globals.css` — `splitDisplay()` è ancora in uso ma con Cinzel non è più strettamente necessario; lasciato per coerenza.
+
+**Componenti rimossi/sostituiti:**
+- `TicketBiglietto` (3 stili A/B/C, ~600 righe) → eliminato.
+- Nuovo `Ticket` unico in `src/components/caraval/Ticket.tsx`: cream + bordo rosso 1.5px + radius 10px, perforazione a 8 puntini, stub "INGRESSO" verticale, divider tratteggiato, titolo Cinzel + venue/prezzo Inter, colonna destra giorno/mese + N° seriale. Filigrana SVG ondulata (`ticket-watermark.svg.tsx`) opacity 0.07. Hover: lift 4px + soft shadow. Click: strappo stub 300ms, poi redirect (skip su `prefers-reduced-motion`). Mobile: titolo 15px + line-clamp 2 (no più "CUBICULUM D...").
+- **Nota strategica:** il Ticket attuale è una base placeholder. Verrà ridisegnato in Sessione 4 ispirato a reference teatro nera con simmetria centrale (verticale, integrato nel template scheda spettacolo).
+
+**Sipario rifatto (`src/components/layout/Sipario.tsx` + `globals.css`):**
+- State machine esplicita: `0–1500ms` testo "Pronti a entrare in scena?" visibile · `1500–1900ms` fade testo (400ms) · `1900–4400ms` apertura tendaggi (2500ms).
+- Easing definitivo: `cubic-bezier(0.4, 0, 0.2, 1)`.
+- **Pannelli rettangolari puliti** (provata l'ondulazione laterale + orlo decorativo via SVG `<clipPath>` ma scartata: simple > stylised). Texture velluto a bande verticali irregolari + gradient verticale rosso-deep → rosso-base + ombra interna lato palco mantenuti.
+- Prop `withSound?: boolean` predisposto (file `/sounds/curtain.mp3` non incluso).
+- Fallback `prefers-reduced-motion`: pannelli `display: none`, solo fade-out 400ms del contenuto centrale.
+
+**Cursore decorativo rifatto (`src/components/effects/CustomCursor.tsx`):**
+- Dot rosso 8px ø + glow trail rosso (24px, opacity 0.22, blur 5px) che segue con lerp 0.18.
+- Posizione gestita via `requestAnimationFrame` + `transform: translate3d()` (no transition su position → niente lag).
+- Scale 1.5 al `mousedown` con transition 150ms solo su `scale` (non su position).
+- Componente attivo solo su `(hover: hover) and (pointer: fine)` e niente `prefers-reduced-motion`. Setta `data-custom-cursor="true"` sul `body` al mount.
+- CSS in `globals.css`: con `data-custom-cursor="true"`, `cursor: none !important` su `body, a, button, [role=button], input, textarea, select, label, summary, [tabindex]`. Eccezione `cursor: text !important` solo sui campi di testo (`input[type=text/email/tel/search/url/password]`, `textarea`, `[contenteditable=true]`) per non rompere l'UX di scrittura.
+
+**Decisioni di design prese:**
+- 2 font massimo (Cinzel + Inter), niente Bodoni / Abril.
+- Border radius del Ticket: 10px (era 4px).
+- Sipario: pulito > stilizzato. Niente onde decorative su bordi.
 
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 3** — Pagine reali (homepage, /spettacoli, /spettacoli/[slug], /imaginarium...)
@@ -285,3 +394,12 @@ claude mcp add chrome-devtools npx -- @modelcontextprotocol/server-chrome
   - GitHub: `CaravalSpettacoli` / `info@caraval.it`
   - Sanity: `info@caraval.it`
   - Vercel: collegato a GitHub
+
+### Troubleshooting
+
+- **`ChunkLoadError: Loading chunk app/layout failed`** dopo modifiche grosse al layout root → cache `.next` corrotta. Risolvi con:
+  ```bash
+  npm run clean && npm run dev
+  ```
+- **Font Stonehead mostra il watermark `@misterchek`** su lettere come S/M/A/F → `font-feature-settings` non sta agendo. Verifica che `globals.css` abbia il blocco anti-alternates su `@font-face` E `.font-display`. Se ancora visibile, la lettera potrebbe avere un alternates fuori dai feature-tag noti: applica una whitelist (Stonehead solo lettere pulite, fallback Georgia per quelle problematiche).
+- **Testi dinamici da Sanity in font-display**: usa sempre `splitDisplay(text)` da `src/lib/splitDisplay.tsx`. Fa uppercase e spezza punteggiatura in Inter automaticamente.

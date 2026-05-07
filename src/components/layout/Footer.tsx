@@ -96,7 +96,7 @@ export async function Footer() {
           {/* Colonna 1 — Caraval */}
           <div>
             <h3 className="font-display text-h4 mb-4">
-              {dati.ragioneSociale || "Caraval"}
+              {(dati.ragioneSociale || "Caraval").toUpperCase()}
             </h3>
             <address className="not-italic text-body-s text-crema-muted leading-relaxed">
               {indirizzoCompleto && <div>{indirizzoCompleto}</div>}

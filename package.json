@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "seed": "tsx sanity/seed.ts"
+    "seed": "tsx sanity/seed.ts",
+    "clean": "rm -rf .next"
   },
   "dependencies": {
     "@portabletext/react": "^3.2.4",
