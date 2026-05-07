@@ -480,6 +480,57 @@ const corsi: AnyDoc[] = [
   },
 ];
 
+// ---------- Sessione 4 — Pagina Spettacoli (singleton) ----------
+
+const paginaSpettacoliCopy: AnyDoc = {
+  _id: "paginaSpettacoliCopy",
+  _type: "paginaSpettacoliCopy",
+  eyebrow: "IL REPERTORIO",
+  heading: "I nostri spettacoli",
+  intro:
+    "Prosa contemporanea, teatro di fuoco e di strada. Per teatri, piazze, borghi, rievocazioni storiche.",
+  ctaArchivioDallIndice:
+    "Vuoi vedere il nostro storico? Esplora le produzioni passate",
+  archivioEyebrow: "ARCHIVIO",
+  archivioHeading: "Produzioni passate",
+  archivioIntro:
+    "Spettacoli che hanno fatto parte del nostro percorso. Per scoprire da dove veniamo.",
+};
+
+// ---------- Sessione 4 — Archivio (7 nuovi document) ----------
+
+type ArchivioSeed = {
+  _id: string;
+  titolo: string;
+  categoria: "prosa" | "fuoco" | "strada";
+  annoCreazione: number;
+};
+
+const archivioSeeds: ArchivioSeed[] = [
+  { _id: "spettacolo-giovanna-darco", titolo: "Giovanna D'Arco", categoria: "prosa", annoCreazione: 2021 },
+  { _id: "spettacolo-inferno-dante", titolo: "L'Inferno di Dante", categoria: "prosa", annoCreazione: 2021 },
+  { _id: "spettacolo-folli-notre-dame", titolo: "I Folli di Notre Dame", categoria: "fuoco", annoCreazione: 2021 },
+  { _id: "spettacolo-servitore-due-padroni", titolo: "Servitore di due padroni", categoria: "prosa", annoCreazione: 2019 },
+  { _id: "spettacolo-sogno-mezza-estate", titolo: "Sogno di una notte di mezza estate", categoria: "prosa", annoCreazione: 2019 },
+  { _id: "spettacolo-ezzelino", titolo: "Ezzelino da Romano", categoria: "prosa", annoCreazione: 2018 },
+  { _id: "spettacolo-battute-fuori-scena", titolo: "Battute fuori scena", categoria: "prosa", annoCreazione: 2018 },
+];
+
+function spettacoloArchivioDoc(s: ArchivioSeed): AnyDoc {
+  const slug = s._id.replace(/^spettacolo-/, "");
+  return {
+    _id: s._id,
+    _type: "spettacolo",
+    titolo: s.titolo,
+    slug: { _type: "slug", current: slug },
+    categoria: s.categoria,
+    inRepertorio: false,
+    mostraInHomepage: false,
+    annoCreazione: s.annoCreazione,
+    produzione: "Caraval Spettacoli",
+  };
+}
+
 // ---------- Run ----------
 
 async function main() {
@@ -548,6 +599,111 @@ async function main() {
     await upsert(c);
     console.log(`✓ corso: ${c.titolo}`);
   }
+
+  // ===== Sessione 4 — additions =====
+
+  // 9. Singleton paginaSpettacoliCopy
+  await client.createOrReplace(paginaSpettacoliCopy);
+  console.log("✓ paginaSpettacoliCopy");
+
+  // 10. Archivio: 7 nuovi document spettacolo (idempotenti)
+  for (const a of archivioSeeds) {
+    await upsert(spettacoloArchivioDoc(a));
+    console.log(`✓ archivio: ${a.titolo}`);
+  }
+
+  // 11. Patch Romeo+Giulietta — popolato 100% dal PDF brochure
+  await client
+    .patch("spettacolo-romeo-giulietta")
+    .set({
+      slug: { _type: "slug", current: "romeo-giulietta-inferno-amore" },
+      annoCreazione: 2026,
+      regia: "Vera Rossini",
+      produzione: "Caraval Spettacoli",
+      descrizioneBreve:
+        "Una rilettura cruda di Shakespeare ambientata all'Inferno: due personaggi-diavoli trovano un baule e un copione. Il gioco diventa tragedia.",
+      descrizioneNarrativa: [
+        ...block(
+          "In tempi segnati da divisioni, conflitti e rancori sempre più diffusi, Romeo e Giulietta ci parla con forza sorprendente. Viviamo in un mondo dove l'odio e l'indifferenza si insinuano nelle relazioni senza che ce ne rendiamo conto. Con questa rivisitazione vogliamo porre una domanda fondamentale: esiste davvero un'altra via, oltre il conflitto?"
+        ),
+        ...block(
+          "Lo spettacolo è ambientato all'Inferno, dove due personaggi simili a diavoli trovano un vecchio baule colmo di oggetti di scena e un copione. Da quel momento, cominciano a giocare, interpretando i diversi ruoli della tragedia di Romeo e Giulietta."
+        ),
+        ...block(
+          "Inizialmente, il loro gioco ha toni leggeri, quasi ironici, come se stessero divertendosi a prendersi gioco della storia. Ma, a poco a poco, la situazione si fa più seria, e quella che era iniziata come una parodia diventa una narrazione profonda, che trascina i personaggi (e il pubblico) in una riflessione oscura e inquietante sulla natura dell'odio e del rimorso."
+        ),
+        ...block(
+          "L'alternanza costante tra ironia e tragedia, unita all'atmosfera gotica costruita con cura da luci, musiche e scenografie, accompagna il pubblico in un crescendo emotivo, amplificando l'impatto della rivelazione e lasciando alla fine un senso di inquietudine e di riflessione sulla natura dell'odio, dell'amore e della condanna eterna."
+        ),
+      ],
+      cast: [
+        {
+          _key: "cast-vera",
+          nome: "Vera Rossini",
+          ruolo: "Adattamento, regia, attrice",
+        },
+        {
+          _key: "cast-nicola",
+          nome: "Nicola Pignoli",
+          ruolo: "Attore, musiche",
+        },
+        { _key: "cast-andrico", nome: "Giacomo Andrico", ruolo: "Scene" },
+        { _key: "cast-botti", nome: "Antonio Botti", ruolo: "Luci" },
+        { _key: "cast-aurora", nome: "Aurora Rossini", ruolo: "Costumi" },
+      ],
+      schedaTecnica: {
+        durataMinuti: 70,
+        numeroAttori: "2",
+        spazioScenico:
+          "Palco ideale 8x6m H 5.50m, adattabile a 5x4m H 5.50m",
+        audio: "Allaccio corrente elettrica 220V",
+        noteTecniche:
+          "Tempo montaggio 120 min, smontaggio 60 min. 1 camerino con acqua corrente.",
+      },
+      prenotazione: {
+        modalita: "richiestaContatto",
+      },
+      referenteContatto: ref("membro-vera-rossini"),
+    })
+    .commit();
+  console.log("✓ patch: spettacolo-romeo-giulietta (Sessione 4)");
+
+  // 12. Patch Miseria e Nobiltà — regia + prenotazione
+  await client
+    .patch("spettacolo-miseria-nobilta")
+    .set({
+      regia: "Lorenzo Samanni",
+      prenotazione: { modalita: "richiestaContatto" },
+    })
+    .commit();
+  console.log("✓ patch: spettacolo-miseria-nobilta (Sessione 4)");
+
+  // 13. Patch tutti gli altri spettacoli attivi: prenotazione default
+  const altriSpettacoliPrenotazione = [
+    "spettacolo-fine-del-mondo",
+    "spettacolo-arlecchino",
+    "spettacolo-banalita-del-male",
+    "spettacolo-cubiculum-diaboli",
+    "spettacolo-macbeth",
+    "spettacolo-skog",
+    "spettacolo-legend",
+    "spettacolo-christmas-carol",
+    "spettacolo-viaggiastorie",
+  ];
+  for (const id of altriSpettacoliPrenotazione) {
+    await client
+      .patch(id)
+      .setIfMissing({ prenotazione: { modalita: "richiestaContatto" } })
+      .commit();
+  }
+  console.log("✓ patch: prenotazione su 9 spettacoli attivi");
+
+  // I Viaggiastorie: assicura referenteContatto = Vera (sessione 3 lo aveva vuoto)
+  await client
+    .patch("spettacolo-viaggiastorie")
+    .setIfMissing({ referenteContatto: ref("membro-vera-rossini") })
+    .commit();
+  console.log("✓ patch: spettacolo-viaggiastorie.referenteContatto = Vera");
 
   console.log("\n✅ Seed completato.");
 }

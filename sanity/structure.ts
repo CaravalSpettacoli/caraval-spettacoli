@@ -25,6 +25,14 @@ export const structure: StructureResolver = (S) =>
         .child(
           S.document().schemaType("homepageCopy").documentId("homepageCopy")
         ),
+      S.listItem()
+        .title("Pagina Spettacoli — Copy")
+        .id("paginaSpettacoliCopy")
+        .child(
+          S.document()
+            .schemaType("paginaSpettacoliCopy")
+            .documentId("paginaSpettacoliCopy")
+        ),
       S.divider(),
       S.documentTypeListItem("spettacolo").title("Spettacoli"),
       S.documentTypeListItem("premio").title("Premi"),
