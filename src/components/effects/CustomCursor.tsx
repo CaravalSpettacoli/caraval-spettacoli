@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export function CustomCursor() {
-  const dotRef = useRef<HTMLDivElement | null>(null);
+  const [position, setPosition] = useState({ x: -100, y: -100 });
+  const [clicking, setClicking] = useState(false);
   const [enabled, setEnabled] = useState(false);
 
   useEffect(() => {
@@ -11,32 +12,23 @@ export function CustomCursor() {
     const hoverable = window.matchMedia("(hover: hover) and (pointer: fine)");
     const reduce = window.matchMedia("(prefers-reduced-motion: reduce)");
     if (!hoverable.matches || reduce.matches) return;
+
     setEnabled(true);
+    document.body.dataset.customCursor = "true";
 
-    const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
-    const current = { ...target };
-    let raf = 0;
+    const move = (e: MouseEvent) => setPosition({ x: e.clientX, y: e.clientY });
+    const down = () => setClicking(true);
+    const up = () => setClicking(false);
 
-    const onMove = (e: MouseEvent) => {
-      target.x = e.clientX;
-      target.y = e.clientY;
-    };
-    const tick = () => {
-      current.x += (target.x - current.x) * 0.18;
-      current.y += (target.y - current.y) * 0.18;
-      const node = dotRef.current;
-      if (node) {
-        node.style.transform = `translate3d(${current.x.toFixed(1)}px, ${current.y.toFixed(1)}px, 0) translate(-50%, -50%)`;
-      }
-      raf = requestAnimationFrame(tick);
-    };
-
-    window.addEventListener("mousemove", onMove);
-    raf = requestAnimationFrame(tick);
+    window.addEventListener("mousemove", move);
+    window.addEventListener("mousedown", down);
+    window.addEventListener("mouseup", up);
 
     return () => {
-      window.removeEventListener("mousemove", onMove);
-      cancelAnimationFrame(raf);
+      delete document.body.dataset.customCursor;
+      window.removeEventListener("mousemove", move);
+      window.removeEventListener("mousedown", down);
+      window.removeEventListener("mouseup", up);
     };
   }, []);
 
@@ -44,10 +36,17 @@ export function CustomCursor() {
 
   return (
     <div
-      ref={dotRef}
       aria-hidden="true"
-      className="pointer-events-none fixed top-0 left-0 w-2 h-2 rounded-full bg-rosso-base z-[200] mix-blend-screen"
-      style={{ transform: "translate(-9999px, -9999px)" }}
+      className="fixed pointer-events-none z-[9999] rounded-full bg-rosso-base"
+      style={{
+        width: 8,
+        height: 8,
+        left: position.x - 4,
+        top: position.y - 4,
+        transform: clicking ? "scale(1.5)" : "scale(1)",
+        transition:
+          "transform 150ms ease-out, left 80ms ease-out, top 80ms ease-out",
+      }}
     />
   );
 }

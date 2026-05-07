@@ -202,6 +202,27 @@ body {
   }
 }
 
+/* === Custom cursor: nasconde il cursore standard quando il dot rosso è attivo ===
+   Si attiva solo quando CustomCursor monta `data-custom-cursor="true"` sul body
+   (cioè solo su dispositivi con hover/pointer fine e niente prefers-reduced-motion).
+   Esclude esplicitamente campi form (input/textarea/select) e dialog
+   contenteditable, dove il cursore standard è importante per UX. */
+@media (hover: hover) and (pointer: fine) {
+  body[data-custom-cursor="true"],
+  body[data-custom-cursor="true"] a,
+  body[data-custom-cursor="true"] button,
+  body[data-custom-cursor="true"] [role="button"],
+  body[data-custom-cursor="true"] label {
+    cursor: none;
+  }
+  body[data-custom-cursor="true"] input,
+  body[data-custom-cursor="true"] textarea,
+  body[data-custom-cursor="true"] select,
+  body[data-custom-cursor="true"] [contenteditable="true"] {
+    cursor: auto;
+  }
+}
+
 /* === Ticket — strappo stub sinistro === */
 .ticket .stub.is-tearing {
   transform: translateX(-20px);
