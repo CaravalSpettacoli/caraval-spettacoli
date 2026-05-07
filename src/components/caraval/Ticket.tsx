@@ -81,7 +81,7 @@ export function Ticket({
       className={cn(
         "ticket group relative block w-full max-w-md",
         "bg-crema-base text-nero-base",
-        "border-[1.5px] border-rosso-base rounded-sm overflow-hidden",
+        "border-[1.5px] border-rosso-base rounded-[10px] overflow-hidden",
         "shadow-sm transition-[transform,box-shadow] duration-base ease-cinema",
         "hover:-translate-y-1 hover:shadow-md",
         "focus-visible:outline-2 focus-visible:outline-rosso-hover",
@@ -156,8 +156,9 @@ export function Ticket({
         <div className="flex flex-col justify-center px-4 sm:px-6 py-3 min-w-0">
           <h3
             className={cn(
-              "font-display leading-[1.05] text-nero-base truncate",
-              "text-[clamp(18px,2.4vw,24px)]"
+              "font-display leading-[1.1] text-nero-base",
+              "text-[15px] sm:text-[clamp(18px,2.4vw,24px)]",
+              "[display:-webkit-box] [-webkit-line-clamp:2] [-webkit-box-orient:vertical] overflow-hidden"
             )}
           >
             {titolo}
