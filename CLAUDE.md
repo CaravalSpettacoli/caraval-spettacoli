@@ -254,6 +254,39 @@ Bug fix critici e raffinamenti dopo Sessione 2.5. Calma e profondità: meno cose
 - Stonehead solo su caratteri `[A-Z0-9 ]`. Per testi dinamici da Sanity → sempre `splitDisplay(text)` che fa uppercase + spezza punteggiatura in Inter.
 - Per testi statici con punteggiatura → `<span className="font-display">PAROLA</span><span className="font-sans"> — </span>...`.
 
+### ✅ Sessione 2.7 — Polish Definitivo (FATTO)
+Riparazione finale prima delle pagine reali. Branch `polish/sessione-2-7`.
+
+**Sistema font (definitivo, 2 font):**
+- Display: **Cinzel Decorative** (400/700/900) caricato via `next/font/google` → `--font-cinzel`. Mappato su `font-display` di Tailwind.
+- Body/UI: **Inter** (300/400/500/600/700) → `--font-inter`. Mappato su `font-sans` e default `body`.
+- **Stonehead Demo è ritirato dal display generale**. Resta solo nel logo Header tramite l'utility `font-stonehead`. Tutti gli altri usi sono passati a `font-display` (Cinzel).
+- Le feature-settings anti-watermark restano applicate sull'@font-face e sulla classe `.font-stonehead` in `globals.css` — `splitDisplay()` è ancora in uso ma con Cinzel non è più strettamente necessario; lasciato per coerenza.
+
+**Componenti rimossi/sostituiti:**
+- `TicketBiglietto` (3 stili A/B/C, ~600 righe) → eliminato.
+- Nuovo `Ticket` unico in `src/components/caraval/Ticket.tsx`: cream + bordo rosso 1.5px + radius 10px, perforazione a 8 puntini, stub "INGRESSO" verticale, divider tratteggiato, titolo Cinzel + venue/prezzo Inter, colonna destra giorno/mese + N° seriale. Filigrana SVG ondulata (`ticket-watermark.svg.tsx`) opacity 0.07. Hover: lift 4px + soft shadow. Click: strappo stub 300ms, poi redirect (skip su `prefers-reduced-motion`). Mobile: titolo 15px + line-clamp 2 (no più "CUBICULUM D...").
+- **Nota strategica:** il Ticket attuale è una base placeholder. Verrà ridisegnato in Sessione 4 ispirato a reference teatro nera con simmetria centrale (verticale, integrato nel template scheda spettacolo).
+
+**Sipario rifatto (`src/components/layout/Sipario.tsx` + `globals.css`):**
+- State machine esplicita: `0–1500ms` testo "Pronti a entrare in scena?" visibile · `1500–1900ms` fade testo (400ms) · `1900–4400ms` apertura tendaggi (2500ms).
+- Easing definitivo: `cubic-bezier(0.4, 0, 0.2, 1)`.
+- **Pannelli rettangolari puliti** (provata l'ondulazione laterale + orlo decorativo via SVG `<clipPath>` ma scartata: simple > stylised). Texture velluto a bande verticali irregolari + gradient verticale rosso-deep → rosso-base + ombra interna lato palco mantenuti.
+- Prop `withSound?: boolean` predisposto (file `/sounds/curtain.mp3` non incluso).
+- Fallback `prefers-reduced-motion`: pannelli `display: none`, solo fade-out 400ms del contenuto centrale.
+
+**Cursore decorativo rifatto (`src/components/effects/CustomCursor.tsx`):**
+- Dot rosso 8px ø + glow trail rosso (24px, opacity 0.22, blur 5px) che segue con lerp 0.18.
+- Posizione gestita via `requestAnimationFrame` + `transform: translate3d()` (no transition su position → niente lag).
+- Scale 1.5 al `mousedown` con transition 150ms solo su `scale` (non su position).
+- Componente attivo solo su `(hover: hover) and (pointer: fine)` e niente `prefers-reduced-motion`. Setta `data-custom-cursor="true"` sul `body` al mount.
+- CSS in `globals.css`: con `data-custom-cursor="true"`, `cursor: none !important` su `body, a, button, [role=button], input, textarea, select, label, summary, [tabindex]`. Eccezione `cursor: text !important` solo sui campi di testo (`input[type=text/email/tel/search/url/password]`, `textarea`, `[contenteditable=true]`) per non rompere l'UX di scrittura.
+
+**Decisioni di design prese:**
+- 2 font massimo (Cinzel + Inter), niente Bodoni / Abril.
+- Border radius del Ticket: 10px (era 4px).
+- Sipario: pulito > stilizzato. Niente onde decorative su bordi.
+
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 3** — Pagine reali (homepage, /spettacoli, /spettacoli/[slug], /imaginarium...)
 - [ ] **Sessione 4** — Calendario eventi + filtraggio
