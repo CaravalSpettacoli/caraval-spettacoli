@@ -49,7 +49,7 @@ export function CustomCursor() {
       trail.y += (target.y - trail.y) * 0.18;
       const t = trailRef.current;
       if (t) {
-        t.style.transform = `translate3d(${trail.x - 16}px, ${trail.y - 16}px, 0)`;
+        t.style.transform = `translate3d(${trail.x - 12}px, ${trail.y - 12}px, 0)`;
       }
       frame = requestAnimationFrame(tick);
     };
@@ -72,14 +72,16 @@ export function CustomCursor() {
 
   return (
     <>
-      {/* Trail morbido: cerchio più grande, opacità bassa, segue con lerp */}
+      {/* Trail morbido: glow rosso sfocato, segue il dot con lerp 0.18 */}
       <div
         ref={trailRef}
         aria-hidden="true"
-        className="fixed pointer-events-none top-0 left-0 z-[9998] rounded-full border border-rosso-base/50"
+        className="fixed pointer-events-none top-0 left-0 z-[9998] rounded-full bg-rosso-base"
         style={{
-          width: 32,
-          height: 32,
+          width: 24,
+          height: 24,
+          opacity: 0.22,
+          filter: "blur(5px)",
           transform: "translate3d(-9999px, -9999px, 0)",
           willChange: "transform",
         }}
