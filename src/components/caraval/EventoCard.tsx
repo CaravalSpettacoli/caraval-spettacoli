@@ -1,112 +1,102 @@
 import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/cn";
-import { splitDisplay } from "@/lib/splitDisplay";
+import { CategoriaBadge } from "@/components/caraval/CategoriaBadge";
+import type { ItemEvento } from "@/lib/calendario-utils";
 
-export type EventoCardData = {
-  data: string; // ISO date
-  titolo: string;
-  citta?: string;
-  struttura?: string;
-  modalitaAccesso?: string;
-  tipoEvento?: string;
-  ticketUrl?: string;
-  detailUrl?: string;
-};
-
-export type EventoCardProps = {
-  evento: EventoCardData;
-  className?: string;
-};
-
+const GIORNI_SETT = ["DOM", "LUN", "MAR", "MER", "GIO", "VEN", "SAB"];
 const MESI_BREVI = [
-  "GEN", "FEB", "MAR", "APR", "MAG", "GIU",
-  "LUG", "AGO", "SET", "OTT", "NOV", "DIC",
+  "gen", "feb", "mar", "apr", "mag", "giu",
+  "lug", "ago", "set", "ott", "nov", "dic",
 ];
 
-function parseData(iso: string) {
-  const d = new Date(iso);
-  if (Number.isNaN(d.getTime())) return null;
-  return {
-    giorno: d.getDate(),
-    mese: MESI_BREVI[d.getMonth()],
-    anno: d.getFullYear(),
-  };
+function formatOra(d: Date) {
+  const hh = String(d.getHours()).padStart(2, "0");
+  const mm = String(d.getMinutes()).padStart(2, "0");
+  return `${hh}:${mm}`;
 }
 
-export function EventoCard({ evento, className }: EventoCardProps) {
-  const {
-    data,
-    titolo,
-    citta,
-    struttura,
-    modalitaAccesso,
-    tipoEvento,
-    ticketUrl,
-    detailUrl,
-  } = evento;
-  const parsed = parseData(data);
+export function EventoCard({ item, className }: { item: ItemEvento; className?: string }) {
+  const { data, titolo, slug, categoria, luogo, modalitaAccesso, urlBiglietti, note } = item;
+
+  const luogoLabel = [luogo?.nome, luogo?.citta].filter(Boolean).join(" · ");
+  const detailHref = `/spettacoli/${slug}`;
 
   return (
     <article
       className={cn(
-        "flex gap-5 md:gap-8 items-start p-5 md:p-6 rounded-md bg-nero-soft border border-transparent hover:border-rosso-base/30 transition-colors",
+        "group relative flex flex-col md:flex-row gap-4 md:gap-8 items-start p-5 md:p-6 rounded-md bg-nero-soft border border-transparent hover:border-rosso-base/30 transition-all duration-base hover:-translate-y-1",
         className
       )}
     >
-      <div className="flex flex-col items-center justify-center shrink-0 w-20 md:w-24 py-3 rounded-md bg-nero-deep border border-crema-faint text-center">
-        {parsed ? (
-          <>
-            <span className="font-display text-display-m leading-none text-crema-base">
-              {parsed.giorno}
-            </span>
-            <span className="mt-1 text-label uppercase-tracked text-rosso-hover">
-              {parsed.mese}
-            </span>
-            <span className="text-caption text-crema-muted">{parsed.anno}</span>
-          </>
-        ) : (
-          <span className="text-caption text-crema-muted">TBD</span>
-        )}
+      {/* Data sx (80px desktop) */}
+      <div className="flex md:flex-col items-baseline md:items-center gap-3 md:gap-1 shrink-0 md:w-20 md:py-2 md:text-center">
+        <span className="font-display text-display-m leading-none text-crema-base">
+          {data.getDate()}
+        </span>
+        <div className="flex md:flex-col gap-2 md:gap-0">
+          <span className="text-label uppercase-tracked text-rosso-hover">
+            {MESI_BREVI[data.getMonth()]}
+          </span>
+          <span className="text-caption text-crema-muted">
+            {GIORNI_SETT[data.getDay()]} · {formatOra(data)}
+          </span>
+        </div>
       </div>
 
-      <div className="flex-1 min-w-0">
-        {tipoEvento && (
-          <div className="text-label uppercase-tracked text-rosso-hover mb-2">
-            {tipoEvento}
-          </div>
+      {/* Contenuto dx */}
+      <div className="flex-1 min-w-0 w-full">
+        {categoria && (
+          <CategoriaBadge categoria={categoria} size="sm" className="mb-3" />
         )}
-        <h3 className="font-display text-h4 text-crema-base">
-          {detailUrl ? (
-            <Link
-              href={detailUrl}
-              className="hover:text-rosso-hover transition-colors"
-            >
-              {splitDisplay(titolo)}
-            </Link>
-          ) : (
-            splitDisplay(titolo)
-          )}
-        </h3>
-        <p className="mt-1 text-body-s text-crema-muted">
-          {[citta, struttura].filter(Boolean).join(" — ")}
-        </p>
-        {modalitaAccesso && (
-          <p className="mt-2 text-caption uppercase-tracked text-crema-base/80">
-            {modalitaAccesso}
-          </p>
-        )}
-        {ticketUrl && (
-          <a
-            href={ticketUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="mt-4 inline-flex items-center gap-1 text-body-s font-semibold text-rosso-hover hover:text-rosso-base transition-colors"
+        <h3 className="font-display text-h4 text-crema-base leading-tight">
+          <Link
+            href={detailHref}
+            className="hover:text-rosso-hover transition-colors stretched-link-target"
           >
-            Vai ai biglietti
-            <ArrowUpRight size={16} aria-hidden="true" />
-          </a>
+            <span className="absolute inset-0" aria-hidden="true" />
+            {titolo}
+          </Link>
+        </h3>
+        {luogoLabel && (
+          <p className="mt-2 text-body-s text-crema-muted">{luogoLabel}</p>
         )}
+        {note && (
+          <p className="mt-2 text-body-s italic text-crema-muted/80">{note}</p>
+        )}
+
+        {/* CTA dinamica — z-index per sopra alla stretched-link */}
+        <div className="relative z-10 mt-4">
+          {modalitaAccesso === "linkEsterno" && urlBiglietti && (
+            <a
+              href={urlBiglietti}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-rosso-base text-crema-base text-body-s font-semibold hover:bg-rosso-hover transition-colors"
+            >
+              Vai ai biglietti
+              <ArrowUpRight size={16} aria-hidden="true" />
+            </a>
+          )}
+          {modalitaAccesso === "prenotazione" && (
+            <a
+              href={`mailto:caravalspettacoli@gmail.com?subject=${encodeURIComponent(`Prenotazione ${titolo}`)}`}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-md bg-rosso-base text-crema-base text-body-s font-semibold hover:bg-rosso-hover transition-colors"
+            >
+              Prenota
+            </a>
+          )}
+          {modalitaAccesso === "ingressoLibero" && (
+            <span className="inline-block px-3 py-1.5 rounded-sm border border-amber-400/60 text-amber-300 text-caption uppercase-tracked">
+              Ingresso libero
+            </span>
+          )}
+          {modalitaAccesso === "botteghino" && (
+            <span className="inline-block px-3 py-1.5 rounded-sm border border-crema-faint text-crema-muted text-caption uppercase-tracked">
+              Biglietto al teatro
+            </span>
+          )}
+        </div>
       </div>
     </article>
   );

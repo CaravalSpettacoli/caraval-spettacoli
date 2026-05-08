@@ -2,107 +2,82 @@ import { defineType, defineField } from "sanity";
 
 export default defineType({
   name: "evento",
-  title: "Evento (calendario)",
+  title: "Eventi (date manuali)",
   type: "document",
+  description:
+    "Date specifiche degli spettacoli del repertorio. NON usare per Imaginarium — quello è gestito da spettacoloImaginarium.",
   fields: [
     defineField({
-      name: "titolo",
-      title: "Titolo",
-      type: "string",
-      validation: (r) => r.required(),
-    }),
-    defineField({
-      name: "slug",
-      title: "Slug",
-      type: "slug",
-      options: { source: "titolo", maxLength: 96 },
-      validation: (r) => r.required(),
-    }),
-    defineField({
-      name: "tipoEvento",
-      title: "Tipo evento",
-      type: "string",
-      options: {
-        list: [
-          { title: "Spettacolo da repertorio", value: "spettacolo-repertorio" },
-          { title: "Imaginarium", value: "imaginarium" },
-          { title: "Officina", value: "officina" },
-          { title: "Evento speciale", value: "evento-speciale" },
-        ],
-      },
-      validation: (r) => r.required(),
-    }),
-    defineField({
-      name: "spettacoloRif",
-      title: "Spettacolo (riferimento)",
+      name: "spettacolo",
+      title: "Spettacolo",
       type: "reference",
       to: [{ type: "spettacolo" }],
-      hidden: ({ document }) => document?.tipoEvento !== "spettacolo-repertorio",
-      validation: (r) =>
-        r.custom((value, ctx) => {
-          const doc = ctx.document as { tipoEvento?: string } | undefined;
-          if (doc?.tipoEvento === "spettacolo-repertorio" && !value) {
-            return "Obbligatorio per spettacoli da repertorio";
-          }
-          return true;
-        }),
+      validation: (r) => r.required(),
     }),
     defineField({
-      name: "spettacoloImaginariumRif",
-      title: "Spettacolo Imaginarium (riferimento)",
-      type: "reference",
-      to: [{ type: "spettacoloImaginarium" }],
-      hidden: ({ document }) => document?.tipoEvento !== "imaginarium",
-      validation: (r) =>
-        r.custom((value, ctx) => {
-          const doc = ctx.document as { tipoEvento?: string } | undefined;
-          if (doc?.tipoEvento === "imaginarium" && !value) {
-            return "Obbligatorio per eventi Imaginarium";
-          }
-          return true;
-        }),
-    }),
-    defineField({
-      name: "titoloLibero",
-      title: "Titolo libero (per eventi speciali)",
-      type: "string",
-    }),
-    defineField({
-      name: "dataInizio",
-      title: "Data inizio",
+      name: "dataOra",
+      title: "Data e ora",
       type: "datetime",
       validation: (r) => r.required(),
     }),
-    defineField({ name: "dataFine", title: "Data fine", type: "datetime" }),
-    defineField({ name: "luogo", title: "Luogo", type: "luogo" }),
     defineField({
-      name: "comeParteciapare",
-      title: "Come partecipare",
-      type: "comeParteciapare",
+      name: "luogo",
+      title: "Luogo",
+      type: "luogo",
       validation: (r) => r.required(),
     }),
     defineField({
-      name: "descrizioneEvento",
-      title: "Descrizione evento (note specifiche)",
-      type: "text",
-      rows: 3,
+      name: "modalitaAccesso",
+      title: "Modalità accesso",
+      type: "string",
+      options: {
+        list: [
+          { title: "Link biglietteria esterna", value: "linkEsterno" },
+          { title: "Prenotazione via mail/telefono", value: "prenotazione" },
+          { title: "Ingresso libero", value: "ingressoLibero" },
+          { title: "Botteghino al teatro", value: "botteghino" },
+        ],
+        layout: "radio",
+      },
+      initialValue: "prenotazione",
+      validation: (r) => r.required(),
     }),
     defineField({
-      name: "immagineCover",
-      title: "Immagine cover (override)",
-      type: "image",
-      options: { hotspot: true },
-      fields: [
-        defineField({ name: "alt", title: "Testo alternativo", type: "string" }),
-      ],
+      name: "urlBiglietti",
+      title: "URL biglietteria",
+      type: "url",
+      hidden: ({ parent }) => parent?.modalitaAccesso !== "linkEsterno",
+    }),
+    defineField({
+      name: "note",
+      title: "Note",
+      type: "text",
+      rows: 2,
+      description: 'Es. "Ridotto under 26: 8€"',
+    }),
+    defineField({
+      name: "mostraInCalendario",
+      title: "Mostra in calendario",
+      type: "boolean",
+      initialValue: true,
     }),
   ],
   preview: {
-    select: { title: "titolo", date: "dataInizio", media: "immagineCover" },
-    prepare({ title, date }) {
+    select: {
+      titolo: "spettacolo.titolo",
+      data: "dataOra",
+      citta: "luogo.citta",
+    },
+    prepare({ titolo, data, citta }) {
+      const formattedDate = data
+        ? new Date(data).toLocaleDateString("it-IT", {
+            day: "2-digit",
+            month: "short",
+          })
+        : "?";
       return {
-        title,
-        subtitle: date ? new Date(date).toLocaleString("it-IT") : "",
+        title: titolo || "Evento senza spettacolo",
+        subtitle: `${formattedDate} · ${citta || "?"}`,
       };
     },
   },

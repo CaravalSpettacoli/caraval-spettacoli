@@ -384,10 +384,51 @@ Branch `feat/sessione-4-spettacoli` da `main` (post-merge PR #2).
 - Patch `setIfMissing` su prenotazione: idempotente, non sovrascrive edit di Vera.
 - `Ticket.tsx` (Sessione 2.7) lasciato in repo per eventuale uso calendario eventi.
 
+### ✅ Sessione 5 — Calendario + Formazione (FATTO)
+Branch `feat/sessione-5-calendario-formazione` da `main` post-merge PR #4.
+
+**Schemi Sanity:**
+- `evento` (riscritto da zero, schema legacy Sessione 1 non usato): `spettacolo` ref required, `dataOra` datetime required, `luogo` (riuso object esistente), `modalitaAccesso` enum (linkEsterno|prenotazione|ingressoLibero|botteghino) default `prenotazione`, `urlBiglietti` condizionale, `note`, `mostraInCalendario` default true. Preview con titolo+data+città. Label "Eventi (date manuali)".
+- `homepageCopy` esteso con 2 nuovi groups: `calendario` (3 campi) e `formazione` (12 campi).
+
+**Pagine nuove:**
+- `/calendario` — Server Component, fetch `Promise.all` di `evento` (`mostraInCalendario && dataOra >= oggi`) + `spettacoloImaginarium` (`data >= oggi`) + `homepageCopy`. Helper `buildCalendario()` raggruppa imaginarium per giornata e unisce con eventi ordinati cronologicamente. `groupByMese()` raggruppa per "MESE ANNO" italiano. Hero 40vh + filtri client + lista per mese + CTA finale Ospita.
+- `/formazione` — Server Component, fetch corsi `statoCorso != "concluso"` con join referenteIscrizioni + spettacoloFinaleLinked. Hero 50vh + sezione corsi (grid 2 col) + sezione laboratori bg `nero-soft` + CTA finale "Chiama Vera".
+
+**Componenti nuovi (`src/components/caraval/`):**
+- `EventoCard` — data sx (giorno Cinzel + mese + giorno settimana + ora) + contenuto dx (CategoriaBadge + titolo + luogo + note + CTA dinamica per 4 modalità). Stretched-link su scheda spettacolo.
+- `GiornataImaginariumCard` — palette inversa (bg crema), badge Imaginarium {anno}, lista spettacoli giornata con thumb, CTA `/imaginarium`.
+- `CalendarioFilter` (Client) — 4 bottoni Tutti/Prosa/Fuoco e strada/Imaginarium, raggruppamento per mese visibile.
+- `CorsoCard` — badge stato (in_corso verde / iscrizioni_aperte oro / concluso muted), titolo Cinzel, target/frequenza/date in `<dl>`, link spettacolo finale a `/imaginarium/{anno}/{slug}`, recapiti referente cliccabili (tel:, mailto:).
+- `LaboratoriScuoleSection` — bg `nero-soft`, layout asimmetrico 2/3 + maschera teatrale decorativa.
+
+**Lib:**
+- `src/lib/calendario-utils.ts` — types `CalendarioItem` (discriminated union evento|imaginarium), `buildCalendario()`, `groupByMese()`, `meseLabel()`.
+
+**Rinomina:**
+- Vecchio `EventoCard.tsx` (Sessione 2.5, card data+contenuto semplice usata in `/design-system` showcase 10.1) → `EventoCardSimple.tsx`. Import nel design-system aggiornato (`{ EventoCardSimple as EventoCard } from "..."` per minimizzare diff). Il nuovo `EventoCard.tsx` è il componente del calendario.
+
+**Seed esteso:**
+- `homepageCopy` con 15 nuovi campi default (3 calendario + 12 formazione). NB: il seed usa `createOrReplace` su `homepageCopy`, quindi un'esecuzione successiva sovrascrive eventuali customizzazioni Vera — comportamento esistente da Sessione 3, non modificato.
+
+**Verifica:**
+- `npx tsc --noEmit` pulito · `npm run lint` pulito · `npm run build` pulito.
+- Build pulito su branch rebased post-merge Sessione 4 → 14 rotte totali (incluse `/spettacoli`, `/spettacoli/[slug]`, `/spettacoli/archivio`).
+- Screenshot Chrome MCP desktop+mobile in `.screenshots/5-{calendario,formazione}-{desktop,mobile}.png`.
+
+**Stato dati:**
+- Su `/calendario` lo stato vuoto è il comportamento atteso finché Vera non carica eventi manuali via Studio + il seed `npm run sanity:seed` non viene rieseguito per popolare `spettacoloImaginarium` 2026.
+- Su `/formazione` i 2 corsi seedati appaiono con dati reali (Vera referente, badge IN CORSO, recapiti cliccabili).
+
+**Decisioni autonome:**
+- `evento` schema sostituito (non esteso): zero document attivi, le query GROQ del prompt erano incompatibili con i nomi legacy (`dataInizio`/`spettacoloRif`/`comeParteciapare.tipo`). Riuso `luogo` object esistente, leggo `luogo.nomeStruttura` come `nome` via alias GROQ.
+- `EventoCard` rinominato → `EventoCardSimple` invece di `TicketBigliettoVintage`: il vecchio componente NON era una variante ticket vintage (quello era `TicketBiglietto.tsx`, eliminato in 2.7), era solo una card data+contenuto. Nome più onesto.
+- `homepageCopy` esteso (vs nuovo singleton `paginaFormazioneCopy`): un singolo singleton è più maneggevole per Vera, pattern coerente con groups Studio.
+
 ### ⏳ Da fare nelle prossime sessioni
-- [ ] **Sessione 5** — Calendario eventi + pagina formazione + chi siamo + ospita + contatti
-- [ ] **Sessione 6** — Iubenda + Umami analytics + accessibilità WCAG AA
-- [ ] **Sessione 7** — Popolamento contenuti reali + foto ottimizzate + go-live
+- [ ] **Sessione 6** — Chi siamo + ospita + contatti + privacy/cookie
+- [ ] **Sessione 7** — Iubenda + Umami analytics + accessibilità WCAG AA
+- [ ] **Sessione 8** — Popolamento contenuti reali + foto ottimizzate + go-live
 
 ---
 
