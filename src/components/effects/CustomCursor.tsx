@@ -14,7 +14,6 @@ export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement | null>(null);
   const trailRef = useRef<HTMLDivElement | null>(null);
   const [enabled, setEnabled] = useState(false);
-  const [clicking, setClicking] = useState(false);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -25,8 +24,6 @@ export function CustomCursor() {
     setEnabled(true);
     document.body.dataset.customCursor = "true";
 
-    // Posizione corrente del mouse (aggiornata 1:1) e posizione del trail
-    // (interpolata via lerp ad ogni frame per dare l'effetto scia).
     const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     const trail = { x: target.x, y: target.y };
     let frame = 0;
@@ -35,16 +32,20 @@ export function CustomCursor() {
       target.x = e.clientX;
       target.y = e.clientY;
     };
-    const onDown = () => setClicking(true);
-    const onUp = () => setClicking(false);
+    const onDown = () => {
+      const dot = dotRef.current;
+      if (dot) dot.style.scale = "1.5";
+    };
+    const onUp = () => {
+      const dot = dotRef.current;
+      if (dot) dot.style.scale = "1";
+    };
 
     const tick = () => {
-      // Dot: posizione esatta, niente smoothing (per non laggare).
       const dot = dotRef.current;
       if (dot) {
         dot.style.transform = `translate3d(${target.x - 4}px, ${target.y - 4}px, 0)`;
       }
-      // Trail: lerp 0.18 verso il target → effetto scia morbida.
       trail.x += (target.x - trail.x) * 0.18;
       trail.y += (target.y - trail.y) * 0.18;
       const t = trailRef.current;
@@ -86,7 +87,7 @@ export function CustomCursor() {
           willChange: "transform",
         }}
       />
-      {/* Dot principale: insegue il mouse 1:1, scale 1.5 al click */}
+      {/* Dot principale: insegue il mouse 1:1, scale 1.5 al click via DOM */}
       <div
         ref={dotRef}
         aria-hidden="true"
@@ -96,9 +97,7 @@ export function CustomCursor() {
           height: 8,
           transform: "translate3d(-9999px, -9999px, 0)",
           willChange: "transform",
-          // L'intera trasformazione è gestita da JS, ma applichiamo
-          // uno scale extra via CSS per l'animazione click.
-          scale: clicking ? "1.5" : "1",
+          scale: "1",
           transition: "scale 150ms ease-out",
         }}
       />

@@ -18,12 +18,12 @@ interface SiparioProps {
   onComplete?: () => void;
 }
 
-const TEXT_FADE_MS = 400;
-const PANEL_OPEN_MS = 2500;
+const TEXT_FADE_MS = 300;
+const PANEL_OPEN_MS = 1200;
 
 export function Sipario({
-  minDuration = 1500,
-  maxDuration = 3500,
+  minDuration = 1200,
+  maxDuration = 2700,
   mode = "auto",
   withSound = false,
   onComplete,
