@@ -11,6 +11,8 @@ export default defineType({
     { name: "officina", title: "Officina Teatrale" },
     { name: "ospita", title: "Ospita Caraval" },
     { name: "contatti", title: "Contatti prelude" },
+    { name: "calendario", title: "Calendario (pagina)" },
+    { name: "formazione", title: "Formazione (pagina)" },
   ],
   fields: [
     // Strip Premi
@@ -149,6 +151,99 @@ export default defineType({
       type: "text",
       rows: 2,
       group: "contatti",
+    }),
+
+    // Calendario (pagina)
+    defineField({
+      name: "calendarioHeroEyebrow",
+      title: "Hero — Eyebrow",
+      type: "string",
+      group: "calendario",
+    }),
+    defineField({
+      name: "calendarioHeroHeading",
+      title: "Hero — Heading",
+      type: "string",
+      group: "calendario",
+    }),
+    defineField({
+      name: "calendarioHeroIntro",
+      title: "Hero — Intro",
+      type: "text",
+      rows: 2,
+      group: "calendario",
+    }),
+
+    // Formazione (pagina)
+    defineField({
+      name: "formazioneHeroEyebrow",
+      title: "Hero — Eyebrow",
+      type: "string",
+      group: "formazione",
+    }),
+    defineField({
+      name: "formazioneHeroHeading",
+      title: "Hero — Heading",
+      type: "string",
+      group: "formazione",
+    }),
+    defineField({
+      name: "formazioneHeroSubheading",
+      title: "Hero — Subheading (tagline)",
+      type: "string",
+      group: "formazione",
+    }),
+    defineField({
+      name: "formazioneHeroIntro",
+      title: "Hero — Intro",
+      type: "text",
+      rows: 3,
+      group: "formazione",
+    }),
+    defineField({
+      name: "corsiSezioneEyebrow",
+      title: "Sezione corsi — Eyebrow",
+      type: "string",
+      group: "formazione",
+    }),
+    defineField({
+      name: "corsiSezioneHeading",
+      title: "Sezione corsi — Heading",
+      type: "string",
+      group: "formazione",
+    }),
+    defineField({
+      name: "corsiStatoVuotoTesto",
+      title: "Sezione corsi — Stato vuoto",
+      type: "text",
+      rows: 3,
+      group: "formazione",
+      description: "Mostrato quando non ci sono corsi attivi.",
+    }),
+    defineField({
+      name: "laboratoriEyebrow",
+      title: "Laboratori — Eyebrow",
+      type: "string",
+      group: "formazione",
+    }),
+    defineField({
+      name: "laboratoriHeading",
+      title: "Laboratori — Heading",
+      type: "string",
+      group: "formazione",
+    }),
+    defineField({
+      name: "laboratoriBody",
+      title: "Laboratori — Body",
+      type: "text",
+      rows: 5,
+      group: "formazione",
+    }),
+    defineField({
+      name: "laboratoriCtaTesto",
+      title: "Laboratori — CTA testo",
+      type: "string",
+      group: "formazione",
     }),
   ],
   preview: { prepare: () => ({ title: "Homepage — Copy sezioni" }) },

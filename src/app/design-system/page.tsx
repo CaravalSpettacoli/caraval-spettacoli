@@ -8,7 +8,7 @@ import { Hero } from "@/components/layout/Hero";
 import { CategoriaBadge } from "@/components/caraval/CategoriaBadge";
 import { PremioBadge } from "@/components/caraval/PremioBadge";
 import { SpettacoloCard } from "@/components/caraval/SpettacoloCard";
-import { EventoCard } from "@/components/caraval/EventoCard";
+import { EventoCardSimple as EventoCard } from "@/components/caraval/EventoCardSimple";
 import { TitoloDoppio } from "@/components/caraval/TitoloDoppio";
 import { TitoloRitmico } from "@/components/caraval/TitoloRitmico";
 import { Ticket } from "@/components/caraval/Ticket";

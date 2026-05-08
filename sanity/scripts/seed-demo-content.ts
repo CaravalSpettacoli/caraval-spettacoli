@@ -102,6 +102,26 @@ const homepageCopy: AnyDoc = {
   contattiHeading: "Restiamo in contatto",
   contattiBody:
     "Per spettacoli, collaborazioni, formazione o solo per dirci ciao.",
+  // Calendario (pagina)
+  calendarioHeroEyebrow: "CALENDARIO",
+  calendarioHeroHeading: "I prossimi appuntamenti",
+  calendarioHeroIntro:
+    "Tutte le date di Caraval Spettacoli e del festival Imaginarium.",
+  // Formazione (pagina)
+  formazioneHeroEyebrow: "FORMAZIONE",
+  formazioneHeroHeading: "Officina Teatrale",
+  formazioneHeroSubheading: "Non serve esperienza. Serve curiosità.",
+  formazioneHeroIntro:
+    "Corsi serali per adulti da ottobre a maggio. Spettacolo finale a Imaginarium.",
+  corsiSezioneEyebrow: "I CORSI ATTIVI",
+  corsiSezioneHeading: "Stagione corrente",
+  corsiStatoVuotoTesto:
+    "Le iscrizioni per la prossima stagione apriranno a settembre. Resta in contatto per essere aggiornato →",
+  laboratoriEyebrow: "LABORATORI SCOLASTICI",
+  laboratoriHeading: "Nelle scuole del territorio",
+  laboratoriBody:
+    "Caraval collabora con le scuole primarie del territorio attraverso laboratori teatrali pensati per i bambini. Un percorso di gioco, espressione e racconto, dentro l'orario scolastico. Per le scuole interessate, scriviamo un progetto su misura.",
+  laboratoriCtaTesto: "Contatta Vera per i laboratori scolastici",
 };
 
 // ---------- Membri ----------
