@@ -17,6 +17,13 @@ export default defineType({
         "Campi non bloccanti per la demo, ma necessari per avere una scheda spettacolo completa. Vera, popolali quando hai tempo.",
       options: { collapsible: true, collapsed: false },
     },
+    {
+      name: "prenotazioniFs",
+      title: "Prenotazione / biglietti",
+      description:
+        "Come il pubblico prenota questo spettacolo. Determina la CTA del ticket nella scheda spettacolo.",
+      options: { collapsible: true, collapsed: false },
+    },
   ],
   fields: [
     defineField({
@@ -108,7 +115,26 @@ export default defineType({
         }),
       ],
     }),
-    defineField({ name: "videoUrl", title: "Video URL (YouTube/Vimeo)", type: "url" }),
+    defineField({ name: "videoUrl", title: "Video URL (YouTube/Vimeo) — legacy", type: "url" }),
+    defineField({
+      name: "trailerYoutube",
+      title: "Trailer YouTube",
+      type: "url",
+      description:
+        "URL del trailer YouTube (formato youtube.com/watch?v=… oppure youtu.be/…). Se vuoto, la sezione trailer non viene mostrata.",
+      fieldset: "contenutiConsigliati",
+      validation: (r) =>
+        r.uri({ scheme: ["https"] }).custom((v) => {
+          if (!v) return true;
+          if (
+            typeof v === "string" &&
+            (v.includes("youtube.com/watch?v=") || v.includes("youtu.be/"))
+          ) {
+            return true;
+          }
+          return "Deve essere un URL YouTube (youtube.com/watch?v=… o youtu.be/…)";
+        }),
+    }),
     defineField({
       name: "descrizioneBreve",
       title: "Descrizione breve (max 200 caratteri, per SEO)",
@@ -221,6 +247,53 @@ export default defineType({
           { title: "In tour", value: "in-tour" },
         ],
       },
+    }),
+    defineField({
+      name: "prenotazione",
+      title: "Prenotazione / biglietti",
+      type: "object",
+      fieldset: "prenotazioniFs",
+      options: { collapsible: false },
+      fields: [
+        defineField({
+          name: "modalita",
+          title: "Modalità",
+          type: "string",
+          options: {
+            list: [
+              { title: "Richiesta contatto (default)", value: "richiestaContatto" },
+              { title: "Link esterno (biglietteria online)", value: "linkEsterno" },
+              { title: "Email / telefono diretto", value: "emailTelefono" },
+              { title: "Ingresso libero", value: "ingressoLibero" },
+              { title: "Botteghino al teatro", value: "botteghino" },
+            ],
+            layout: "radio",
+          },
+          initialValue: "richiestaContatto",
+          validation: (r) => r.required(),
+        }),
+        defineField({
+          name: "urlBiglietti",
+          title: "URL biglietteria",
+          type: "url",
+          description: 'Solo se modalità = "Link esterno"',
+          hidden: ({ parent }) => parent?.modalita !== "linkEsterno",
+        }),
+        defineField({
+          name: "etichettaCustom",
+          title: "Etichetta CTA personalizzata (opzionale)",
+          type: "string",
+          description:
+            'Override del testo del bottone (es. "Prenota su Vivaticket"). Se vuoto, viene usato il testo di default per la modalità.',
+        }),
+        defineField({
+          name: "noteAggiuntive",
+          title: "Note aggiuntive",
+          type: "text",
+          rows: 2,
+          description: 'Es. "Ridotto under 26: 8€"',
+        }),
+      ],
     }),
     defineField({ name: "seoTitle", title: "SEO title (override)", type: "string" }),
     defineField({ name: "seoDescription", title: "SEO description", type: "text", rows: 2 }),

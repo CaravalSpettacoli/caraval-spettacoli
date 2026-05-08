@@ -343,9 +343,49 @@ Prime due pagine reali Sanity-driven. Branch `feat/sessione-3-homepage-imaginari
 - Logo Imaginarium: testo Cinzel "IMAGINARIUM" come placeholder finché non arriva l'asset.
 - Spacing sezioni usa la `<Section>` esistente (`py-12 md:py-20 lg:py-24`) invece di nuovi token — ritmo coerente con design system.
 
+### ✅ Sessione 4 — Spettacoli (Indice + Scheda + Archivio + Ticket finale) (FATTO)
+Branch `feat/sessione-4-spettacoli` da `main` (post-merge PR #2).
+
+**Schemi Sanity estesi:**
+- `spettacolo.ts`: aggiunti `trailerYoutube` (url con validation YouTube, fieldset `contenutiConsigliati`) e oggetto `prenotazione` (modalità enum required default `richiestaContatto`, `urlBiglietti` con `hidden` se modalità ≠ `linkEsterno`, `etichettaCustom`, `noteAggiuntive`). Nuovo fieldset `prenotazioniFs`.
+- Nuovo singleton `paginaSpettacoliCopy` per copy indice + archivio (groups Studio: Indice / Archivio).
+
+**Seed esteso (`sanity/scripts/seed-demo-content.ts`):**
+- Singleton `paginaSpettacoliCopy` (createOrReplace) con copy default (eyebrow, heading, intro, CTA archivio, archivio eyebrow/heading/intro).
+- Patch idempotente di Romeo+Giulietta con dati 100% dal PDF brochure: nuovo slug `romeo-giulietta-inferno-amore`, descrizione narrativa 4 paragrafi, descrizione breve, anno 2026, regia "Vera Rossini", cast 5 voci (Vera/Nicola/Andrico/Botti/Aurora), schedaTecnica completa (durata 70min, palco 8x6 H5.50, audio 220V, note montaggio), prenotazione `richiestaContatto`, referente Vera. `trailerYoutube` lasciato vuoto.
+- Patch Miseria e Nobiltà: regia "Lorenzo Samanni", prenotazione `richiestaContatto`.
+- Patch prenotazione `richiestaContatto` su tutti gli altri 9 spettacoli attivi (`setIfMissing`).
+- Patch `referenteContatto` Vera su I Viaggiastorie.
+- 7 nuovi document archivio: Giovanna D'Arco, L'Inferno di Dante, I Folli di Notre Dame, Servitore di due padroni, Sogno di una notte di mezza estate, Ezzelino da Romano, Battute fuori scena. Tutti `inRepertorio: false`. Insieme a Miseria → archivio totale 8.
+
+**Pagine nuove:**
+- `src/app/spettacoli/page.tsx`: hero compatto 40vh + griglia con filtro client-side. CTA archivio in fondo.
+- `src/app/spettacoli/[slug]/page.tsx`: 9 sezioni dinamiche. `generateStaticParams()` prerendera tutti gli slug attivi. `notFound()` per slug inesistenti.
+- `src/app/spettacoli/archivio/page.tsx`: hero 40vh + griglia 4 colonne 4:5 NON cliccabile (decisione Vera 7/5).
+
+**Componenti nuovi (`src/components/caraval/`):**
+- `SpettacoloCardLarge`, `SpettacoliGrid` (Client), `HeroSpettacolo`, `DescrizioneNarrativa`, `GalleriaFoto` (Client con `<dialog>` lightbox HTML), `TrailerVideo` (embed YouTube), `SchedaTecnica`, `CastECrediti` (regex `/attor/i` per dividere attori da crediti), `CitazioniStampaList`, `SezionePrenotazione`, `TicketSpettacolo`, `SpettacoliCorrelati`.
+
+**TicketSpettacolo (Task E):**
+- Verticale 2:5 max-w 280, sfondo `nero-deep`, bordo rosso 1.5px, perforazioni laterali simulate, stella SVG centrale, "INGRESSO" verticale rotated.
+- CTA dinamica per 5 modalità: `linkEsterno` button new-tab, `emailTelefono` 2 button mailto+subject/tel, `ingressoLibero` box dorato, `botteghino` box neutro, `richiestaContatto` button con ancora `#prenotazione`.
+- Hover lift -1.5 + shadow rossa, active:scale 0.97.
+
+**Verifica:**
+- `npx tsc --noEmit` pulito · `npm run lint` pulito · `npm run build` pulito (12 rotte, di cui 10 `/spettacoli/[slug]` prerenderate SSG).
+- Screenshot Chrome MCP desktop+mobile in `.screenshots/4-*.png` (indice, scheda Romeo, archivio).
+- Le sezioni ricche di Romeo (galleria, trailer, citazioni, scheda tecnica) appariranno DOPO esecuzione `npm run sanity:seed` con SANITY_API_WRITE_TOKEN.
+
+**Decisioni autonome:**
+- Skog e A Christmas Carol restano in repertorio attivo (categoria fuoco, da COPY §4) — il prompt §F li elencava in archivio, ma il COPY del cliente prevale.
+- `trailerYoutube` di Romeo `undefined` (PDF non espone URL leggibile). La sezione `<TrailerVideo>` non si renderizza con campo vuoto.
+- Cast Romeo: tutti e 5 i crediti dentro `cast[]` con `ruolo` discriminator. `regia` separata duplicata, evidenziata sopra dal componente.
+- Categoria color ticket: `prosa` → `text-rosso-hover`, `fuoco` → `text-amber-400`, `strada` → `text-crema-base`. Niente token nuovi.
+- Patch `setIfMissing` su prenotazione: idempotente, non sovrascrive edit di Vera.
+- `Ticket.tsx` (Sessione 2.7) lasciato in repo per eventuale uso calendario eventi.
+
 ### ⏳ Da fare nelle prossime sessioni
-- [ ] **Sessione 4** — Calendario eventi + filtraggio
-- [ ] **Sessione 5** — Pagina formazione + chi siamo + ospita + contatti
+- [ ] **Sessione 5** — Calendario eventi + pagina formazione + chi siamo + ospita + contatti
 - [ ] **Sessione 6** — Iubenda + Umami analytics + accessibilità WCAG AA
 - [ ] **Sessione 7** — Popolamento contenuti reali + foto ottimizzate + go-live
 
