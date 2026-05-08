@@ -114,20 +114,18 @@ export default async function HomePage() {
   return (
     <>
       <Sipario />
-      <div className="preloader-zoom-target">
-        <HeroHomepage data={data.hero} />
-        <StripPremi premi={data.premi} heading={data.copy?.premiHeading} />
-        <ImaginariumPreview
-          edizione={data.edizioneCorrente}
-          spettacoli={data.spettacoliCorrente}
-          body={data.copy?.imaginariumPreviewBody}
-          ctaTesto={data.copy?.imaginariumPreviewCtaTesto}
-        />
-        <RepertorioPreview spettacoli={data.repertorio} copy={data.copy} />
-        <OfficinaTeaser copy={data.copy} />
-        <OspitaTeaser copy={data.copy} />
-        <ContattiPrelude copy={data.copy} contatti={data.contatti} />
-      </div>
+      <HeroHomepage data={data.hero} />
+      <StripPremi premi={data.premi} heading={data.copy?.premiHeading} />
+      <ImaginariumPreview
+        edizione={data.edizioneCorrente}
+        spettacoli={data.spettacoliCorrente}
+        body={data.copy?.imaginariumPreviewBody}
+        ctaTesto={data.copy?.imaginariumPreviewCtaTesto}
+      />
+      <RepertorioPreview spettacoli={data.repertorio} copy={data.copy} />
+      <OfficinaTeaser copy={data.copy} />
+      <OspitaTeaser copy={data.copy} />
+      <ContattiPrelude copy={data.copy} contatti={data.contatti} />
     </>
   );
 }

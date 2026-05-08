@@ -15,22 +15,20 @@ interface SiparioProps {
 }
 
 /**
- * Sequenza narrativa "entrata in scena":
- *  0–1000ms   text-visible    — scritta + tendaggi chiusi
- *  1000–2000  curtains-opening — i tendaggi si aprono (1000ms), scritta resta
- *  2000–2800  zoom-in         — fade-out scritta + zoom contenuto sotto (800ms)
- *  2800       done            — sipario unmounted
+ * Sequenza preloader (definitiva, 2.2s totali):
+ *  0–1000ms     text-visible      — scritta + tendaggi chiusi
+ *  1000–2200ms  curtains-opening  — tendaggi 1200ms, scritta fade-out 300ms
+ *  2200ms       done              — sipario unmounted
  *
- * Lo zoom del contenuto sottostante viene applicato aggiungendo la classe
- * `preloader-zoomed-out` su <html>: la regola CSS in globals.css scala
- * `.preloader-zoom-target` da 1.15 a 1.0.
+ * Easing tendaggi: cubic-bezier(0.4, 0, 0.2, 1) (definito in globals.css).
+ * Fallback prefers-reduced-motion: niente movimento tendaggi, solo fade-out
+ * 400ms del contenuto e via.
  */
 
 const TEXT_VISIBLE_MS = 1000;
-const CURTAINS_MS = 1000;
-const ZOOM_MS = 800;
+const CURTAINS_MS = 1200;
 
-type Phase = "text-visible" | "curtains-opening" | "zoom-in" | "done";
+type Phase = "text-visible" | "curtains-opening" | "done";
 
 export function Sipario({
   mode = "auto",
@@ -48,10 +46,8 @@ export function Sipario({
     ).matches;
 
     if (reduced) {
-      // Niente movimento tendaggi né zoom: il contenuto sotto viene
-      // smascherato subito (zoom target a scale 1) e il sipario sparisce
-      // con un breve fade.
-      document.documentElement.classList.add("preloader-zoomed-out");
+      // Niente movimento tendaggi: fade-out 400ms del contenuto e via.
+      setPhase("curtains-opening");
       const t = window.setTimeout(() => {
         setPhase("done");
         onComplete?.();
@@ -64,7 +60,6 @@ export function Sipario({
     const timers: number[] = [];
 
     const startSequence = () => {
-      // Step 1 — apertura tendaggi
       timers.push(
         window.setTimeout(() => {
           setPhase("curtains-opening");
@@ -73,19 +68,11 @@ export function Sipario({
           }
         }, TEXT_VISIBLE_MS)
       );
-      // Step 2 — fade scritta + zoom-in del contenuto sottostante
-      timers.push(
-        window.setTimeout(() => {
-          setPhase("zoom-in");
-          document.documentElement.classList.add("preloader-zoomed-out");
-        }, TEXT_VISIBLE_MS + CURTAINS_MS)
-      );
-      // Step 3 — smonta
       timers.push(
         window.setTimeout(() => {
           setPhase("done");
           onComplete?.();
-        }, TEXT_VISIBLE_MS + CURTAINS_MS + ZOOM_MS)
+        }, TEXT_VISIBLE_MS + CURTAINS_MS)
       );
     };
 
@@ -103,8 +90,9 @@ export function Sipario({
 
   if (phase === "done") return null;
 
-  const isOpen = phase === "curtains-opening" || phase === "zoom-in";
-  const isFading = phase === "zoom-in";
+  const isOpen = phase === "curtains-opening";
+  // La scritta entra in fade-out simultaneamente all'apertura tendaggi.
+  const isFading = phase === "curtains-opening";
 
   return (
     <div
