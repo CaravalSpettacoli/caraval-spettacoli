@@ -29,7 +29,7 @@ export function HeroHomepage({ data }: { data: HeroHomepageData | null }) {
       .url();
 
   return (
-    <section className="relative w-full overflow-hidden bg-nero-deep min-h-[80vh] flex items-center">
+    <section className="relative w-full overflow-hidden bg-nero-deep min-h-screen flex items-center">
       {fotoUrl ? (
         <Image
           src={fotoUrl}

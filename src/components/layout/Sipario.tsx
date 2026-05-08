@@ -3,10 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 
 interface SiparioProps {
-  /** Tempo minimo di permanenza del testo prima del fade (ms). */
-  minDuration?: number;
-  /** Failsafe: parte comunque dopo questo tempo (ms). */
-  maxDuration?: number;
   /**
    * Modalità preview: parte subito, niente attesa load.
    * Usato nello showcase per testare l'animazione.
@@ -18,19 +14,28 @@ interface SiparioProps {
   onComplete?: () => void;
 }
 
-const TEXT_FADE_MS = 400;
-const PANEL_OPEN_MS = 2500;
+/**
+ * Sequenza preloader (definitiva, 2.2s totali):
+ *  0–1000ms     text-visible      — scritta + tendaggi chiusi
+ *  1000–2200ms  curtains-opening  — tendaggi 1200ms, scritta fade-out 300ms
+ *  2200ms       done              — sipario unmounted
+ *
+ * Easing tendaggi: cubic-bezier(0.4, 0, 0.2, 1) (definito in globals.css).
+ * Fallback prefers-reduced-motion: niente movimento tendaggi, solo fade-out
+ * 400ms del contenuto e via.
+ */
+
+const TEXT_VISIBLE_MS = 1000;
+const CURTAINS_MS = 1200;
+
+type Phase = "text-visible" | "curtains-opening" | "done";
 
 export function Sipario({
-  minDuration = 1500,
-  maxDuration = 3500,
   mode = "auto",
   withSound = false,
   onComplete,
 }: SiparioProps) {
-  const [isFading, setIsFading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isUnmounted, setIsUnmounted] = useState(false);
+  const [phase, setPhase] = useState<Phase>("text-visible");
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -40,68 +45,54 @@ export function Sipario({
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    const timers: number[] = [];
-
     if (reduced) {
-      // Fallback: niente movimento tendaggi, solo fade-out 400ms del contenuto e via.
-      setIsFading(true);
-      timers.push(
-        window.setTimeout(() => {
-          setIsUnmounted(true);
-          onComplete?.();
-        }, TEXT_FADE_MS)
-      );
-      return () => timers.forEach(clearTimeout);
+      // Niente movimento tendaggi: fade-out 400ms del contenuto e via.
+      setPhase("curtains-opening");
+      const t = window.setTimeout(() => {
+        setPhase("done");
+        onComplete?.();
+      }, 400);
+      return () => {
+        window.clearTimeout(t);
+      };
     }
 
-    const startTime = Date.now();
-    let started = false;
+    const timers: number[] = [];
 
     const startSequence = () => {
-      if (started) return;
-      started = true;
-      const elapsed = Date.now() - startTime;
-      const wait = Math.max(0, minDuration - elapsed);
-
-      // Step 1 — dopo `wait` ms (testo persiste 1500ms): fade testo (400ms)
       timers.push(
         window.setTimeout(() => {
-          setIsFading(true);
+          setPhase("curtains-opening");
           if (withSound && audioRef.current) {
             audioRef.current.play().catch(() => {});
           }
-        }, wait)
+        }, TEXT_VISIBLE_MS)
       );
-      // Step 2 — dopo wait + 400ms: apertura tendaggi (2500ms)
-      timers.push(
-        window.setTimeout(() => setIsOpen(true), wait + TEXT_FADE_MS)
-      );
-      // Step 3 — dopo wait + 400 + 2500ms: smonta
       timers.push(
         window.setTimeout(() => {
-          setIsUnmounted(true);
+          setPhase("done");
           onComplete?.();
-        }, wait + TEXT_FADE_MS + PANEL_OPEN_MS)
+        }, TEXT_VISIBLE_MS + CURTAINS_MS)
       );
     };
 
-    if (mode === "preview") {
-      startSequence();
-    } else if (document.readyState === "complete") {
+    if (mode === "preview" || document.readyState === "complete") {
       startSequence();
     } else {
       window.addEventListener("load", startSequence, { once: true });
     }
 
-    timers.push(window.setTimeout(startSequence, maxDuration));
-
     return () => {
       window.removeEventListener("load", startSequence);
-      timers.forEach(clearTimeout);
+      timers.forEach((t) => window.clearTimeout(t));
     };
-  }, [minDuration, maxDuration, mode, withSound, onComplete]);
+  }, [mode, withSound, onComplete]);
 
-  if (isUnmounted) return null;
+  if (phase === "done") return null;
+
+  const isOpen = phase === "curtains-opening";
+  // La scritta entra in fade-out simultaneamente all'apertura tendaggi.
+  const isFading = phase === "curtains-opening";
 
   return (
     <div
