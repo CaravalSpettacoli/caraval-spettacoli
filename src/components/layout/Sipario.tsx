@@ -3,10 +3,6 @@
 import { useEffect, useRef, useState } from "react";
 
 interface SiparioProps {
-  /** Tempo minimo di permanenza del testo prima del fade (ms). */
-  minDuration?: number;
-  /** Failsafe: parte comunque dopo questo tempo (ms). */
-  maxDuration?: number;
   /**
    * Modalità preview: parte subito, niente attesa load.
    * Usato nello showcase per testare l'animazione.
@@ -18,19 +14,30 @@ interface SiparioProps {
   onComplete?: () => void;
 }
 
-const TEXT_FADE_MS = 300;
-const PANEL_OPEN_MS = 1200;
+/**
+ * Sequenza narrativa "entrata in scena":
+ *  0–1000ms   text-visible    — scritta + tendaggi chiusi
+ *  1000–2000  curtains-opening — i tendaggi si aprono (1000ms), scritta resta
+ *  2000–2800  zoom-in         — fade-out scritta + zoom contenuto sotto (800ms)
+ *  2800       done            — sipario unmounted
+ *
+ * Lo zoom del contenuto sottostante viene applicato aggiungendo la classe
+ * `preloader-zoomed-out` su <html>: la regola CSS in globals.css scala
+ * `.preloader-zoom-target` da 1.15 a 1.0.
+ */
+
+const TEXT_VISIBLE_MS = 1000;
+const CURTAINS_MS = 1000;
+const ZOOM_MS = 800;
+
+type Phase = "text-visible" | "curtains-opening" | "zoom-in" | "done";
 
 export function Sipario({
-  minDuration = 1200,
-  maxDuration = 2700,
   mode = "auto",
   withSound = false,
   onComplete,
 }: SiparioProps) {
-  const [isFading, setIsFading] = useState(false);
-  const [isOpen, setIsOpen] = useState(false);
-  const [isUnmounted, setIsUnmounted] = useState(false);
+  const [phase, setPhase] = useState<Phase>("text-visible");
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   useEffect(() => {
@@ -40,68 +47,64 @@ export function Sipario({
       "(prefers-reduced-motion: reduce)"
     ).matches;
 
-    const timers: number[] = [];
-
     if (reduced) {
-      // Fallback: niente movimento tendaggi, solo fade-out 400ms del contenuto e via.
-      setIsFading(true);
-      timers.push(
-        window.setTimeout(() => {
-          setIsUnmounted(true);
-          onComplete?.();
-        }, TEXT_FADE_MS)
-      );
-      return () => timers.forEach(clearTimeout);
+      // Niente movimento tendaggi né zoom: il contenuto sotto viene
+      // smascherato subito (zoom target a scale 1) e il sipario sparisce
+      // con un breve fade.
+      document.documentElement.classList.add("preloader-zoomed-out");
+      const t = window.setTimeout(() => {
+        setPhase("done");
+        onComplete?.();
+      }, 400);
+      return () => {
+        window.clearTimeout(t);
+      };
     }
 
-    const startTime = Date.now();
-    let started = false;
+    const timers: number[] = [];
 
     const startSequence = () => {
-      if (started) return;
-      started = true;
-      const elapsed = Date.now() - startTime;
-      const wait = Math.max(0, minDuration - elapsed);
-
-      // Step 1 — dopo `wait` ms (testo persiste 1500ms): fade testo (400ms)
+      // Step 1 — apertura tendaggi
       timers.push(
         window.setTimeout(() => {
-          setIsFading(true);
+          setPhase("curtains-opening");
           if (withSound && audioRef.current) {
             audioRef.current.play().catch(() => {});
           }
-        }, wait)
+        }, TEXT_VISIBLE_MS)
       );
-      // Step 2 — dopo wait + 400ms: apertura tendaggi (2500ms)
-      timers.push(
-        window.setTimeout(() => setIsOpen(true), wait + TEXT_FADE_MS)
-      );
-      // Step 3 — dopo wait + 400 + 2500ms: smonta
+      // Step 2 — fade scritta + zoom-in del contenuto sottostante
       timers.push(
         window.setTimeout(() => {
-          setIsUnmounted(true);
+          setPhase("zoom-in");
+          document.documentElement.classList.add("preloader-zoomed-out");
+        }, TEXT_VISIBLE_MS + CURTAINS_MS)
+      );
+      // Step 3 — smonta
+      timers.push(
+        window.setTimeout(() => {
+          setPhase("done");
           onComplete?.();
-        }, wait + TEXT_FADE_MS + PANEL_OPEN_MS)
+        }, TEXT_VISIBLE_MS + CURTAINS_MS + ZOOM_MS)
       );
     };
 
-    if (mode === "preview") {
-      startSequence();
-    } else if (document.readyState === "complete") {
+    if (mode === "preview" || document.readyState === "complete") {
       startSequence();
     } else {
       window.addEventListener("load", startSequence, { once: true });
     }
 
-    timers.push(window.setTimeout(startSequence, maxDuration));
-
     return () => {
       window.removeEventListener("load", startSequence);
-      timers.forEach(clearTimeout);
+      timers.forEach((t) => window.clearTimeout(t));
     };
-  }, [minDuration, maxDuration, mode, withSound, onComplete]);
+  }, [mode, withSound, onComplete]);
 
-  if (isUnmounted) return null;
+  if (phase === "done") return null;
+
+  const isOpen = phase === "curtains-opening" || phase === "zoom-in";
+  const isFading = phase === "zoom-in";
 
   return (
     <div

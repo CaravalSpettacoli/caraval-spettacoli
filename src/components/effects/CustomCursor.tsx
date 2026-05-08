@@ -4,11 +4,20 @@ import { useEffect, useRef, useState } from "react";
 
 /**
  * Cursore decorativo:
- *  - Punto rosso 8px ø che insegue il mouse (1:1, no transition su position)
- *  - Trail più grande che segue con lerp (effetto scia morbida)
- *  - Scale 1.5 al click (transition solo su transform)
+ *  - Punto rosso 8px ø che insegue il mouse 1:1 (transform via rAF)
+ *  - Trail più grande con lerp (effetto scia morbida)
+ *  - Scale 1.5 al click, smoothato anche lui via lerp dentro la stessa transform
  *  - Si disattiva su touch / prefers-reduced-motion
  *  - Nasconde il cursore di sistema via CSS in globals.css
+ *
+ *  Note implementative (anti-regressione):
+ *  - Niente React state per il click → no re-render → React non sovrascrive
+ *    mai la `transform` applicata da rAF.
+ *  - Posizione + scale combinate in UN'UNICA stringa `transform` aggiornata
+ *    solo dentro il tick rAF. Niente `style.scale` separato.
+ *  - Il `data-custom-cursor` non viene rimosso al cleanup: serve a tenere
+ *    `cursor: none` stabile anche durante eventuali re-mount in dev
+ *    (React Strict Mode) o HMR.
  */
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement | null>(null);
@@ -23,9 +32,12 @@ export function CustomCursor() {
 
     setEnabled(true);
     document.body.dataset.customCursor = "true";
+    document.documentElement.dataset.customCursor = "true";
 
     const target = { x: window.innerWidth / 2, y: window.innerHeight / 2 };
     const trail = { x: target.x, y: target.y };
+    let scaleTarget = 1;
+    let scaleCurrent = 1;
     let frame = 0;
 
     const onMove = (e: MouseEvent) => {
@@ -33,19 +45,24 @@ export function CustomCursor() {
       target.y = e.clientY;
     };
     const onDown = () => {
-      const dot = dotRef.current;
-      if (dot) dot.style.scale = "1.5";
+      scaleTarget = 1.5;
     };
     const onUp = () => {
-      const dot = dotRef.current;
-      if (dot) dot.style.scale = "1";
+      scaleTarget = 1;
     };
 
     const tick = () => {
+      // Scale: lerp morbido verso il target.
+      scaleCurrent += (scaleTarget - scaleCurrent) * 0.25;
+
       const dot = dotRef.current;
       if (dot) {
-        dot.style.transform = `translate3d(${target.x - 4}px, ${target.y - 4}px, 0)`;
+        // Posizione + scale in una singola transform: nessun altro stile
+        // CSS può destabilizzarla durante mousedown/mouseup.
+        dot.style.transform = `translate3d(${target.x - 4}px, ${target.y - 4}px, 0) scale(${scaleCurrent})`;
       }
+
+      // Trail: lerp 0.18 verso il target → effetto scia morbida.
       trail.x += (target.x - trail.x) * 0.18;
       trail.y += (target.y - trail.y) * 0.18;
       const t = trailRef.current;
@@ -61,7 +78,10 @@ export function CustomCursor() {
     frame = requestAnimationFrame(tick);
 
     return () => {
-      delete document.body.dataset.customCursor;
+      // Volutamente NON rimuoviamo `data-custom-cursor`: vogliamo che
+      // `cursor: none` resti applicato anche durante eventuali unmount/
+      // remount transitori (React Strict Mode in dev, HMR), per evitare
+      // che il cursore di sistema riappaia e Chrome lo "appenda" sui link.
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mousedown", onDown);
       window.removeEventListener("mouseup", onUp);
@@ -87,7 +107,7 @@ export function CustomCursor() {
           willChange: "transform",
         }}
       />
-      {/* Dot principale: insegue il mouse 1:1, scale 1.5 al click via DOM */}
+      {/* Dot principale: transform (translate + scale) gestita interamente da rAF */}
       <div
         ref={dotRef}
         aria-hidden="true"
@@ -95,10 +115,8 @@ export function CustomCursor() {
         style={{
           width: 8,
           height: 8,
-          transform: "translate3d(-9999px, -9999px, 0)",
+          transform: "translate3d(-9999px, -9999px, 0) scale(1)",
           willChange: "transform",
-          scale: "1",
-          transition: "scale 150ms ease-out",
         }}
       />
     </>
