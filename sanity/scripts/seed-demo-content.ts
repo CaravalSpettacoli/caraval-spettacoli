@@ -122,6 +122,28 @@ const homepageCopy: AnyDoc = {
   laboratoriBody:
     "Caraval collabora con le scuole primarie del territorio attraverso laboratori teatrali pensati per i bambini. Un percorso di gioco, espressione e racconto, dentro l'orario scolastico. Per le scuole interessate, scriviamo un progetto su misura.",
   laboratoriCtaTesto: "Contatta Vera per i laboratori scolastici",
+  // I numeri (counter homepage)
+  numeriEyebrow: "I NUMERI",
+  numeriElenco: [
+    { valore: "9", etichetta: "spettacoli" },
+    { valore: "3", etichetta: "anime" },
+    { valore: "6", etichetta: "anni" },
+    { valore: "1", etichetta: "festival" },
+  ],
+};
+
+// ---------- Pagina Imaginarium — Copy ----------
+
+const paginaImaginariumCopy: AnyDoc = {
+  _id: "paginaImaginariumCopy",
+  _type: "paginaImaginariumCopy",
+  counterEyebrow: "IMAGINARIUM IN NUMERI",
+  counterElenco: [
+    { valore: "3", etichetta: "edizioni" },
+    { valore: "18", etichetta: "spettacoli ospitati" },
+    { valore: "12", etichetta: "compagnie" },
+    { valore: "2.500+", etichetta: "spettatori" },
+  ],
 };
 
 // ---------- Membri ----------
@@ -233,8 +255,7 @@ const spettacoliSeeds: SpettacoloSeed[] = [
     titolo: "Skog e la Regina delle creature selvagge",
     categoria: "fuoco",
     inRepertorio: true,
-    mostraInHomepage: true,
-    ordineHomepage: 7,
+    mostraInHomepage: false,
     referenteContatto: "membro-nicola-pignoli",
   },
   {
@@ -243,7 +264,7 @@ const spettacoliSeeds: SpettacoloSeed[] = [
     categoria: "fuoco",
     inRepertorio: true,
     mostraInHomepage: true,
-    ordineHomepage: 8,
+    ordineHomepage: 7,
     referenteContatto: "membro-nicola-pignoli",
   },
   {
@@ -251,8 +272,7 @@ const spettacoliSeeds: SpettacoloSeed[] = [
     titolo: "A Christmas Carol",
     categoria: "fuoco",
     inRepertorio: true,
-    mostraInHomepage: true,
-    ordineHomepage: 9,
+    mostraInHomepage: false,
     referenteContatto: "membro-nicola-pignoli",
   },
   {
@@ -261,7 +281,7 @@ const spettacoliSeeds: SpettacoloSeed[] = [
     categoria: "strada",
     inRepertorio: true,
     mostraInHomepage: true,
-    ordineHomepage: 10,
+    ordineHomepage: 8,
   },
   {
     _id: "spettacolo-miseria-nobilta",
@@ -625,6 +645,10 @@ async function main() {
   // 9. Singleton paginaSpettacoliCopy
   await client.createOrReplace(paginaSpettacoliCopy);
   console.log("✓ paginaSpettacoliCopy");
+
+  // 9b. Singleton paginaImaginariumCopy (Blocco 1)
+  await client.createOrReplace(paginaImaginariumCopy);
+  console.log("✓ paginaImaginariumCopy");
 
   // 10. Archivio: 7 nuovi document spettacolo (idempotenti)
   for (const a of archivioSeeds) {

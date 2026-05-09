@@ -2,28 +2,41 @@ import { client } from "@/../sanity/lib/client";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { SpettacoliGrid } from "@/components/caraval/SpettacoliGrid";
+import { HeroPagina } from "@/components/caraval/HeroPagina";
+import {
+  ArchivioSpettacoliGrid,
+  type ArchivioItem,
+} from "@/components/caraval/ArchivioSpettacoliGrid";
 import type { SpettacoloCardLargeData } from "@/components/caraval/SpettacoloCardLarge";
 
 type PaginaCopy = {
   eyebrow?: string;
   heading?: string;
   intro?: string;
-  ctaArchivioDallIndice?: string;
+  archivioEyebrow?: string;
+  archivioHeading?: string;
+  archivioIntro?: string;
 };
 
 export const revalidate = 60;
 
 async function getData() {
-  const [spettacoli, copy] = await Promise.all([
+  const [spettacoli, archivio, copy] = await Promise.all([
     client.fetch<SpettacoloCardLargeData[]>(
       `*[_type == "spettacolo" && inRepertorio == true] | order(ordineHomepage asc, titolo asc){
         _id, titolo, sottotitolo, slug, categoria, descrizioneBreve, immagineCover,
         "premiAssociati": premiAssociati[]->{ _id, anno, nomePremio }
       }`
     ),
+    client.fetch<ArchivioItem[]>(
+      `*[_type == "spettacolo" && inRepertorio == false] | order(annoCreazione desc, titolo asc){
+        _id, titolo, annoCreazione, regia, immagineCover,
+        "premiAssociati": premiAssociati[]->{ _id, anno, nomePremio }
+      }`
+    ),
     client.fetch<PaginaCopy | null>(`*[_type == "paginaSpettacoliCopy"][0]`),
   ]);
-  return { spettacoli, copy };
+  return { spettacoli, archivio, copy };
 }
 
 export const metadata = {
@@ -33,27 +46,17 @@ export const metadata = {
 };
 
 export default async function PaginaSpettacoli() {
-  const { spettacoli, copy } = await getData();
+  const { spettacoli, archivio, copy } = await getData();
 
   return (
     <>
-      <section className="bg-nero-base flex items-center min-h-[40vh]">
-        <Container>
-          <div className="py-16 md:py-20 max-w-[820px]">
-            {copy?.eyebrow && (
-              <p className="uppercase-tracked text-caption text-rosso-base">
-                {copy.eyebrow}
-              </p>
-            )}
-            <h1 className="mt-3 font-display text-display-m md:text-display-l text-crema-base text-balance">
-              {copy?.heading ?? "I nostri spettacoli"}
-            </h1>
-            {copy?.intro && (
-              <p className="mt-4 text-body-l text-crema-muted">{copy.intro}</p>
-            )}
-          </div>
-        </Container>
-      </section>
+      <HeroPagina
+        eyebrow={copy?.eyebrow ?? "IL REPERTORIO"}
+        heading={copy?.heading ?? "Produzioni in repertorio"}
+        sottotitolo={copy?.intro}
+        palette="default"
+        altezza="compatto"
+      />
 
       <Section background="nero">
         <Container>
@@ -61,15 +64,22 @@ export default async function PaginaSpettacoli() {
         </Container>
       </Section>
 
-      {copy?.ctaArchivioDallIndice && (
-        <Section background="nero-soft" className="py-16 md:py-20">
+      {archivio.length > 0 && (
+        <Section background="nero-soft" id="archivio">
           <Container>
-            <a
-              href="/spettacoli/archivio"
-              className="block text-center font-display text-h3 md:text-h2 text-crema-base hover:text-rosso-hover transition-colors text-balance"
-            >
-              {copy.ctaArchivioDallIndice} →
-            </a>
+            <div className="mb-12 max-w-2xl">
+              <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
+                {copy?.archivioEyebrow ?? "ARCHIVIO"}
+              </p>
+              <h2 className="font-display text-h1 text-crema-base leading-tight text-balance">
+                {copy?.archivioHeading ?? "Produzioni passate"}
+              </h2>
+              <p className="mt-4 text-body-l text-crema-muted">
+                {copy?.archivioIntro ??
+                  "Spettacoli che hanno fatto parte del nostro percorso negli anni."}
+              </p>
+            </div>
+            <ArchivioSpettacoliGrid archivio={archivio} />
           </Container>
         </Section>
       )}

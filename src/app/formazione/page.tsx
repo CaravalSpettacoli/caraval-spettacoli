@@ -5,6 +5,7 @@ import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import { CorsoCard, type CorsoCardData } from "@/components/caraval/CorsoCard";
 import { LaboratoriScuoleSection } from "@/components/caraval/LaboratoriScuoleSection";
+import { HeroPagina } from "@/components/caraval/HeroPagina";
 
 export const revalidate = 60;
 
@@ -98,23 +99,13 @@ export default async function FormazionePage() {
 
   return (
     <>
-      {/* Hero 50vh */}
-      <section className="relative w-full bg-nero-deep min-h-[50vh] flex items-center border-b border-crema-faint/40">
-        <Container className="py-16 md:py-24">
-          <p className="text-label uppercase-tracked text-rosso-hover mb-3">
-            {heroEyebrow}
-          </p>
-          <h1 className="font-display text-display-l text-crema-base leading-[1.05] tracking-tight">
-            {heroHeading}
-          </h1>
-          <p className="mt-6 max-w-[680px] font-display text-h3 text-crema-base/90 leading-snug italic">
-            {heroSubheading}
-          </p>
-          <p className="mt-6 max-w-[680px] text-body-l text-crema-muted whitespace-pre-line">
-            {heroIntro}
-          </p>
-        </Container>
-      </section>
+      <HeroPagina
+        eyebrow={heroEyebrow}
+        heading={heroHeading}
+        sottotitolo={[heroSubheading, heroIntro].filter(Boolean).join("\n\n")}
+        palette="default"
+        altezza="compatto"
+      />
 
       {/* Sezione corsi */}
       <Section className="bg-nero-base">
