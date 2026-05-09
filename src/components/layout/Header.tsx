@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import Image from "next/image";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -15,9 +16,19 @@ const NAV_LINKS = [
   { href: "/contatti", label: "Contatti" },
 ];
 
+/** Pagine con sfondo chiaro (palette inversa). Quando l'header sta sopra
+ *  uno sfondo chiaro non scrollato → testo + logo scuri. Su scroll torna
+ *  comunque scuro perché il blur backdrop diventa nero semi-trasparente. */
+const LIGHT_BG_ROUTES = [/^\/imaginarium($|\/)/];
+
 export function Header() {
+  const pathname = usePathname() ?? "/";
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+
+  const isLightBg = LIGHT_BG_ROUTES.some((re) => re.test(pathname));
+  // Tema scuro (testo chiaro su sfondo scuro): default + scrolled + menu mobile aperto
+  const dark = !isLightBg || scrolled || open;
 
   useEffect(() => {
     let raf = 0;
@@ -47,7 +58,7 @@ export function Header() {
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-base ease-cinema",
         scrolled
-          ? "bg-nero-base/80 backdrop-blur-md border-b border-crema-faint"
+          ? "bg-nero-base/85 backdrop-blur-md border-b border-crema-faint/40"
           : "bg-transparent"
       )}
     >
@@ -58,10 +69,10 @@ export function Header() {
           aria-label="Caraval Spettacoli — home"
         >
           <Image
-            src="/caraval-logo-white.png"
+            src={dark ? "/caraval-logo-white.png" : "/caraval-logo-black.png"}
             alt="Caraval Spettacoli"
-            width={8505}
-            height={3345}
+            width={dark ? 8505 : 8000}
+            height={dark ? 3345 : 4500}
             priority
             className="h-9 md:h-12 w-auto"
           />
@@ -75,7 +86,12 @@ export function Header() {
             <Link
               key={l.href}
               href={l.href}
-              className="text-body-s uppercase-tracked text-crema-base hover:text-rosso-hover transition-colors"
+              className={cn(
+                "text-body-s uppercase-tracked transition-colors",
+                dark
+                  ? "text-crema-base hover:text-rosso-hover"
+                  : "text-nero-base hover:text-rosso-deep"
+              )}
             >
               {l.label}
             </Link>
@@ -84,7 +100,10 @@ export function Header() {
 
         <button
           type="button"
-          className="md:hidden inline-flex h-11 w-11 items-center justify-center text-crema-base"
+          className={cn(
+            "md:hidden inline-flex h-11 w-11 items-center justify-center transition-colors",
+            dark ? "text-crema-base" : "text-nero-base"
+          )}
           aria-label={open ? "Chiudi menu" : "Apri menu"}
           aria-expanded={open}
           aria-controls="mobile-nav"

@@ -165,7 +165,7 @@ export default async function ImaginariumPage() {
       <CounterStrip
         eyebrow={paginaCopy?.counterEyebrow ?? "IMAGINARIUM IN NUMERI"}
         numeri={counterNumeri}
-        palette="imaginarium"
+        palette="rosso"
       />
       <VideoYoutube
         url={
@@ -179,9 +179,10 @@ export default async function ImaginariumPage() {
       <ProgrammaCompleto
         spettacoli={spettacoliCorrente}
         heading="Programma"
+        palette="rosso"
       />
       <SponsorPartnerStrip data={edizioneCorrente} />
-      <EdizioniPassate edizioni={edizioniPassate} />
+      <EdizioniPassate edizioni={edizioniPassate} palette="rosso" />
     </div>
   );
 }

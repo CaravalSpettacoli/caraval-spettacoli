@@ -26,17 +26,38 @@ export function VideoYoutube({
   url?: string;
   eyebrow?: string;
   heading?: string;
-  palette?: "default" | "imaginarium";
+  palette?: "default" | "imaginarium" | "rosso";
 }) {
   if (!url) return null;
   const embed = youtubeEmbedUrl(url);
   if (!embed) return null;
 
-  const isImag = palette === "imaginarium";
-  const bg = isImag ? "bg-crema-base text-nero-base" : "bg-nero-base text-crema-base";
-  const eyebrowCol = isImag ? "text-rosso-deep/80" : "text-rosso-base/90";
-  const headingCol = isImag ? "text-rosso-deep" : "text-crema-base";
-  const frameBg = isImag ? "bg-rosso-deep/10" : "bg-nero-deep";
+  const config = (() => {
+    switch (palette) {
+      case "imaginarium":
+        return {
+          bg: "bg-crema-base text-nero-base",
+          eyebrowCol: "text-rosso-deep/80",
+          headingCol: "text-rosso-deep",
+          frameBg: "bg-rosso-deep/10",
+        };
+      case "rosso":
+        return {
+          bg: "bg-rosso-base text-crema-base",
+          eyebrowCol: "text-crema-base/80",
+          headingCol: "text-crema-bright",
+          frameBg: "bg-rosso-deep",
+        };
+      default:
+        return {
+          bg: "bg-nero-base text-crema-base",
+          eyebrowCol: "text-rosso-base/90",
+          headingCol: "text-crema-base",
+          frameBg: "bg-nero-deep",
+        };
+    }
+  })();
+  const { bg, eyebrowCol, headingCol, frameBg } = config;
 
   return (
     <section

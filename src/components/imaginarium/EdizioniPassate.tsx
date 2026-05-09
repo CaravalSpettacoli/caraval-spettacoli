@@ -9,14 +9,34 @@ export type EdizionePassataItem = {
 
 export function EdizioniPassate({
   edizioni,
+  palette = "default",
 }: {
   edizioni: EdizionePassataItem[] | null;
+  palette?: "default" | "rosso";
 }) {
   if (!edizioni || edizioni.length === 0) return null;
+  const isRosso = palette === "rosso";
+  const sectionBg = isRosso
+    ? "bg-rosso-base text-crema-base"
+    : "bg-crema-bright text-nero-base border-t border-rosso-deep/20";
+  const headingCol = isRosso ? "text-crema-bright" : "text-rosso-deep";
+  const cardCls = isRosso
+    ? "border border-crema-base/30 hover:border-crema-base bg-rosso-deep/30"
+    : "border border-rosso-deep/30 hover:border-rosso-deep bg-crema-base";
+  const annoCol = isRosso ? "text-crema-bright" : "text-rosso-deep";
+  const titoloCol = isRosso ? "text-crema-bright" : "text-nero-base";
+  const bodyCol = isRosso ? "text-crema-base/85" : "text-nero-base/75";
+  const linkCol = isRosso
+    ? "text-crema-base hover:text-crema-bright"
+    : "text-rosso-deep hover:text-rosso-base";
+
   return (
-    <section className="py-16 md:py-20 bg-crema-bright text-nero-base border-t border-rosso-deep/20">
+    <section
+      className={sectionBg}
+      style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
+    >
       <Container>
-        <h2 className="text-center font-display text-display-m text-rosso-deep">
+        <h2 className={`text-center font-display text-display-m ${headingCol}`}>
           Edizioni passate
         </h2>
         <ul
@@ -26,25 +46,25 @@ export function EdizioniPassate({
           {edizioni.map((e) => (
             <li
               key={e._id}
-              className="border border-rosso-deep/30 hover:border-rosso-deep bg-crema-base p-6 transition-colors duration-base"
+              className={`${cardCls} p-6 transition-colors duration-base`}
             >
               <div
-                className="font-display text-rosso-deep leading-none"
+                className={`font-display leading-none ${annoCol}`}
                 style={{ fontSize: "clamp(3rem, 8vw, 5rem)" }}
               >
                 {e.anno}
               </div>
               {e.titoloEdizione && (
-                <p className="mt-3 text-body font-semibold text-nero-base">
+                <p className={`mt-3 text-body font-semibold ${titoloCol}`}>
                   {e.titoloEdizione}
                 </p>
               )}
-              <p className="mt-2 text-body-s text-nero-base/75">
+              <p className={`mt-2 text-body-s ${bodyCol}`}>
                 {e.descrizioneBreve ?? "Programma in caricamento."}
               </p>
               <a
                 href={`/imaginarium/${e.anno}`}
-                className="mt-4 inline-flex items-center text-body-s text-rosso-deep underline underline-offset-4 hover:text-rosso-base"
+                className={`mt-4 inline-flex items-center text-body-s underline underline-offset-4 ${linkCol}`}
               >
                 Scopri →
               </a>

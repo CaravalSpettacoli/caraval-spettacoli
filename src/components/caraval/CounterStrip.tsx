@@ -5,7 +5,7 @@ export type CounterItem = { valore: string; etichetta: string };
 export interface CounterStripProps {
   eyebrow?: string;
   numeri: CounterItem[];
-  palette?: "default" | "imaginarium";
+  palette?: "default" | "imaginarium" | "rosso";
 }
 
 export function CounterStrip({
@@ -14,13 +14,36 @@ export function CounterStrip({
   palette = "default",
 }: CounterStripProps) {
   if (!numeri || numeri.length === 0) return null;
-  const isImag = palette === "imaginarium";
 
-  const bg = isImag ? "bg-crema-base text-nero-base" : "bg-nero-base text-crema-base";
-  const eyebrowCol = isImag ? "text-rosso-deep/80" : "text-rosso-base/90";
-  const valoreCol = isImag ? "text-rosso-deep" : "text-rosso-hover";
-  const etichettaCol = isImag ? "text-nero-base/65" : "text-crema-base/80";
-  const sepCol = isImag ? "bg-rosso-deep/15" : "bg-crema-faint/30";
+  const config = (() => {
+    switch (palette) {
+      case "imaginarium":
+        return {
+          bg: "bg-crema-base text-nero-base",
+          eyebrowCol: "text-rosso-deep/80",
+          valoreCol: "text-rosso-deep",
+          etichettaCol: "text-nero-base/65",
+          sepCol: "bg-rosso-deep/15",
+        };
+      case "rosso":
+        return {
+          bg: "bg-rosso-base text-crema-base",
+          eyebrowCol: "text-crema-base/80",
+          valoreCol: "text-crema-bright",
+          etichettaCol: "text-crema-base/85",
+          sepCol: "bg-crema-base/30",
+        };
+      default:
+        return {
+          bg: "bg-nero-base text-crema-base",
+          eyebrowCol: "text-rosso-base/90",
+          valoreCol: "text-rosso-hover",
+          etichettaCol: "text-crema-base/80",
+          sepCol: "bg-crema-faint/30",
+        };
+    }
+  })();
+  const { bg, eyebrowCol, valoreCol, etichettaCol, sepCol } = config;
 
   return (
     <section
