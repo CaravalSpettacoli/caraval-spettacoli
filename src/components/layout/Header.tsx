@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -53,10 +54,17 @@ export function Header() {
       <div className="mx-auto flex h-16 md:h-20 max-w-container-wide items-center justify-between px-4 md:px-6 lg:px-8">
         <Link
           href="/"
-          className="font-stonehead text-h4 md:text-h3 leading-none tracking-tight text-crema-base hover:text-crema-bright transition-colors"
+          className="flex items-center hover:opacity-80 transition-opacity"
           aria-label="Caraval Spettacoli — home"
         >
-          CARAVAL SPETTACOLI
+          <Image
+            src="/caraval-logo-white.png"
+            alt="Caraval Spettacoli"
+            width={8505}
+            height={3345}
+            priority
+            className="h-9 md:h-12 w-auto"
+          />
         </Link>
 
         <nav
