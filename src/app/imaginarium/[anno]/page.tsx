@@ -46,7 +46,9 @@ async function getEdizione(anno: string): Promise<{
   const spettacoli = await client.fetch<SpettacoloImagItem[]>(
     `*[_type == "spettacoloImaginarium" && edizioneRif->anno == $anno] | order(dataInizio asc){
       _id, titolo, dataInizio, linkCompagniaEsterna,
-      compagnia { nome, urlSitoCompagnia },
+      compagnia { nome, urlSitoCompagnia, descrizioneCompagniaBreve },
+      descrizione, cast, locationSpecifica,
+      "luogo": { "nome": luogo.nomeStruttura, "citta": luogo.citta },
       immagineCover
     }`,
     { anno: annoNum }

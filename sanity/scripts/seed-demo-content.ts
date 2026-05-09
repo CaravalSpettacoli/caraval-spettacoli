@@ -121,7 +121,7 @@ const homepageCopy: AnyDoc = {
   laboratoriHeading: "Nelle scuole del territorio",
   laboratoriBody:
     "Caraval collabora con le scuole primarie del territorio attraverso laboratori teatrali pensati per i bambini. Un percorso di gioco, espressione e racconto, dentro l'orario scolastico. Per le scuole interessate, scriviamo un progetto su misura.",
-  laboratoriCtaTesto: "Contatta Vera per i laboratori scolastici",
+  laboratoriCtaTesto: "Contattaci per i laboratori scolastici",
   // I numeri (counter homepage)
   numeriEyebrow: "I NUMERI",
   numeriElenco: [

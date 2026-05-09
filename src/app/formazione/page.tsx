@@ -86,16 +86,14 @@ export default async function FormazionePage() {
     copy.laboratoriBody ??
     "Caraval collabora con le scuole primarie del territorio attraverso laboratori teatrali pensati per i bambini. Un percorso di gioco, espressione e racconto, dentro l'orario scolastico. Per le scuole interessate, scriviamo un progetto su misura.";
   const labCtaTesto =
-    copy.laboratoriCtaTesto ?? "Contatta Vera per i laboratori scolastici";
+    copy.laboratoriCtaTesto ?? "Contattaci per i laboratori scolastici";
   const labCtaHref = `mailto:${
     impostazioni.contattiPubblici?.email ?? "caravalspettacoli@gmail.com"
   }?subject=${encodeURIComponent("Laboratori scolastici")}`;
 
-  // Telefono CTA finale: Vera (referente formazione)
-  const veraTel =
-    corsi.find((c) => c.referenteIscrizioni?.telefonoPubblico)
-      ?.referenteIscrizioni?.telefonoPubblico ?? "+39 348 9143189";
-  const veraTelHref = `tel:${veraTel.replace(/\s+/g, "")}`;
+  const contattiEmail =
+    impostazioni.contattiPubblici?.email ?? "caravalspettacoli@gmail.com";
+  const contattiTel = impostazioni.contattiPubblici?.telefono;
 
   return (
     <>
@@ -154,18 +152,31 @@ export default async function FormazionePage() {
       <Section className="bg-nero-base">
         <Container>
           <div className="text-center max-w-2xl mx-auto">
-            <p className="text-body-l text-crema-muted mb-2">
+            <p className="text-body-l text-crema-muted mb-4">
               Hai domande sui corsi?
             </p>
-            <p className="font-display text-h2 text-crema-base leading-tight">
-              Chiama Vera al{" "}
+            <h2 className="font-display text-h2 text-crema-base leading-tight">
+              Contattaci
+            </h2>
+            <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center items-center">
               <a
-                href={veraTelHref}
-                className="text-rosso-hover hover:text-rosso-base transition-colors underline underline-offset-8 decoration-rosso-base/40"
+                href={`mailto:${contattiEmail}?subject=${encodeURIComponent("Informazioni corsi")}`}
+                className="text-body-l text-crema-base underline underline-offset-8 decoration-rosso-base hover:text-rosso-hover transition-colors"
               >
-                {veraTel}
+                {contattiEmail}
               </a>
-            </p>
+              {contattiTel && (
+                <>
+                  <span aria-hidden className="hidden sm:inline text-crema-faint">·</span>
+                  <a
+                    href={`tel:${contattiTel.replace(/\s+/g, "")}`}
+                    className="text-body-l text-crema-base underline underline-offset-8 decoration-rosso-base hover:text-rosso-hover transition-colors"
+                  >
+                    {contattiTel}
+                  </a>
+                </>
+              )}
+            </div>
           </div>
         </Container>
       </Section>

@@ -9,6 +9,7 @@ type EdizioneHero = {
   locationPrincipale?: string;
   descrizione?: Array<{ children?: Array<{ text?: string }> }>;
   descrizioneBreve?: string;
+  fotoSfondoHero?: { asset?: { _ref?: string }; alt?: string };
 };
 import {
   ProgrammaCompleto,
@@ -39,6 +40,7 @@ async function getImaginariumData() {
       `*[_type == "edizioneImaginarium"] | order(anno desc)[0]{
         anno, titoloEdizione, dataInizio, dataFine,
         locationPrincipale, descrizione, descrizioneBreve,
+        fotoSfondoHero,
         patrocinio, sponsor, partnerLista
       }`
     ),
@@ -54,7 +56,9 @@ async function getImaginariumData() {
       ? client.fetch<SpettacoloImagItem[]>(
           `*[_type == "spettacoloImaginarium" && edizioneRif->anno == $anno] | order(dataInizio asc){
             _id, titolo, dataInizio, linkCompagniaEsterna,
-            compagnia { nome, urlSitoCompagnia },
+            compagnia { nome, urlSitoCompagnia, descrizioneCompagniaBreve },
+            descrizione, cast, locationSpecifica,
+            "luogo": { "nome": luogo.nomeStruttura, "citta": luogo.citta },
             immagineCover
           }`,
           { anno: annoCorrente }
@@ -145,6 +149,7 @@ export default async function ImaginariumPage() {
             : "Imaginarium"
         }
         sottotitolo={sottotitoloHero || undefined}
+        fotoSfondo={edizioneCorrente?.fotoSfondoHero}
         palette="imaginarium"
         altezza="full"
       />
