@@ -144,6 +144,9 @@ const paginaImaginariumCopy: AnyDoc = {
     { valore: "12", etichetta: "compagnie" },
     { valore: "2.500+", etichetta: "spettatori" },
   ],
+  videoEyebrow: "GUARDA",
+  videoHeading: "Imaginarium in due minuti",
+  videoYoutubeUrl: "https://www.youtube.com/watch?v=KNRC35KjVeA",
 };
 
 // ---------- Membri ----------

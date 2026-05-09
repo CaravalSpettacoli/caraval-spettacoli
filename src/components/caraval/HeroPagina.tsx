@@ -19,6 +19,9 @@ export interface HeroPaginaProps {
   fotoSfondo?: FotoSfondo | null;
   palette?: "default" | "imaginarium";
   altezza?: "full" | "compatto";
+  /** Se settato, sostituisce l'heading testuale con un'immagine logo. */
+  logoSrc?: string;
+  logoAlt?: string;
 }
 
 export function HeroPagina({
@@ -30,6 +33,8 @@ export function HeroPagina({
   fotoSfondo,
   palette = "default",
   altezza = "compatto",
+  logoSrc,
+  logoAlt,
 }: HeroPaginaProps) {
   const isImag = palette === "imaginarium";
   const isFull = altezza === "full";
@@ -94,17 +99,38 @@ export function HeroPagina({
                 {eyebrow}
               </p>
             )}
-            <h1
-              className={`mt-3 font-display leading-[1.05] tracking-tight text-balance ${headingClass}`}
-              style={{
-                fontSize: isFull
-                  ? "clamp(2.75rem, 9vw, 7rem)"
-                  : "clamp(2.25rem, 6vw, 5rem)",
-                letterSpacing: "0.01em",
-              }}
-            >
-              {heading}
-            </h1>
+            {logoSrc ? (
+              <div className="mt-3 max-w-full">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={logoSrc}
+                  alt={logoAlt ?? heading}
+                  className="block w-full h-auto"
+                  style={{
+                    maxWidth: isFull
+                      ? "min(720px, 90vw)"
+                      : "min(520px, 80vw)",
+                    filter:
+                      isImag && !fotoUrl
+                        ? "brightness(0.18) sepia(1) hue-rotate(-25deg) saturate(6)"
+                        : undefined,
+                  }}
+                />
+                <span className="sr-only">{heading}</span>
+              </div>
+            ) : (
+              <h1
+                className={`mt-3 font-display leading-[1.05] tracking-tight text-balance ${headingClass}`}
+                style={{
+                  fontSize: isFull
+                    ? "clamp(2.75rem, 9vw, 7rem)"
+                    : "clamp(2.25rem, 6vw, 5rem)",
+                  letterSpacing: "0.01em",
+                }}
+              >
+                {heading}
+              </h1>
+            )}
             {sottotitolo && (
               <p
                 className={`mt-6 max-w-[680px] text-body-l whitespace-pre-line ${sottotitoloClass}`}

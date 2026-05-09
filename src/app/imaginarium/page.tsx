@@ -24,6 +24,7 @@ import {
   type EdizionePassataItem,
 } from "@/components/imaginarium/EdizioniPassate";
 import { CounterStrip, type CounterItem } from "@/components/caraval/CounterStrip";
+import { VideoYoutube } from "@/components/caraval/VideoYoutube";
 
 export const revalidate = 60;
 
@@ -32,6 +33,9 @@ type EdizioneCorrenteFull = EdizioneHero & SponsorPartnerData & { anno?: number 
 type PaginaImagCopy = {
   counterEyebrow?: string;
   counterElenco?: CounterItem[];
+  videoEyebrow?: string;
+  videoHeading?: string;
+  videoYoutubeUrl?: string;
 };
 
 async function getImaginariumData() {
@@ -45,7 +49,10 @@ async function getImaginariumData() {
       }`
     ),
     client.fetch<PaginaImagCopy | null>(
-      `*[_type == "paginaImaginariumCopy"][0]{ counterEyebrow, counterElenco }`
+      `*[_type == "paginaImaginariumCopy"][0]{
+        counterEyebrow, counterElenco,
+        videoEyebrow, videoHeading, videoYoutubeUrl
+      }`
     ),
   ]);
 
@@ -152,10 +159,21 @@ export default async function ImaginariumPage() {
         fotoSfondo={edizioneCorrente?.fotoSfondoHero}
         palette="imaginarium"
         altezza="full"
+        logoSrc="/imaginarium-logo.png"
+        logoAlt="Imaginarium — Festival di Teatro Itinerante"
       />
       <CounterStrip
         eyebrow={paginaCopy?.counterEyebrow ?? "IMAGINARIUM IN NUMERI"}
         numeri={counterNumeri}
+        palette="imaginarium"
+      />
+      <VideoYoutube
+        url={
+          paginaCopy?.videoYoutubeUrl ??
+          "https://www.youtube.com/watch?v=KNRC35KjVeA"
+        }
+        eyebrow={paginaCopy?.videoEyebrow ?? "GUARDA"}
+        heading={paginaCopy?.videoHeading ?? "Imaginarium in due minuti"}
         palette="imaginarium"
       />
       <ProgrammaCompleto

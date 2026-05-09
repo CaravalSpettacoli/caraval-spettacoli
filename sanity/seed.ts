@@ -51,6 +51,29 @@ const impostazioni = {
     telefono: "+39 379 149 7805",
     telefonoVeraDiretto: "+39 348 9143189",
   },
+  socialLinks: [
+    {
+      _key: "social-instagram",
+      piattaforma: "instagram",
+      url: "https://www.instagram.com/caravalspettacoli",
+      mostraInHeader: false,
+      mostraInFooter: true,
+    },
+    {
+      _key: "social-facebook",
+      piattaforma: "facebook",
+      url: "https://www.facebook.com/caravalspettacoli",
+      mostraInHeader: false,
+      mostraInFooter: true,
+    },
+    {
+      _key: "social-youtube",
+      piattaforma: "youtube",
+      url: "https://www.youtube.com/@caravalspettacoli",
+      mostraInHeader: false,
+      mostraInFooter: true,
+    },
+  ],
   datiAssociazione: {
     ragioneSociale: "Caraval Associazione Culturale",
     partitaIva: "01720800190",

@@ -37,7 +37,23 @@ const FALLBACK: ImpostazioniFooter = {
     partitaIva: "",
     codiceFiscale: "",
   },
-  socialLinks: [],
+  socialLinks: [
+    {
+      piattaforma: "instagram",
+      url: "https://www.instagram.com/caravalspettacoli",
+      mostraInFooter: true,
+    },
+    {
+      piattaforma: "facebook",
+      url: "https://www.facebook.com/caravalspettacoli",
+      mostraInFooter: true,
+    },
+    {
+      piattaforma: "youtube",
+      url: "https://www.youtube.com/@caravalspettacoli",
+      mostraInFooter: true,
+    },
+  ],
 };
 
 const SITE_LINKS = [
@@ -78,9 +94,12 @@ export async function Footer() {
   const impostazioni = await getImpostazioni();
   const dati = impostazioni.datiAssociazione || {};
   const contatti = impostazioni.contattiPubblici || {};
-  const social = (impostazioni.socialLinks || []).filter(
+  const socialLive = (impostazioni.socialLinks || []).filter(
     (s) => s.mostraInFooter !== false && s.url
   );
+  // Se Sanity non ha social configurati, fallback ai canali ufficiali.
+  const social =
+    socialLive.length > 0 ? socialLive : (FALLBACK.socialLinks ?? []);
 
   const indirizzoCompleto = [
     dati.indirizzo,

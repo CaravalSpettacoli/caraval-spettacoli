@@ -4,8 +4,33 @@ export default defineType({
   name: "paginaImaginariumCopy",
   title: "Imaginarium — Copy pagina",
   type: "document",
-  groups: [{ name: "counter", title: "Counter (totali festival)" }],
+  groups: [
+    { name: "counter", title: "Counter (totali festival)" },
+    { name: "video", title: "Video presentazione" },
+  ],
   fields: [
+    defineField({
+      name: "videoEyebrow",
+      title: "Video — Eyebrow",
+      type: "string",
+      group: "video",
+      initialValue: "GUARDA",
+    }),
+    defineField({
+      name: "videoHeading",
+      title: "Video — Heading",
+      type: "string",
+      group: "video",
+      initialValue: "Imaginarium in due minuti",
+    }),
+    defineField({
+      name: "videoYoutubeUrl",
+      title: "Video — URL YouTube",
+      type: "url",
+      group: "video",
+      description:
+        "URL completo (youtube.com/watch?v=… o youtu.be/…). Se vuoto la sezione non viene mostrata.",
+    }),
     defineField({
       name: "counterEyebrow",
       title: "Counter — Eyebrow",
