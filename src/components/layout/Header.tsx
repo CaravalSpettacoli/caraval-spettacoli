@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
@@ -53,13 +52,21 @@ export function Header() {
     };
   }, [open]);
 
+  // Scrim sottile in cima quando non scrollato — garantisce leggibilità del
+  // logo/nav anche su foto sfondo o sezioni di colore inaspettato.
+  const scrimClass = scrolled
+    ? ""
+    : isLightBg
+      ? "bg-gradient-to-b from-crema-base/70 to-transparent"
+      : "bg-gradient-to-b from-black/55 to-transparent";
+
   return (
     <header
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-base ease-cinema",
         scrolled
           ? "bg-nero-base/85 backdrop-blur-md border-b border-crema-faint/40"
-          : "bg-transparent"
+          : scrimClass
       )}
     >
       <div className="mx-auto flex h-16 md:h-20 max-w-container-wide items-center justify-between px-4 md:px-6 lg:px-8">
@@ -68,13 +75,18 @@ export function Header() {
           className="flex items-center hover:opacity-80 transition-opacity"
           aria-label="Caraval Spettacoli — home"
         >
-          <Image
+          {/* Plain <img> per evitare hydration glitch sul cambio src dinamico */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img
+            key={dark ? "white" : "black"}
             src={dark ? "/caraval-logo-white.png" : "/caraval-logo-black.png"}
             alt="Caraval Spettacoli"
-            width={dark ? 8505 : 8000}
-            height={dark ? 3345 : 4500}
-            priority
             className="h-9 md:h-12 w-auto"
+            style={{
+              filter: scrolled
+                ? "none"
+                : "drop-shadow(0 1px 2px rgba(0,0,0,0.25))",
+            }}
           />
         </Link>
 
