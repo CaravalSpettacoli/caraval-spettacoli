@@ -16,6 +16,9 @@ import homepageHero from "./homepageHero";
 import homepageCopy from "./homepageCopy";
 import paginaSpettacoliCopy from "./paginaSpettacoliCopy";
 import paginaImaginariumCopy from "./paginaImaginariumCopy";
+import paginaChiSiamoCopy from "./paginaChiSiamoCopy";
+import paginaContattiCopy from "./paginaContattiCopy";
+import paginaOspitaCopy from "./paginaOspitaCopy";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   luogo,
@@ -34,6 +37,9 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   homepageCopy,
   paginaSpettacoliCopy,
   paginaImaginariumCopy,
+  paginaChiSiamoCopy,
+  paginaContattiCopy,
+  paginaOspitaCopy,
 ];
 
 export const singletonTypes = new Set([
@@ -44,4 +50,7 @@ export const singletonTypes = new Set([
   "homepageCopy",
   "paginaSpettacoliCopy",
   "paginaImaginariumCopy",
+  "paginaChiSiamoCopy",
+  "paginaContattiCopy",
+  "paginaOspitaCopy",
 ]);

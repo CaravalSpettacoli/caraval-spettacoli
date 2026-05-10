@@ -25,7 +25,15 @@ export default defineType({
       options: { layout: "tags" },
       validation: (r) => r.required().min(1),
     }),
-    defineField({ name: "bio", title: "Bio (opzionale)", type: "text", rows: 4 }),
+    defineField({
+      name: "bioBreve",
+      title: "Bio breve (max 200 caratteri)",
+      type: "text",
+      rows: 3,
+      description: 'Frase singola usata in /chi-siamo nella griglia membri.',
+      validation: (r) => r.max(200),
+    }),
+    defineField({ name: "bio", title: "Bio (opzionale, lunga)", type: "text", rows: 4 }),
     defineField({
       name: "foto",
       title: "Foto",

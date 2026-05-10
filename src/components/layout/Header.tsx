@@ -15,6 +15,9 @@ const NAV_LINKS = [
   { href: "/contatti", label: "Contatti" },
 ];
 
+// Voce B2B "Ospita" presente solo nel menu mobile (decisione: NON in header desktop).
+const MOBILE_EXTRA_LINKS = [{ href: "/ospita", label: "Ospita Caraval" }];
+
 /** Pagine con sfondo chiaro (palette inversa). Quando l'header sta sopra
  *  uno sfondo chiaro non scrollato → testo + logo scuri. Su scroll torna
  *  comunque scuro perché il blur backdrop diventa nero semi-trasparente. */
@@ -135,6 +138,16 @@ export function Header() {
             aria-label="Navigazione mobile"
           >
             {NAV_LINKS.map((l) => (
+              <Link
+                key={l.href}
+                href={l.href}
+                onClick={() => setOpen(false)}
+                className="block py-4 font-display text-h3 text-crema-base hover:text-rosso-hover transition-colors border-b border-crema-faint"
+              >
+                {splitDisplay(l.label)}
+              </Link>
+            ))}
+            {MOBILE_EXTRA_LINKS.map((l) => (
               <Link
                 key={l.href}
                 href={l.href}
