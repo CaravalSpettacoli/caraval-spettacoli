@@ -92,6 +92,21 @@ export default defineType({
       ],
     }),
     defineField({
+      name: "fotoSfondoHero",
+      title: "Foto di sfondo hero",
+      type: "image",
+      options: { hotspot: true },
+      description:
+        "Foto a tutta larghezza dietro al titolo nella hero della pagina Imaginarium. Se vuota, sfondo crema pieno.",
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Testo alternativo",
+          type: "string",
+        }),
+      ],
+    }),
+    defineField({
       name: "locandina",
       title: "Locandina",
       type: "image",

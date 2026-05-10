@@ -132,14 +132,11 @@ export function CorsoCard({
         )}
       </dl>
 
-      {ref && (ref.nome || ref.telefonoPubblico || ref.emailPubblica) && (
+      {ref && (ref.telefonoPubblico || ref.emailPubblica) && (
         <div className="mt-2 pt-4 border-t border-crema-faint/40">
           <p className="text-label uppercase-tracked text-rosso-hover mb-2">
             Iscrizioni
           </p>
-          {ref.nome && (
-            <p className="text-body-s text-crema-base">{ref.nome}</p>
-          )}
           <div className="mt-1 flex flex-col gap-1 text-body-s">
             {ref.telefonoPubblico && (
               <a

@@ -7,52 +7,86 @@ export type SpettacoloImagItem = {
   _id: string;
   titolo?: string;
   dataInizio?: string;
-  compagnia?: { nome?: string; urlSitoCompagnia?: string };
+  compagnia?: {
+    nome?: string;
+    urlSitoCompagnia?: string;
+    descrizioneCompagniaBreve?: string;
+  };
   linkCompagniaEsterna?: string;
   immagineCover?: { asset?: { _ref?: string }; alt?: string };
+  descrizione?: Array<{ children?: Array<{ text?: string }> }>;
+  cast?: string;
+  locationSpecifica?: string;
+  luogo?: { nome?: string; citta?: string };
 };
 
 const MESI = [
-  "gen",
-  "feb",
-  "mar",
-  "apr",
-  "mag",
-  "giu",
-  "lug",
-  "ago",
-  "set",
-  "ott",
-  "nov",
-  "dic",
+  "gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno",
+  "luglio", "agosto", "settembre", "ottobre", "novembre", "dicembre",
 ];
-const GIORNI = ["dom", "lun", "mar", "mer", "gio", "ven", "sab"];
+const GIORNI = [
+  "domenica", "lunedì", "martedì", "mercoledì", "giovedì", "venerdì", "sabato",
+];
 
-function formatData(iso?: string): string {
-  if (!iso) return "";
+function blocksToText(blocks?: SpettacoloImagItem["descrizione"]): string {
+  if (!blocks) return "";
+  return blocks
+    .map((b) => (b.children ?? []).map((c) => c.text ?? "").join(""))
+    .join("\n\n");
+}
+
+function dataParts(iso?: string) {
+  if (!iso) return null;
   const d = new Date(iso);
-  const giorno = GIORNI[d.getDay()];
-  const num = d.getDate();
-  const mese = MESI[d.getMonth()];
-  const ore = d.getHours();
-  const min = d.getMinutes();
-  const oraStr =
-    min === 0 ? `ore ${ore}` : `ore ${ore}.${min.toString().padStart(2, "0")}`;
-  return `${giorno.charAt(0).toUpperCase() + giorno.slice(1)} ${num} ${mese} · ${oraStr}`;
+  return {
+    giorno: d.getDate(),
+    mese: MESI[d.getMonth()],
+    settimana: GIORNI[d.getDay()],
+    ora: `${d.getHours()}${
+      d.getMinutes() === 0 ? "" : `.${d.getMinutes().toString().padStart(2, "0")}`
+    }`,
+  };
+}
+
+function locationLabel(s: SpettacoloImagItem): string | null {
+  if (s.locationSpecifica) return s.locationSpecifica;
+  const parts = [s.luogo?.nome, s.luogo?.citta].filter(Boolean);
+  return parts.length > 0 ? parts.join(" — ") : null;
 }
 
 export function ProgrammaCompleto({
   spettacoli,
   heading,
+  palette = "imaginarium",
 }: {
   spettacoli: SpettacoloImagItem[] | null;
   heading?: string;
+  palette?: "imaginarium" | "rosso";
 }) {
+  const isRosso = palette === "rosso";
+  const bg = isRosso ? "bg-rosso-base text-crema-base" : "bg-crema-base text-nero-base";
+  const eyebrowCol = isRosso ? "text-crema-base/80" : "text-rosso-deep/80";
+  const headingCol = isRosso ? "text-crema-bright" : "text-rosso-deep";
+  const dataCol = isRosso ? "text-crema-bright" : "text-rosso-deep";
+  const titoloCol = isRosso ? "text-crema-bright" : "text-nero-base";
+  const compagniaCol = isRosso ? "text-crema-base/80" : "text-nero-base/75";
+  const compagniaUnderline = isRosso
+    ? "decoration-crema-base/40 hover:text-crema-bright"
+    : "decoration-rosso-deep/40 hover:text-rosso-deep";
+  const descrCol = isRosso ? "text-crema-base/85" : "text-nero-base/85";
+  const dlLabelCol = isRosso ? "text-crema-base/75" : "text-rosso-deep/80";
+  const dlValueCol = isRosso ? "text-crema-bright" : "text-nero-base";
+  const fotoBorder = isRosso ? "border-crema-base/20" : "border-rosso-deep/20";
+  const datasubCol = isRosso ? "text-crema-base/65" : "text-nero-base/60";
+
   if (!spettacoli || spettacoli.length === 0) {
     return (
-      <section className="py-16 md:py-20 bg-crema-base text-nero-base">
+      <section
+        className={bg}
+        style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
+      >
         <Container>
-          <p className="text-center text-body-l text-nero-base/70 italic">
+          <p className="text-center text-body-l opacity-70 italic">
             Programma in fase di caricamento. Le date saranno annunciate sui
             canali ufficiali.
           </p>
@@ -62,76 +96,147 @@ export function ProgrammaCompleto({
   }
 
   return (
-    <section className="py-16 md:py-20 bg-crema-base text-nero-base">
+    <section
+      className={bg}
+      style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
+    >
       <Container>
         {heading && (
-          <h2 className="text-center font-display text-display-m text-rosso-deep mb-12">
-            {heading}
-          </h2>
+          <div className="text-center mb-16 md:mb-20">
+            <p className={`uppercase-tracked text-caption mb-3 ${eyebrowCol}`}>
+              Programma
+            </p>
+            <h2 className={`font-display text-display-m ${headingCol}`}>
+              {heading}
+            </h2>
+          </div>
         )}
-        <ul
-          role="list"
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8"
-        >
-          {spettacoli.map((s) => {
-            const linkCompagnia =
-              s.linkCompagniaEsterna ?? s.compagnia?.urlSitoCompagnia;
+
+        <div className="space-y-20 md:space-y-28">
+          {spettacoli.map((s, idx) => {
+            const reverse = idx % 2 === 1;
             const fotoUrl =
               s.immagineCover?.asset?._ref &&
               urlFor(s.immagineCover as Parameters<typeof urlFor>[0])
-                .width(800)
-                .height(600)
+                .width(1200)
+                .height(900)
                 .fit("crop")
                 .url();
+            const linkCompagnia =
+              s.linkCompagniaEsterna ?? s.compagnia?.urlSitoCompagnia;
+            const data = dataParts(s.dataInizio);
+            const descrizione = blocksToText(s.descrizione);
+            const luogoStr = locationLabel(s);
+
             return (
-              <li
+              <article
                 key={s._id}
-                className="group flex flex-col bg-crema-bright border border-rosso-deep/20 hover:border-rosso-deep transition-all duration-base hover:shadow-[0_12px_32px_rgba(142,18,64,0.18)] hover:-translate-y-1"
+                className={`grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-center ${
+                  reverse ? "md:[&>*:first-child]:order-2" : ""
+                }`}
               >
-                <div className="relative w-full" style={{ aspectRatio: "4/3" }}>
-                  {fotoUrl ? (
-                    <Image
-                      src={fotoUrl}
-                      alt={s.immagineCover?.alt ?? s.titolo ?? ""}
-                      fill
-                      sizes="(min-width: 1024px) 33vw, (min-width: 768px) 50vw, 100vw"
-                      className="object-cover"
-                    />
-                  ) : (
-                    <PlaceholderImage
-                      title={s.titolo ?? "Spettacolo"}
-                      aspectRatio="4/3"
-                    />
-                  )}
+                {/* Foto */}
+                <div className="md:col-span-7">
+                  <div
+                    className={`relative w-full overflow-hidden border ${fotoBorder}`}
+                    style={{ aspectRatio: "4/3" }}
+                  >
+                    {fotoUrl ? (
+                      <Image
+                        src={fotoUrl}
+                        alt={s.immagineCover?.alt ?? s.titolo ?? ""}
+                        fill
+                        sizes="(min-width: 768px) 58vw, 100vw"
+                        className="object-cover"
+                      />
+                    ) : (
+                      <PlaceholderImage
+                        title={s.titolo ?? "Spettacolo"}
+                        aspectRatio="4/3"
+                      />
+                    )}
+                  </div>
                 </div>
-                <div className="p-5 flex-1 flex flex-col">
-                  <div className="font-display text-h4 text-rosso-deep leading-tight">
-                    {formatData(s.dataInizio)}
-                  </div>
-                  <div className="mt-2 text-body font-semibold text-nero-base">
+
+                {/* Testo */}
+                <div className="md:col-span-5">
+                  {data && (
+                    <div className="flex items-baseline gap-3 mb-4">
+                      <span
+                        className={`font-display leading-none ${dataCol}`}
+                        style={{ fontSize: "clamp(3rem, 6vw, 4.5rem)" }}
+                      >
+                        {data.giorno}
+                      </span>
+                      <div className="flex flex-col">
+                        <span className={`font-display text-h4 leading-none ${dataCol}`}>
+                          {data.mese}
+                        </span>
+                        <span className={`text-caption uppercase-tracked mt-1 ${datasubCol}`}>
+                          {data.settimana} · ore {data.ora}
+                        </span>
+                      </div>
+                    </div>
+                  )}
+
+                  <h3 className={`font-display text-h2 leading-tight text-balance ${titoloCol}`}>
                     {s.titolo}
-                  </div>
+                  </h3>
+
                   {s.compagnia?.nome && (
-                    <div className="mt-1 text-body-s text-nero-base/70 italic">
+                    <p className={`mt-2 text-body-l italic ${compagniaCol}`}>
                       {linkCompagnia ? (
                         <a
                           href={linkCompagnia}
                           target="_blank"
                           rel="noreferrer noopener"
-                          className="hover:text-rosso-deep underline underline-offset-4"
+                          className={`underline underline-offset-4 ${compagniaUnderline}`}
                         >
                           {s.compagnia.nome}
                         </a>
                       ) : (
                         s.compagnia.nome
                       )}
-                    </div>
+                    </p>
                   )}
+
+                  {descrizione && (
+                    <p className={`mt-5 text-body whitespace-pre-line leading-relaxed ${descrCol}`}>
+                      {descrizione}
+                    </p>
+                  )}
+
+                  {s.compagnia?.descrizioneCompagniaBreve && !descrizione && (
+                    <p className={`mt-5 text-body italic ${descrCol}`}>
+                      {s.compagnia.descrizioneCompagniaBreve}
+                    </p>
+                  )}
+
+                  <dl className="mt-6 grid gap-2 text-body-s">
+                    {luogoStr && (
+                      <div className="flex gap-3">
+                        <dt className={`uppercase-tracked text-caption shrink-0 w-24 pt-0.5 ${dlLabelCol}`}>
+                          Luogo
+                        </dt>
+                        <dd className={dlValueCol}>{luogoStr}</dd>
+                      </div>
+                    )}
+                    {s.cast && (
+                      <div className="flex gap-3">
+                        <dt className={`uppercase-tracked text-caption shrink-0 w-24 pt-0.5 ${dlLabelCol}`}>
+                          Cast
+                        </dt>
+                        <dd className={`whitespace-pre-line ${dlValueCol}`}>
+                          {s.cast}
+                        </dd>
+                      </div>
+                    )}
+                  </dl>
                 </div>
-              </li>
+              </article>
             );
           })}
-        </ul>
+        </div>
       </Container>
     </section>
   );

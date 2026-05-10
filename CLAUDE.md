@@ -425,6 +425,59 @@ Branch `feat/sessione-5-calendario-formazione` da `main` post-merge PR #4.
 - `EventoCard` rinominato → `EventoCardSimple` invece di `TicketBigliettoVintage`: il vecchio componente NON era una variante ticket vintage (quello era `TicketBiglietto.tsx`, eliminato in 2.7), era solo una card data+contenuto. Nome più onesto.
 - `homepageCopy` esteso (vs nuovo singleton `paginaFormazioneCopy`): un singolo singleton è più maneggevole per Vera, pattern coerente con groups Studio.
 
+### ✅ Blocco 1 — Polish strutturale (FATTO)
+Branch `feat/blocco-1-polish-strutturale` da `main` post-merge Sessione 5.
+
+**Task A — Bug fix:**
+- A.1 typo "proloco": fonte già corretta in tutte le 3 occorrenze (`COPY_HOMEPAGE.md`, `seed-demo-content.ts`, `src/app/calendario/page.tsx` fallback) — il typo è solo nel documento Sanity live, si risolve al prossimo seed run.
+- A.2/A.3 overflow CTA hero homepage e logo IMAGINARIUM: assorbiti in Task B (i nuovi hero usano `clamp()` su font-size + `flex-wrap` sulle CTA). I componenti `HeroHomepage`/`HeroImaginarium` sono stati eliminati.
+- A.4 Footer split CARAVAL/Associazione: `Footer.tsx` divide ora `ragioneSociale` su space, prima parola in Cinzel 1.5rem leading-none, resto in Inter body-s `text-crema-muted`.
+
+**Task B — `HeroPagina` unificato (`src/components/caraval/HeroPagina.tsx`):**
+- Props: `eyebrow`, `heading`, `sottotitolo`, `ctaPrimaria`, `ctaSecondaria`, `fotoSfondo`, `palette` (`default` | `imaginarium`), `altezza` (`full` | `compatto`).
+- Layout sinistra-allineato max-w 820px, padding generoso (full = 100vh / py-20-28; compatto = 60vh / py-14-20). Foto sfondo opzionale con gradient overlay (nero per default, crema per imaginarium).
+- Heading clamp `2.75–7rem` (full) / `2.25–5rem` (compatto). CTA secondaria `flex-wrap` + clamp font-size per evitare overflow su 375px.
+- Refactor pagine: homepage (`altezza=full`), `/spettacoli` (compatto), `/imaginarium` (full, `palette=imaginarium`), `/imaginarium/[anno]` (compatto, imaginarium), `/calendario` (compatto), `/formazione` (compatto).
+- **Eliminati**: `src/components/caraval/HeroHomepage.tsx`, `src/components/imaginarium/HeroImaginarium.tsx`. La hero scheda singola `HeroSpettacolo.tsx` rimane invariata (logica specifica).
+
+**Task C — `CounterStrip` (`src/components/caraval/CounterStrip.tsx`):**
+- Componente riusabile, props `eyebrow` + `numeri[]` + `palette`. Grid 1/2/4 colonne con separatori verticali su desktop. Valori in Cinzel `clamp(3rem, 7vw, 5rem)`.
+- Schema `homepageCopy` esteso con group `numeri`: campi `numeriEyebrow` (default "I NUMERI") + `numeriElenco[]` (object array con `valore` e `etichetta` required, max 6, defaults 9 spettacoli / 3 anime / 6 anni / 1 festival).
+- Inserito in homepage tra `StripPremi` e `ImaginariumPreview`. Fallback hardcoded se Sanity non popolato.
+
+**Task D — Counter Imaginarium:**
+- **Decisione**: nuovo singleton `paginaImaginariumCopy` (cumulativi totali del festival, non per edizione). Più maneggevole per Vera (la stessa hub-page può crescere con altri copy) ed evita duplicare campi su ogni `edizioneImaginarium`.
+- Schema `sanity/schemas/paginaImaginariumCopy.ts`: `counterEyebrow` (default "IMAGINARIUM IN NUMERI") + `counterElenco[]` (defaults 3 edizioni / 18 spettacoli / 12 compagnie / 2.500+ spettatori).
+- Registrato in `sanity/schemas/index.ts` (schemaTypes + singletonTypes) e `sanity/structure.ts` (sotto Pagina Spettacoli — Copy).
+- Inserito in `/imaginarium` tra hero e ProgrammaCompleto, palette inversa.
+- Seed esteso (`seed-demo-content.ts`) con `createOrReplace` di `paginaImaginariumCopy` (step 9b).
+
+**Task E — `SpettacoliAccordionHomepage`:**
+- **Decisione boolean**: riusato campo esistente `mostraInHomepage` (Sessione 3) invece di crearne uno nuovo `inHomepage`. Stessa semantica, zero duplicazioni. Patch seed: 8 spettacoli con `mostraInHomepage=true` e `ordineHomepage` 1–8 (Romeo, Fine del Mondo, Arlecchino, Banalità per prosa; Cubiculum, Macbeth, Legend, Viaggiastorie per fuoco/strada). Skog e A Christmas Carol: `mostraInHomepage=false` (visibili solo su `/spettacoli`).
+- Componente Client (`"use client"`) — accordion 2 colonne (Prosa | Fuoco e strada). Click apre/chiude voce con descrizione breve + link "Vai allo spettacolo →". 1 voce aperta per colonna alla volta. CTA centrale finale "Vedi tutto il repertorio →" (testi/link da `homepageCopy.repertorio*`).
+- **Eliminato**: `src/components/caraval/RepertorioPreview.tsx`.
+
+**Task F — `/spettacoli` con archivio integrato:**
+- Nuovo componente `ArchivioSpettacoliGrid.tsx` (estratto dalla vecchia pagina archivio): grid 4 colonne 4:5 con titolo + anno + regia, niente CTA.
+- `/spettacoli` ora ha 2 sezioni: hero "Il repertorio / Produzioni in repertorio" → SpettacoliGrid (filtri client) → sezione archivio con anchor `#archivio` (eyebrow "ARCHIVIO" + heading "Produzioni passate" + intro).
+- `SpettacoloCardLarge.tsx`: aggiunto overlay gradient on-hover desktop + CTA "Scopri di più →" (visibile sempre su mobile, fade-in su hover desktop).
+- **Redirect 301** `/spettacoli/archivio` → `/spettacoli#archivio` in `next.config.mjs`.
+- **Eliminato**: `src/app/spettacoli/archivio/page.tsx`.
+
+**Task G — Spaziature CSS:**
+- Aggiunte 3 variabili in `globals.css`: `--space-section-y: clamp(4rem, 8vw, 8rem)`, `--space-block-y: clamp(2rem, 4vw, 4rem)`, `--space-element-y: clamp(1rem, 2vw, 1.5rem)`.
+- `Section` component: ora applica `padding-block: var(--space-section-y)` invece delle vecchie classi `py-12 md:py-20 lg:py-24` — singola fonte di verità.
+- `CounterStrip` e `SpettacoliAccordionHomepage` usano la stessa var per coerenza ritmica.
+
+**Verifica:**
+- `npx tsc --noEmit` pulito · `npm run lint` pulito · `npm run build` pulito (21 rotte).
+- Screenshot Chrome MCP desktop+mobile in `.screenshots/blocco-1-{homepage,spettacoli,imaginarium,calendario,formazione}-{desktop,mobile}.png`.
+
+**Stato dati Sanity:**
+- I nuovi campi (`numeri*` su homepageCopy, `counter*` su paginaImaginariumCopy) hanno `initialValue` nello schema → visibili in Studio anche senza re-seed.
+- I valori reali ("9 spettacoli", "3 anime"…) vengono popolati da seed via `createOrReplace`. Edo dovrà eseguire `npm run sanity:seed` con `SANITY_API_WRITE_TOKEN` per allineare il dataset.
+- Stato vuoto in produzione: i fallback hardcoded in `page.tsx` mostrano i valori default → niente buchi visivi pre-seed.
+
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 6** — Chi siamo + ospita + contatti + privacy/cookie
 - [ ] **Sessione 7** — Iubenda + Umami analytics + accessibilità WCAG AA

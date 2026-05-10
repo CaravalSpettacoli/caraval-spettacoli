@@ -67,9 +67,13 @@ export function SpettacoloCardLarge({
             Premio {premio.anno}
           </div>
         )}
+        <div
+          aria-hidden
+          className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/0 to-transparent md:opacity-0 md:transition-opacity md:duration-base group-hover:opacity-100"
+        />
       </div>
 
-      <div className="p-5">
+      <div className="p-5 flex flex-col">
         <h3 className="font-display text-h4 text-crema-base group-hover:text-rosso-hover leading-tight transition-colors">
           {spettacolo.titolo}
         </h3>
@@ -83,6 +87,12 @@ export function SpettacoloCardLarge({
             {spettacolo.descrizioneBreve}
           </p>
         )}
+        <span
+          aria-hidden
+          className="mt-4 inline-flex items-center gap-2 text-caption uppercase-tracked text-rosso-base/90 md:opacity-0 md:translate-x-[-4px] md:transition-all md:duration-base group-hover:opacity-100 group-hover:translate-x-0"
+        >
+          Scopri di più →
+        </span>
       </div>
     </Link>
   );

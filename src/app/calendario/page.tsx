@@ -9,6 +9,7 @@ import {
   type SpettacoloImaginariumFromSanity,
 } from "@/lib/calendario-utils";
 import { CalendarioFilter } from "@/components/caraval/CalendarioFilter";
+import { HeroPagina } from "@/components/caraval/HeroPagina";
 
 export const revalidate = 60;
 
@@ -85,20 +86,13 @@ export default async function CalendarioPage() {
 
   return (
     <>
-      {/* Hero compatto 40vh */}
-      <section className="relative w-full bg-nero-deep min-h-[40vh] flex items-center border-b border-crema-faint/40">
-        <Container className="py-12 md:py-16">
-          <p className="text-label uppercase-tracked text-rosso-hover mb-3">
-            {eyebrow}
-          </p>
-          <h1 className="font-display text-display-l text-crema-base leading-[1.05] tracking-tight max-w-[18ch]">
-            {heading}
-          </h1>
-          <p className="mt-4 max-w-[680px] text-body-l text-crema-muted">
-            {intro}
-          </p>
-        </Container>
-      </section>
+      <HeroPagina
+        eyebrow={eyebrow}
+        heading={heading}
+        sottotitolo={intro}
+        palette="default"
+        altezza="compatto"
+      />
 
       {/* Lista eventi + filtri */}
       <Section className="bg-nero-base">

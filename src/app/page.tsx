@@ -1,6 +1,16 @@
 import { client } from "@/../sanity/lib/client";
 import { Sipario } from "@/components/layout/Sipario";
-import { HeroHomepage, type HeroHomepageData } from "@/components/caraval/HeroHomepage";
+import { HeroPagina } from "@/components/caraval/HeroPagina";
+
+type HeroHomepageData = {
+  heading?: string;
+  subheading?: string;
+  ctaPrimariaTesto?: string;
+  ctaPrimariaLink?: string;
+  ctaSecondariaTesto?: string;
+  ctaSecondariaLink?: string;
+  fotoSfondo?: { asset?: { _ref?: string }; alt?: string };
+};
 import {
   StripPremi,
   type PremioItem,
@@ -11,12 +21,13 @@ import {
   type SpettacoloImag,
 } from "@/components/caraval/ImaginariumPreview";
 import {
-  RepertorioPreview,
-  type SpettacoloRepertorio,
-} from "@/components/caraval/RepertorioPreview";
+  SpettacoliAccordionHomepage,
+  type SpettacoloHomepage,
+} from "@/components/caraval/SpettacoliAccordionHomepage";
 import { OfficinaTeaser } from "@/components/caraval/OfficinaTeaser";
 import { OspitaTeaser } from "@/components/caraval/OspitaTeaser";
 import { ContattiPrelude } from "@/components/caraval/ContattiPrelude";
+import { CounterStrip, type CounterItem } from "@/components/caraval/CounterStrip";
 
 type HomepageCopy = {
   premiHeading?: string;
@@ -39,6 +50,8 @@ type HomepageCopy = {
   ospitaCtaLink?: string;
   contattiHeading?: string;
   contattiBody?: string;
+  numeriEyebrow?: string;
+  numeriElenco?: CounterItem[];
 };
 
 type ImpostazioniContatti = {
@@ -84,7 +97,7 @@ async function getHomepageData() {
         compagnia { nome, urlSitoCompagnia }
       }`
     ),
-    client.fetch<SpettacoloRepertorio[]>(
+    client.fetch<SpettacoloHomepage[]>(
       `*[_type == "spettacolo" && inRepertorio == true && mostraInHomepage == true] | order(ordineHomepage asc){
         _id, titolo, sottotitolo, slug, categoria,
         descrizioneBreve, ordineHomepage
@@ -114,15 +127,54 @@ export default async function HomePage() {
   return (
     <>
       <Sipario />
-      <HeroHomepage data={data.hero} />
+      {data.hero && (
+        <HeroPagina
+          heading={data.hero.heading ?? "Caraval Spettacoli"}
+          sottotitolo={data.hero.subheading}
+          ctaPrimaria={
+            data.hero.ctaPrimariaTesto && data.hero.ctaPrimariaLink
+              ? { label: data.hero.ctaPrimariaTesto, href: data.hero.ctaPrimariaLink }
+              : undefined
+          }
+          ctaSecondaria={
+            data.hero.ctaSecondariaTesto && data.hero.ctaSecondariaLink
+              ? { label: data.hero.ctaSecondariaTesto, href: data.hero.ctaSecondariaLink }
+              : undefined
+          }
+          fotoSfondo={data.hero.fotoSfondo}
+          palette="default"
+          altezza="full"
+        />
+      )}
       <StripPremi premi={data.premi} heading={data.copy?.premiHeading} />
+      <CounterStrip
+        eyebrow={data.copy?.numeriEyebrow ?? "I NUMERI"}
+        numeri={
+          data.copy?.numeriElenco && data.copy.numeriElenco.length > 0
+            ? data.copy.numeriElenco
+            : [
+                { valore: "9", etichetta: "spettacoli" },
+                { valore: "3", etichetta: "anime" },
+                { valore: "6", etichetta: "anni" },
+                { valore: "1", etichetta: "festival" },
+              ]
+        }
+        palette="default"
+      />
       <ImaginariumPreview
         edizione={data.edizioneCorrente}
         spettacoli={data.spettacoliCorrente}
         body={data.copy?.imaginariumPreviewBody}
         ctaTesto={data.copy?.imaginariumPreviewCtaTesto}
       />
-      <RepertorioPreview spettacoli={data.repertorio} copy={data.copy} />
+      <SpettacoliAccordionHomepage
+        spettacoli={data.repertorio}
+        eyebrow={data.copy?.repertorioEyebrow}
+        heading={data.copy?.repertorioHeading}
+        intro={data.copy?.repertorioIntro}
+        ctaTesto={data.copy?.repertorioCtaTesto}
+        ctaLink={data.copy?.repertorioCtaLink}
+      />
       <OfficinaTeaser copy={data.copy} />
       <OspitaTeaser copy={data.copy} />
       <ContattiPrelude copy={data.copy} contatti={data.contatti} />

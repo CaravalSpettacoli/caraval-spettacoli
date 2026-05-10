@@ -21,11 +21,16 @@ export function Section({
   as: Tag = "section",
   className,
   children,
+  style,
   ...rest
 }: SectionProps) {
   return (
     <Tag
-      className={cn("py-12 md:py-20 lg:py-24", bgs[background], className)}
+      className={cn(bgs[background], className)}
+      style={{
+        paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
+        ...style,
+      }}
       {...rest}
     >
       {children}

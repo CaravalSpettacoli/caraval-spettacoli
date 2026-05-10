@@ -48,12 +48,6 @@ export function SezionePrenotazione({
     telefono: referente?.telefonoPubblico ?? fallbackContatti?.telefono,
   };
 
-  const haReferente = !!(
-    referente?.nome ||
-    referente?.telefonoPubblico ||
-    referente?.emailPubblica
-  );
-
   return (
     <Section background="nero-soft" id="prenotazione">
       <Container>
@@ -78,13 +72,7 @@ export function SezionePrenotazione({
               Vuoi questo spettacolo nel tuo evento?
             </h2>
             <p className="mt-4 text-body-l text-crema-muted">
-              {haReferente
-                ? `Per portare questo spettacolo nel tuo teatro, piazza o rievocazione, contatta ${referente?.nome ?? "noi"}${
-                    referente?.referenteAreaTesto
-                      ? ` — ${referente.referenteAreaTesto.toLowerCase()}.`
-                      : "."
-                  }`
-                : "Per portare questo spettacolo nel tuo teatro, piazza o rievocazione, contattaci."}
+              Per portare questo spettacolo nel tuo teatro, piazza o rievocazione, contattaci.
             </p>
 
             <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -116,11 +104,6 @@ export function SezionePrenotazione({
               )}
             </div>
 
-            {referente?.nome && (
-              <p className="mt-6 text-body-s text-crema-muted">
-                Referente: <span className="text-crema-base">{referente.nome}</span>
-              </p>
-            )}
           </div>
         </div>
       </Container>

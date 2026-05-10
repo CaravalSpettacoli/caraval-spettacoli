@@ -6,6 +6,7 @@ export default defineType({
   type: "document",
   groups: [
     { name: "premi", title: "Strip Premi" },
+    { name: "numeri", title: "I numeri" },
     { name: "imaginarium", title: "Imaginarium preview" },
     { name: "repertorio", title: "Repertorio" },
     { name: "officina", title: "Officina Teatrale" },
@@ -22,6 +23,42 @@ export default defineType({
       type: "string",
       group: "premi",
       description: 'Es. "Tre premi in quattro anni."',
+    }),
+
+    // I numeri (counter homepage)
+    defineField({
+      name: "numeriEyebrow",
+      title: "Eyebrow",
+      type: "string",
+      group: "numeri",
+      initialValue: "I NUMERI",
+    }),
+    defineField({
+      name: "numeriElenco",
+      title: "Elenco numeri",
+      type: "array",
+      group: "numeri",
+      of: [
+        {
+          type: "object",
+          name: "numeroItem",
+          fields: [
+            { name: "valore", title: "Valore", type: "string", validation: (R) => R.required() },
+            { name: "etichetta", title: "Etichetta", type: "string", validation: (R) => R.required() },
+          ],
+          preview: {
+            select: { v: "valore", e: "etichetta" },
+            prepare: ({ v, e }) => ({ title: `${v} — ${e}` }),
+          },
+        },
+      ],
+      initialValue: [
+        { valore: "9", etichetta: "spettacoli" },
+        { valore: "3", etichetta: "anime" },
+        { valore: "6", etichetta: "anni" },
+        { valore: "1", etichetta: "festival" },
+      ],
+      validation: (R) => R.max(6),
     }),
 
     // Imaginarium preview

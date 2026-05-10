@@ -1,10 +1,17 @@
 import { notFound } from "next/navigation";
 import { client } from "@/../sanity/lib/client";
 import { Container } from "@/components/ui/Container";
-import {
-  HeroImaginarium,
-  type EdizioneHero,
-} from "@/components/imaginarium/HeroImaginarium";
+import { HeroPagina } from "@/components/caraval/HeroPagina";
+
+type EdizioneHero = {
+  anno?: number;
+  titoloEdizione?: string;
+  dataInizio?: string;
+  dataFine?: string;
+  locationPrincipale?: string;
+  descrizione?: Array<{ children?: Array<{ text?: string }> }>;
+  descrizioneBreve?: string;
+};
 import {
   ProgrammaCompleto,
   type SpettacoloImagItem,
@@ -39,7 +46,9 @@ async function getEdizione(anno: string): Promise<{
   const spettacoli = await client.fetch<SpettacoloImagItem[]>(
     `*[_type == "spettacoloImaginarium" && edizioneRif->anno == $anno] | order(dataInizio asc){
       _id, titolo, dataInizio, linkCompagniaEsterna,
-      compagnia { nome, urlSitoCompagnia },
+      compagnia { nome, urlSitoCompagnia, descrizioneCompagniaBreve },
+      descrizione, cast, locationSpecifica,
+      "luogo": { "nome": luogo.nomeStruttura, "citta": luogo.citta },
       immagineCover
     }`,
     { anno: annoNum }
@@ -58,11 +67,22 @@ export default async function EdizionePassataPage({
 
   const haProgramma = spettacoli.length > 0;
 
+  const descrizione = (edizione.descrizione ?? [])
+    .map((b) => (b.children ?? []).map((c) => c.text ?? "").join(""))
+    .join("\n\n") || edizione.descrizioneBreve;
+
   return (
     <div className="theme-imaginarium">
-      <HeroImaginarium
-        edizione={edizione}
-        titoloOverride={`Edizione ${edizione.anno}`}
+      <HeroPagina
+        eyebrow={`Edizione ${edizione.anno}`}
+        heading={`Imaginarium ${edizione.anno}`}
+        sottotitolo={
+          [edizione.locationPrincipale, descrizione]
+            .filter(Boolean)
+            .join("\n\n") || undefined
+        }
+        palette="imaginarium"
+        altezza="compatto"
       />
 
       {haProgramma ? (

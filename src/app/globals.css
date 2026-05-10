@@ -56,6 +56,11 @@
   );
   --shadow-poster: 0 32px 80px rgba(0, 0, 0, 0.7),
     0 8px 24px rgba(168, 23, 74, 0.2);
+
+  /* Scala spaziature verticali (Blocco 1) — usate dalle <section> principali */
+  --space-section-y: clamp(4rem, 8vw, 8rem);
+  --space-block-y: clamp(2rem, 4vw, 4rem);
+  --space-element-y: clamp(1rem, 2vw, 1.5rem);
 }
 
 html {

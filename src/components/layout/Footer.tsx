@@ -37,7 +37,23 @@ const FALLBACK: ImpostazioniFooter = {
     partitaIva: "",
     codiceFiscale: "",
   },
-  socialLinks: [],
+  socialLinks: [
+    {
+      piattaforma: "instagram",
+      url: "https://www.instagram.com/caravalspettacoli",
+      mostraInFooter: true,
+    },
+    {
+      piattaforma: "facebook",
+      url: "https://www.facebook.com/caravalspettacoli",
+      mostraInFooter: true,
+    },
+    {
+      piattaforma: "youtube",
+      url: "https://www.youtube.com/@caravalspettacoli",
+      mostraInFooter: true,
+    },
+  ],
 };
 
 const SITE_LINKS = [
@@ -78,9 +94,12 @@ export async function Footer() {
   const impostazioni = await getImpostazioni();
   const dati = impostazioni.datiAssociazione || {};
   const contatti = impostazioni.contattiPubblici || {};
-  const social = (impostazioni.socialLinks || []).filter(
+  const socialLive = (impostazioni.socialLinks || []).filter(
     (s) => s.mostraInFooter !== false && s.url
   );
+  // Se Sanity non ha social configurati, fallback ai canali ufficiali.
+  const social =
+    socialLive.length > 0 ? socialLive : (FALLBACK.socialLinks ?? []);
 
   const indirizzoCompleto = [
     dati.indirizzo,
@@ -94,18 +113,29 @@ export async function Footer() {
       <Container className="py-16 md:py-20">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
           {/* Colonna 1 — Caraval */}
-          <div>
-            <h3 className="font-display text-h4 mb-4">
-              {(dati.ragioneSociale || "Caraval").toUpperCase()}
-            </h3>
-            <address className="not-italic text-body-s text-crema-muted leading-relaxed">
-              {indirizzoCompleto && <div>{indirizzoCompleto}</div>}
-              {dati.partitaIva && <div>P.IVA {dati.partitaIva}</div>}
-              {dati.codiceFiscale && dati.codiceFiscale !== dati.partitaIva && (
-                <div>C.F. {dati.codiceFiscale}</div>
-              )}
-            </address>
-          </div>
+          {(() => {
+            const ragione = dati.ragioneSociale || "Caraval Associazione Culturale";
+            const parts = ragione.split(" ");
+            const main = parts[0];
+            const sub = parts.slice(1).join(" ");
+            return (
+              <div>
+                <h3 className="font-display leading-none mb-1" style={{ fontSize: "1.5rem" }}>
+                  {main.toUpperCase()}
+                </h3>
+                {sub && (
+                  <p className="text-body-s text-crema-muted mt-1 mb-4">{sub}</p>
+                )}
+                <address className="not-italic text-body-s text-crema-muted leading-relaxed">
+                  {indirizzoCompleto && <div>{indirizzoCompleto}</div>}
+                  {dati.partitaIva && <div>P.IVA {dati.partitaIva}</div>}
+                  {dati.codiceFiscale && dati.codiceFiscale !== dati.partitaIva && (
+                    <div>C.F. {dati.codiceFiscale}</div>
+                  )}
+                </address>
+              </div>
+            );
+          })()}
 
           {/* Colonna 2 — Sito */}
           <nav aria-label="Mappa del sito">

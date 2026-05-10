@@ -33,6 +33,14 @@ export const structure: StructureResolver = (S) =>
             .schemaType("paginaSpettacoliCopy")
             .documentId("paginaSpettacoliCopy")
         ),
+      S.listItem()
+        .title("Pagina Imaginarium — Copy")
+        .id("paginaImaginariumCopy")
+        .child(
+          S.document()
+            .schemaType("paginaImaginariumCopy")
+            .documentId("paginaImaginariumCopy")
+        ),
       S.divider(),
       S.documentTypeListItem("spettacolo").title("Spettacoli"),
       S.documentTypeListItem("premio").title("Premi"),
