@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { splitDisplay } from "@/lib/splitDisplay";
@@ -26,6 +26,7 @@ export function Header() {
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<SectionTheme>("dark");
+  const lastThemeRef = useRef<SectionTheme>("dark");
 
   // Tema dell'header derivato dalla sezione che sta sotto al top dell'header.
   // Su scroll/menu mobile aperto forziamo dark (backdrop blur nero scuro = UX
@@ -73,13 +74,21 @@ export function Header() {
           break;
         }
       }
-      setCurrentTheme(active);
+      if (active !== lastThemeRef.current) {
+        lastThemeRef.current = active;
+        setCurrentTheme(active);
+      }
     };
 
+    // Recompute sincrono immediato: copre il primo paint senza dipendere
+    // dal setTimeout / dal primo callback IntersectionObserver.
+    recomputeTheme();
+
     // Delay di 50ms: al cambio pathname il DOM della nuova pagina può non
-    // essere ancora montato quando il useEffect ri-gira.
+    // essere ancora montato quando l'useEffect ri-gira. Doppio safety.
     let observer: IntersectionObserver | null = null;
     const setupTimer = window.setTimeout(() => {
+      recomputeTheme();
       observer = new IntersectionObserver(() => recomputeTheme(), {
         rootMargin: `-${HEADER_HEIGHT_PX}px 0px -90% 0px`,
         threshold: [0, 0.01, 0.99, 1],
@@ -88,7 +97,6 @@ export function Header() {
         "section[data-theme]"
       );
       sections.forEach((s) => observer!.observe(s));
-      recomputeTheme();
     }, 50);
 
     // Recompute on scroll come fallback (in caso una sezione non triggeri l'observer).

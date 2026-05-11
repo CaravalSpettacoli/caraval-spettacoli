@@ -6,6 +6,7 @@ import { Section } from "@/components/ui/Section";
 import { CorsoCard, type CorsoCardData } from "@/components/caraval/CorsoCard";
 import { LaboratoriScuoleSection } from "@/components/caraval/LaboratoriScuoleSection";
 import { HeroPagina } from "@/components/caraval/HeroPagina";
+import { CtaFinale } from "@/components/caraval/CtaFinale";
 
 export const revalidate = 60;
 
@@ -23,6 +24,7 @@ type CopyFormazione = {
   corsiSezioneEyebrow?: string;
   corsiSezioneHeading?: string;
   corsiStatoVuotoTesto?: string;
+  corsoCardCtaLabel?: string;
   laboratoriEyebrow?: string;
   laboratoriHeading?: string;
   laboratoriBody?: string;
@@ -106,7 +108,7 @@ export default async function FormazionePage() {
       />
 
       {/* Sezione corsi */}
-      <Section className="bg-nero-base">
+      <Section theme="dark" bgVariant="soft">
         <Container>
           <div className="mb-10">
             <p className="text-label uppercase-tracked text-rosso-hover mb-3">
@@ -132,7 +134,10 @@ export default async function FormazionePage() {
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
               {corsi.map((c) => (
-                <CorsoCard key={c._id} corso={c} />
+                <CorsoCard
+                  key={c._id}
+                  corso={{ ...c, ctaLabel: copy.corsoCardCtaLabel }}
+                />
               ))}
             </div>
           )}
@@ -148,38 +153,23 @@ export default async function FormazionePage() {
         ctaHref={labCtaHref}
       />
 
-      {/* CTA finale */}
-      <Section className="bg-nero-base">
-        <Container>
-          <div className="text-center max-w-2xl mx-auto">
-            <p className="text-body-l text-crema-muted mb-4">
-              Hai domande sui corsi?
-            </p>
-            <h2 className="font-display text-h2 text-crema-base leading-tight">
-              Contattaci
-            </h2>
-            <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <a
-                href={`mailto:${contattiEmail}?subject=${encodeURIComponent("Informazioni corsi")}`}
-                className="text-body-l text-crema-base underline underline-offset-8 decoration-rosso-base hover:text-rosso-hover transition-colors"
-              >
-                {contattiEmail}
-              </a>
-              {contattiTel && (
-                <>
-                  <span aria-hidden className="hidden sm:inline text-crema-faint">·</span>
-                  <a
-                    href={`tel:${contattiTel.replace(/\s+/g, "")}`}
-                    className="text-body-l text-crema-base underline underline-offset-8 decoration-rosso-base hover:text-rosso-hover transition-colors"
-                  >
-                    {contattiTel}
-                  </a>
-                </>
-              )}
-            </div>
-          </div>
-        </Container>
-      </Section>
+      <CtaFinale
+        variant="accent"
+        heading="Vuoi iscriverti all'Officina Teatrale?"
+        sottotitolo="Scrivici o chiamaci per informazioni."
+        ctaPrimaria={{
+          label: "Scrivici",
+          href: `mailto:${contattiEmail}?subject=${encodeURIComponent("Informazioni corsi")}`,
+        }}
+        ctaSecondaria={
+          contattiTel
+            ? {
+                label: `Chiama ${contattiTel}`,
+                href: `tel:${contattiTel.replace(/\s+/g, "")}`,
+              }
+            : undefined
+        }
+      />
     </>
   );
 }

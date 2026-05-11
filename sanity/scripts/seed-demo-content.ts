@@ -226,11 +226,13 @@ const paginaChiSiamoCopy: AnyDoc = {
   _type: "paginaChiSiamoCopy",
   heroEyebrow: "CHI SIAMO",
   heroHeading: "Caraval Spettacoli",
-  heroSottotitolo: "Compagnia teatrale di Soncino, dal 2020.",
+  heroSottotitolo: "Compagnia teatrale di Soncino, dal 2016.",
   storiaEyebrow: "LA NOSTRA STORIA",
-  storiaHeading: "Da una piazza vuota a un festival",
+  storiaHeading: "Una compagnia, tre anime, un festival",
+  // Testo importato da caraval.it (versione approvata da Vera).
+  // NB: "Dal 2016" come da sito attuale (la versione precedente diceva 2020).
   storiaBody:
-    "Caraval nasce nel 2020 a Soncino, da un gruppo di amici che voleva fare teatro nei luoghi della propria infanzia. Le prime prove in un cortile, i primi spettacoli in piazza. Poi la prosa, il fuoco, la strada — tre lingue diverse per parlare allo stesso pubblico, fatto di vicini di casa e turisti, bambini e nonni.\n\nIn sei anni siamo passati da una piazza vuota a un festival che ogni estate trasforma i borghi della media pianura in palcoscenico: Imaginarium. Cinque edizioni, decine di compagnie ospitate, migliaia di spettatori. Un'idea semplice — fare teatro dove la comunità vive — che ogni anno trova nuove forme.",
+    "Caraval Spettacoli è una compagnia teatrale che vanta tra le sue fila attori esperti, giocolieri e scenografi in grado di realizzare spettacoli di successo. Dal 2016 portiamo sul palco diverse storie e personaggi, passando dalla commedia dell'arte al teatro di prosa fino a quello più sperimentale, senza mai dimenticare l'arte di strada che è dove affondano le nostre radici.\n\nMettiamo in scena sia i testi di grandi autori teatrali che copioni nuovi scritti da noi, per il teatro ma non solo. Infatti, abbiamo partecipato a festival e feste locali in cui i committenti ci hanno chiesto di scrivere uno spettacolo ad hoc, che parlasse di una tematica particolare o rappresentasse un evento storico importante per il luogo.\n\nIl teatro non è quindi l'unico spazio in cui operiamo: piazze, dimore storiche e castelli sono spesso cornici delle nostre performance. Curiamo ogni dettaglio occupandoci anche della scenografia e dei costumi, creati su misura per ogni spettacolo, così da rendere qualsiasi location il palcoscenico perfetto.\n\nDa diversi anni partecipiamo al Carnevale di Venezia, portando per le calle della città costumi realizzati interamente da noi e figure fantastiche frutto della nostra creatività.\n\n#inviaggioconcaraval è il nostro hashtag ufficiale, perché amiamo viaggiare sia sulla strada che sulle ali della fantasia.",
   membriEyebrow: "LA COMPAGNIA",
   membriHeading: "Le persone di Caraval",
   membriIntro: "Sei artisti che fanno teatro insieme.",
@@ -914,6 +916,69 @@ async function main() {
     .setIfMissing({ referenteContatto: ref("membro-vera-rossini") })
     .commit();
   console.log("✓ patch: spettacolo-viaggiastorie.referenteContatto = Vera");
+
+  // 14. Patch descrizioniNarrativa importate da caraval.it (Polish Definitivo).
+  //     setIfMissing → non sovrascrive se Vera ha già editato in Studio.
+  //     Romeo+Giulietta escluso: già popolato dal PDF brochure (step 11).
+  const descrizioniDaSitoAttuale: Array<{ id: string; paragrafi: string[] }> = [
+    {
+      id: "spettacolo-sogno-mezza-estate",
+      paragrafi: [
+        "\"Sogno di una notte di mezza estate\" è la messa in scena dell'opera di Shakespeare. Una spensierata commedia in cui due coppie di giovani innamorati ed una compagnia di attori saranno vittima degli scherzi di alcune creature fatate.",
+        "La celebre opera viene rappresentata fedelmente, ma alleggerita e confezionata per poter essere goduta appieno dal pubblico contemporaneo senza però tradire i contenuti, il senso e sopratutto la magica e romantica atmosfera.",
+        "Lo spettacolo teatrale vede in scena undici attori, a stretto contatto con il pubblico, che si sentirà coinvolto nelle scaramucce amorose dei protagonisti e sarà testimone di tutti i dispetti orditi alle loro spalle da Oberon re degli elfi, Titania regina delle fate e Puck il folletto.",
+        "Un'esperienza coinvolgente e spassosa in cui una tecnica di recitazione spontanea e diretta accompagnerà gli spettatori nel cuore di una storia senza tempo.",
+      ],
+    },
+    {
+      id: "spettacolo-servitore-due-padroni",
+      paragrafi: [
+        "Servitore di Due Padroni è il tributo della compagnia a Goldoni e alla Commedia dell'arte. Al centro della trama si trova Arlecchino, servo di due padroni, che \"per non svelare il suo inganno e per perseguire il suo unico intento, ovvero mangiare a sazietà, intreccia la storia all'inverosimile, creando solo equivoci e guai\".",
+        "Lo spettacolo rappresenta in modo metaforico e divertente situazioni della vita quotidiana, ispirandosi ai celebri personaggi della Commedia dell'Arte. Questi personaggi, da secoli, trasmettono messaggi sempre rilevanti attraverso il linguaggio della maschera.",
+        "La Commedia dell'arte, nata in Italia con le sue maschere e il suo repertorio teatrale, si è diffusa in tutta Europa e continua a rappresentare un patrimonio immateriale della tradizione italiana. Servitore di Due Padroni è un'opera di intrattenimento caratterizzata da un tono comico e divertente.",
+      ],
+    },
+    {
+      id: "spettacolo-christmas-carol",
+      paragrafi: [
+        "Tra atmosfere noir e giochi di luci e ombre la magia del Natale prende vita davanti ai nostri occhi.",
+        "Una suggestiva performance di fuoco e teatro tratta dall'omonima novella di Charles Dickens, ambientata in un piccolo paesino inglese alla vigilia di Natale.",
+        "Ebenezer Scrooge, vecchio avaro ed egoista, vede il fantasma del suo defunto socio Jacob Marley che gli annuncia la visita di tre spiriti del Natale: passato, presente e futuro. Questi gli fanno ripercorrere la sua esistenza e gli mostrano anche ciò che accadrà in futuro: l'essere spettatore della sua vita gli fa capire che il suo egoismo e la sua indifferenza hanno causato solo tristezza e odio.",
+        "Il miracolo del Natale si materializza con la sua conversione, dopo la visita dei fantasmi nella sua anima entra l'amore e la felicità. Secondo Dickens, il miglior modo per affrontare e superare i mali sociali è proprio la rinascita morale dell'individuo.",
+        "Una favola tradizionale e commovente sull'importanza della famiglia dove la magia e l'incontro con i tre Spiriti del Natale fanno da sfondo a uno spettacolo unico ed esplosivo che proietterà gli spettatori in un'epoca senza tempo, in cui il fuoco è il protagonista.",
+        "L'atmosfera incanta grazie anche alle melodie scelte presentando ogni volta nuovi effetti e particolari suggestioni.",
+      ],
+    },
+    {
+      id: "spettacolo-inferno-dante",
+      paragrafi: [
+        "\"L'Inferno di Dante\" è la trasposizione teatrale della prima cantica della Divina Commedia di Dante Alighieri.",
+        "Uno spettacolo che guida il pubblico attraverso i nove cerchi dell'inferno, accompagnato da Dante e Virgilio, incontrando i personaggi più celebri citati dal poeta e le figure terrificanti che popolano l'abisso eterno.",
+        "Gli attori recitano i versi originali dell'opera, usando il movimento fisico e l'espressività per dare forma ai luoghi e alle creature infernali. Una prova di grande perizia e dedizione al lavoro dell'attore che non mancherà di stupire e coinvolgere gli spettatori.",
+        "Lo spettacolo rappresenta un'opera fedele al testo originale, senza reinterpretazioni o modifiche. Combina paesaggio, arte scenica e rappresentazione in una forma inedita, pensata sia per gli appassionati della Divina Commedia che per gli amanti del teatro.",
+      ],
+    },
+    {
+      id: "spettacolo-miseria-nobilta",
+      paragrafi: [
+        "La celebre commedia di Eduardo Scarpetta del 1887 viene riproposta dagli artisti di Caraval con le tecniche e i personaggi della commedia dell'arte.",
+        "Felice Sciosciammocca e Pasquale o'Salassatore verranno sostituiti da Arlecchino e Pulcinella e tutta la rappresentazione assumerà i colori e i toni del carnevale.",
+        "Il regista Lorenzo Samanni si è premurato in questo riadattamento di non tradire lo spirito dell'opera originale e soprattutto di non intervenire sulla trama ma di esaltarne gli aspetti comici e temi.",
+        "Sul palco 9 attori in una danza di equivoci, situazioni paradossali e divertenti in grado di intrattenere ogni genere di pubblico.",
+        "La lotta tra i \"poveri\", i \"nobili\" e gli \"arricchiti\" verrà combattuta tra zanni, padroni e innamorati: in questo allestimento la comicità sarà esplosiva, il coinvolgimento del pubblico inevitabile e il lieto fine garantito.",
+        "Una messinscena per dimostrare come spesso le differenze sociali sono solo una banalissima maschera sotto la quale siamo tutti uguali.",
+      ],
+    },
+  ];
+
+  for (const { id, paragrafi } of descrizioniDaSitoAttuale) {
+    const blocks = paragrafi.flatMap((p) => block(p));
+    await client
+      .patch(id)
+      .setIfMissing({ descrizioneNarrativa: blocks })
+      .commit();
+    console.log(`✓ patch: ${id}.descrizioneNarrativa (da caraval.it)`);
+  }
 
   console.log("\n✅ Seed completato.");
 }

@@ -1,7 +1,17 @@
 import Image from "next/image";
-import { User } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { urlFor } from "@/../sanity/lib/image";
+
+/** Estrae le iniziali dal nome (es. "Vera Rossini" → "VR"). Max 2 lettere. */
+function initials(name?: string): string {
+  if (!name) return "?";
+  return name
+    .split(/\s+/)
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("");
+}
 
 export type MembroItem = {
   _id: string;
@@ -80,13 +90,14 @@ export function MembriGrid({
                   ) : (
                     <div
                       aria-hidden
-                      className="absolute inset-0 flex items-center justify-center bg-rosso-deep/15"
+                      className="absolute inset-0 flex items-center justify-center bg-rosso-base/15"
                     >
-                      <User
-                        size={64}
-                        strokeWidth={1.2}
-                        className="text-rosso-base/45"
-                      />
+                      <span
+                        className="font-display text-rosso-base/55 leading-none select-none"
+                        style={{ fontSize: "clamp(3rem, 8vw, 5rem)" }}
+                      >
+                        {initials(m.nome)}
+                      </span>
                     </div>
                   )}
                 </div>

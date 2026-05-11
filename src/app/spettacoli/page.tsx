@@ -8,6 +8,7 @@ import {
   type ArchivioItem,
 } from "@/components/caraval/ArchivioSpettacoliGrid";
 import type { SpettacoloCardLargeData } from "@/components/caraval/SpettacoloCardLarge";
+import { CtaFinale } from "@/components/caraval/CtaFinale";
 
 type PaginaCopy = {
   eyebrow?: string;
@@ -58,14 +59,14 @@ export default async function PaginaSpettacoli() {
         altezza="compatto"
       />
 
-      <Section background="nero">
+      <Section theme="dark" bgVariant="soft">
         <Container>
           <SpettacoliGrid spettacoli={spettacoli} />
         </Container>
       </Section>
 
       {archivio.length > 0 && (
-        <Section background="nero-soft" id="archivio">
+        <Section theme="dark" bgVariant="base" id="archivio">
           <Container>
             <div className="mb-12 max-w-2xl">
               <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
@@ -83,6 +84,13 @@ export default async function PaginaSpettacoli() {
           </Container>
         </Section>
       )}
+
+      <CtaFinale
+        variant="accent"
+        heading="Ti interessa uno dei nostri spettacoli?"
+        sottotitolo="Contattaci per parlarne."
+        ctaPrimaria={{ label: "Contattaci", href: "/contatti" }}
+      />
     </>
   );
 }

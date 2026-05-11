@@ -25,6 +25,7 @@ import {
 } from "@/components/imaginarium/EdizioniPassate";
 import { CounterStrip, type CounterItem } from "@/components/caraval/CounterStrip";
 import { VideoYoutube } from "@/components/caraval/VideoYoutube";
+import { CtaFinale } from "@/components/caraval/CtaFinale";
 
 export const revalidate = 60;
 
@@ -165,7 +166,7 @@ export default async function ImaginariumPage() {
       <CounterStrip
         eyebrow={paginaCopy?.counterEyebrow ?? "IMAGINARIUM IN NUMERI"}
         numeri={counterNumeri}
-        palette="rosso"
+        palette="imaginarium"
       />
       <VideoYoutube
         url={
@@ -179,10 +180,20 @@ export default async function ImaginariumPage() {
       <ProgrammaCompleto
         spettacoli={spettacoliCorrente}
         heading="Programma"
-        palette="rosso"
+        palette="imaginarium"
       />
       <SponsorPartnerStrip data={edizioneCorrente} />
-      <EdizioniPassate edizioni={edizioniPassate} palette="rosso" />
+      <EdizioniPassate edizioni={edizioniPassate} />
+      <CtaFinale
+        variant="accent"
+        heading="Imaginarium è un progetto della comunità."
+        sottotitolo={
+          edizioneCorrente?.dataInizio && edizioneCorrente?.dataFine
+            ? "Ti aspettiamo dal 4 al 18 giugno 2026."
+            : undefined
+        }
+        ctaPrimaria={{ label: "Scopri Caraval", href: "/" }}
+      />
     </div>
   );
 }

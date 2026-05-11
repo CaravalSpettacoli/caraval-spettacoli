@@ -40,17 +40,17 @@ const FALLBACK: ImpostazioniFooter = {
   socialLinks: [
     {
       piattaforma: "instagram",
-      url: "https://www.instagram.com/caravalspettacoli",
+      url: "https://www.instagram.com/caravalspettacoli/",
       mostraInFooter: true,
     },
     {
       piattaforma: "facebook",
-      url: "https://www.facebook.com/caravalspettacoli",
+      url: "https://www.facebook.com/Caraval-Spettacoli-101656231430635/",
       mostraInFooter: true,
     },
     {
       piattaforma: "youtube",
-      url: "https://www.youtube.com/@caravalspettacoli",
+      url: "https://www.youtube.com/channel/UC-9aDMm5MfweZP7Weq881EA",
       mostraInFooter: true,
     },
   ],
@@ -112,7 +112,7 @@ export async function Footer() {
     .join(", ");
 
   return (
-    <footer className="bg-nero-deep text-crema-base border-t border-crema-faint mt-16">
+    <footer data-theme="dark" className="bg-nero-soft text-crema-base border-t border-crema-faint mt-16">
       <Container className="py-16 md:py-20">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
           {/* Colonna 1 — Caraval */}

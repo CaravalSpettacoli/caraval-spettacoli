@@ -10,6 +10,7 @@ import {
 } from "@/lib/calendario-utils";
 import { CalendarioFilter } from "@/components/caraval/CalendarioFilter";
 import { HeroPagina } from "@/components/caraval/HeroPagina";
+import { CtaFinale } from "@/components/caraval/CtaFinale";
 
 export const revalidate = 60;
 
@@ -95,7 +96,7 @@ export default async function CalendarioPage() {
       />
 
       {/* Lista eventi + filtri */}
-      <Section className="bg-nero-base">
+      <Section theme="dark" bgVariant="soft">
         <Container>
           <CalendarioFilter
             items={items}
@@ -114,25 +115,12 @@ export default async function CalendarioPage() {
         </Container>
       </Section>
 
-      {/* CTA finale ospita */}
-      <Section className="bg-rosso-base">
-        <Container>
-          <div className="text-center max-w-2xl mx-auto">
-            <h2 className="font-display text-h2 text-crema-base leading-tight">
-              {ospitaHeading}
-            </h2>
-            <p className="mt-4 text-body-l text-crema-base/90 whitespace-pre-line">
-              {ospitaBody}
-            </p>
-            <Link
-              href={ospitaCtaLink}
-              className="mt-8 inline-block px-6 py-3 rounded-md bg-crema-base text-rosso-deep text-body-s font-semibold uppercase-tracked hover:bg-crema-bright transition-colors"
-            >
-              {ospitaCtaTesto}
-            </Link>
-          </div>
-        </Container>
-      </Section>
+      <CtaFinale
+        variant="accent"
+        heading={ospitaHeading}
+        sottotitolo={ospitaBody}
+        ctaPrimaria={{ label: ospitaCtaTesto, href: ospitaCtaLink }}
+      />
     </>
   );
 }

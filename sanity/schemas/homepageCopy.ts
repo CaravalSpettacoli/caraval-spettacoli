@@ -258,6 +258,14 @@ export default defineType({
       description: "Mostrato quando non ci sono corsi attivi.",
     }),
     defineField({
+      name: "corsoCardCtaLabel",
+      title: "Corso — Label CTA Contatti",
+      type: "string",
+      group: "formazione",
+      description: 'Label CTA "Contattaci per informazioni" in fondo a ogni card corso.',
+      initialValue: "Contattaci per informazioni",
+    }),
+    defineField({
       name: "laboratoriEyebrow",
       title: "Laboratori — Eyebrow",
       type: "string",

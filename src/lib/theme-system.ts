@@ -59,6 +59,6 @@ export const sectionBgToTheme: Record<
 
 /** Map dalla prop `variant` di CtaFinale al tema sezione. */
 export const ctaVariantToTheme = {
-  default: "dark",
-  rosso: "accent",
+  dark: "dark",
+  accent: "accent",
 } as const satisfies Record<string, SectionTheme>;

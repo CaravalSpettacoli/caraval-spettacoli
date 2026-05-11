@@ -52,7 +52,7 @@ function ColonnaAccordion({
                 type="button"
                 aria-expanded={isOpen}
                 onClick={() => setAperto(isOpen ? null : s._id)}
-                className="w-full flex items-center justify-between gap-4 py-5 md:py-6 text-left group"
+                className="w-full flex items-center justify-between gap-4 py-5 md:py-6 text-left group min-h-[4rem] md:min-h-[5rem]"
               >
                 <span
                   className="font-display text-crema-base group-hover:text-rosso-hover transition-colors leading-tight"

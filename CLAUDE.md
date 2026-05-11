@@ -589,6 +589,95 @@ Branch `feat/2-5a-sistemi-adattivi` da `main` post-merge Blocco 2.
   - `/contatti` `/calendario` `/formazione` `/spettacoli` → tutti dark ✓
 - Chrome MCP non disponibile in questa sessione → niente screenshot, verifica solo via curl.
 
+### ✅ Polish Definitivo (FATTO)
+Branch `feat/polish-definitivo` da `main` post-merge PR #8.
+
+**Mega-blocco che sostituisce i mini-blocchi 2.5a/b/c, risolve 14 feedback Edo.**
+
+**Task 1 — Fix sistemi adattivi (cursore + header):**
+- Chrome MCP non disponibile in sessione → niente diagnosi runtime con log. Procedo con fix robusti basati su analisi statica.
+- `CustomCursor`: aggiunto `recomputeNow()` sincrono basato su `getBoundingClientRect` (cerca sezione che contiene il centro del viewport), chiamato sia subito dopo setTimeout 50ms sia su scroll throttled via rAF. `lastThemeRef` previene setState ridondanti.
+- `Header`: stesso pattern. `recomputeTheme()` ora chiamato sincronamente all'inizio del useEffect (primo paint deterministico) + dentro setTimeout 50ms + su scroll. `lastThemeRef` guard.
+- IntersectionObserver mantenuto come trigger di aggiornamento ma rimosso il `rootMargin -40%` problematico: ora threshold normali + recompute via rect.
+
+**Task 2 — Palette uniformata + Section refactor:**
+- `theme-system.ts`: mappe invariate.
+- `Section.tsx`: aggiunte 2 prop opzionali:
+  - `theme?: SectionTheme` — override esplicito, ha priorità su `background` legacy.
+  - `bgVariant?: "base" | "soft"` — alternanza intra-pagina (`#0a0a0a` vs `#161616` su dark, `#f5e6d3` vs `#ebd9c0` su light).
+- Backward compat: `background` prop continua a funzionare come prima. Le pagine nuove usano `theme` + `bgVariant`.
+- Applicato `theme="dark" bgVariant="soft"` a: `/spettacoli` grid attiva, `/calendario` lista eventi, `/formazione` corsi.
+
+**Task 3 — `CtaFinale` uniforme:**
+- Refactor props: `variant: "dark" | "accent"` (era `"default" | "rosso"`), prop `sottotitolo` (era `body`), nuova prop `fotoSfondo` opzionale per variant dark con foto.
+- Default `variant="accent"`: tutte le CTA finali del sito sono rosso pieno (Edo confermato in tabella prompt §3.3).
+- **9 pagine** ora terminano con `<CtaFinale variant="accent">` uniforme:
+  - `/` — heading "Sei un Comune…" → /ospita (sostituisce OspitaTeaser)
+  - `/spettacoli` — "Ti interessa uno dei nostri spettacoli?" → /contatti
+  - `/spettacoli/[slug]` — "Vuoi portare questo spettacolo da te?" → mailto ingaggio
+  - `/imaginarium` — "Imaginarium è un progetto della comunità." → /
+  - `/calendario` — "Sei un Comune…" → /ospita (riuso copy Sanity)
+  - `/formazione` — "Vuoi iscriverti?" → mailto + tel
+  - `/chi-siamo` — "Vuoi conoscerci meglio?" → /spettacoli + /contatti
+  - `/contatti` — "Pronto a iniziare?" → mailto + tel
+  - `/ospita` — "Pronto a portare Caraval da te?" → mailto ingaggio
+- `OspitaTeaser` rimosso come usage in homepage (componente resta nel codebase, può essere riusato altrove).
+
+**Task 4 — Accordion homepage allineato:**
+- `SpettacoliAccordionHomepage.tsx`: `min-h-[4rem] md:min-h-[5rem]` sulle voci button → tutte allineate orizzontalmente tra colonne.
+
+**Task 5 — `CorsoCard` con CTA Contattaci:**
+- Aggiunto CTA testuale "Contattaci per informazioni →" che linka a `/contatti`. Stile = link uppercase tracked con freccia.
+- Prop `ctaLabel?: string` su `CorsoCardData` per override.
+- Campo Sanity `homepageCopy.corsoCardCtaLabel` (default "Contattaci per informazioni").
+- `/formazione` passa la label dal copy a tutti i CorsoCard.
+
+**Task 6 — `/chi-siamo` arricchita:**
+- Storia importata da caraval.it: 5 paragrafi corposi che raccontano la compagnia. Sostituiscono testo precedente più breve.
+- **Decisione mia**: "Dal 2016" come da sito attuale (la versione precedente diceva "dal 2020"). Edo verificherà con Vera.
+- `heroHeading="Una compagnia, tre anime, un festival"` (era "Da una piazza vuota a un festival").
+- `MembriGrid`: placeholder iniziali ("VR", "AR", "NP", "LS", "MR", "IC") con `font-display` size clamp 3-5rem invece di icona `User`. Sfondo `bg-rosso-base/15`. Coerente con il prompt §6.2.
+- Schema `paginaChiSiamoCopy` esteso con i nuovi defaults (storiaBody rows 12).
+- Seed aggiornato con storia importata.
+- Tutti i 6 membri restano popolati dal Blocco 2 (Vera, Alessio, Nicola, Lorenzo, Marco, Ilaria). Query GROQ `*[_type == "membro"]` fa fetch di tutti.
+
+**Task 7 — `/contatti` arricchita:**
+- Sezione "Sui social → Seguici" già esistente. Aggiunto `SOCIAL_FALLBACK` hardcoded con URL ufficiali (FB/IG/YT) come fallback se Sanity non ha socialLinks valorizzati. Stesso pattern del Footer.
+- URL aggiornati ai canali ufficiali completi (Facebook/Caraval-Spettacoli-101656231430635, Instagram/caravalspettacoli, YouTube/channel/UC-9aDMm5MfweZP7Weq881EA).
+- Telefono associativo `+39 379 1497805` + email `caravalspettacoli@gmail.com` già nelle 4 aree contatto (config seed Blocco 2). Verificati cliccabili.
+- Indirizzo "Via Borgo San Martino 8, 26029 Soncino (CR)" + P.IVA "01720800190" già dal singleton `impostazioniSito`.
+
+**Task 8 — Footer ristrutturato finale:**
+- Footer era già 4 colonne (Blocco 2). Aggiornato:
+  - URL social fallback completi (FB/IG/YT)
+  - `bg-nero-soft` (era `bg-nero-deep`) → coerente con palette §2.2
+  - `data-theme="dark"` esplicito per sistema adattivo
+
+**Task 9 — Schede spettacoli da caraval.it:**
+- WebFetch su 6 URL specifici (Romeo, Sogno, Servitore, Christmas Carol, Inferno, Miseria) → estrazione descrizione plain text.
+- **Romeo escluso**: già popolato dal PDF brochure in Sessione 4 (versione più ricca).
+- Patch idempotente con `setIfMissing` su `descrizioneNarrativa` dei 5 spettacoli rimanenti (Sogno, Servitore, Christmas Carol, Inferno, Miseria). Step 14 del seed.
+- Se Vera ha già editato in Studio, il seed NON sovrascrive (setIfMissing).
+
+**Decisioni autonome documentate:**
+1. **Chrome MCP non funzionante in sessione** → fix Task 1 basato su analisi statica + ridondanza (sincrono + IntersectionObserver + scroll). Annotato in PR.
+2. **Romeo storia da brochure mantenuta** invece di sovrascrivere con versione caraval.it più breve.
+3. **"Dal 2016" da sito attuale**, contraria al "dal 2020" precedente (decisione di Edo da verificare con Vera).
+4. **`setIfMissing` per descrizioni**: zero rischio di sovrascrivere edit Vera.
+5. **`CtaFinale.variant` default = "accent"**: tutte le CTA finali rosso pieno come da tabella prompt §3.3.
+6. **OspitaTeaser non eliminato**: resta nel codebase ma non più usato in homepage. Sostituito da CtaFinale.
+7. **Placeholder membri = iniziali Cinzel** invece di icona generica (prompt §6.2 esplicito).
+8. **bgVariant alternato a `/imaginarium`**: rispetto del prompt §2.2 (counter+programma+edizioni passate ora `light` con bgVariant alternato, NON più `accent`). Solo CTA finale resta accent.
+
+**Verifica:**
+- `npx tsc --noEmit` pulito · `npm run lint` pulito · `npm run build` pulito (24 rotte invariate).
+- HTML server-rendered verificato via curl: tutte le pagine principali hanno conteggi `data-theme` coerenti.
+- Chrome MCP non disponibile → niente screenshot allegati alla PR. Da verificare manualmente in preview Vercel.
+
+**Note bug residui:**
+- Task 1 fix è basato su analisi statica + ridondanza. Se Edo riscontra ancora "ogni tanto non coerente", servirà diagnosi runtime live (cosa impossibile in questa sessione per Chrome MCP down).
+- Programma Imaginarium con palette `imaginarium` (light) anziché `rosso` come prima: visivamente più chiaro, da validare con Edo nel preview.
+
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 6** — Chi siamo + ospita + contatti + privacy/cookie
 - [ ] **Sessione 7** — Iubenda + Umami analytics + accessibilità WCAG AA

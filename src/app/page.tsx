@@ -25,9 +25,9 @@ import {
   type SpettacoloHomepage,
 } from "@/components/caraval/SpettacoliAccordionHomepage";
 import { OfficinaTeaser } from "@/components/caraval/OfficinaTeaser";
-import { OspitaTeaser } from "@/components/caraval/OspitaTeaser";
 import { ContattiPrelude } from "@/components/caraval/ContattiPrelude";
 import { CounterStrip, type CounterItem } from "@/components/caraval/CounterStrip";
+import { CtaFinale } from "@/components/caraval/CtaFinale";
 
 type HomepageCopy = {
   premiHeading?: string;
@@ -176,7 +176,21 @@ export default async function HomePage() {
         ctaLink={data.copy?.repertorioCtaLink}
       />
       <OfficinaTeaser copy={data.copy} />
-      <OspitaTeaser copy={data.copy} />
+      <CtaFinale
+        variant="accent"
+        heading={
+          data.copy?.ospitaHeading ??
+          "Sei un Comune, una Pro Loco o una dimora storica?"
+        }
+        sottotitolo={
+          data.copy?.ospitaBody ??
+          "Caraval può portare uno spettacolo da te."
+        }
+        ctaPrimaria={{
+          label: data.copy?.ospitaCtaTesto ?? "Scopri come ingaggiarci",
+          href: data.copy?.ospitaCtaLink ?? "/ospita",
+        }}
+      />
       <ContattiPrelude copy={data.copy} contatti={data.contatti} />
     </>
   );
