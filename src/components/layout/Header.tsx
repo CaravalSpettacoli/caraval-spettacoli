@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/cn";
@@ -21,6 +22,7 @@ const MOBILE_EXTRA_LINKS = [{ href: "/ospita", label: "Ospita Caraval" }];
 const HEADER_HEIGHT_PX = 80;
 
 export function Header() {
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<SectionTheme>("dark");
@@ -49,6 +51,7 @@ export function Header() {
   }, []);
 
   // IntersectionObserver: rileva quale sezione sta sotto al top dell'header.
+  // Re-init ad ogni cambio pathname (App Router client-side nav non rimonta layout).
   useEffect(() => {
     if (typeof window === "undefined") return;
 
@@ -73,25 +76,31 @@ export function Header() {
       setCurrentTheme(active);
     };
 
-    // Riusa l'IntersectionObserver come trigger di aggiornamento + recompute esplicito.
-    // Più affidabile di calcolare da osservazioni discrete.
-    const observer = new IntersectionObserver(() => recomputeTheme(), {
-      rootMargin: `-${HEADER_HEIGHT_PX}px 0px -90% 0px`,
-      threshold: [0, 0.01, 0.99, 1],
-    });
-    const sections = document.querySelectorAll<HTMLElement>("section[data-theme]");
-    sections.forEach((s) => observer.observe(s));
+    // Delay di 50ms: al cambio pathname il DOM della nuova pagina può non
+    // essere ancora montato quando il useEffect ri-gira.
+    let observer: IntersectionObserver | null = null;
+    const setupTimer = window.setTimeout(() => {
+      observer = new IntersectionObserver(() => recomputeTheme(), {
+        rootMargin: `-${HEADER_HEIGHT_PX}px 0px -90% 0px`,
+        threshold: [0, 0.01, 0.99, 1],
+      });
+      const sections = document.querySelectorAll<HTMLElement>(
+        "section[data-theme]"
+      );
+      sections.forEach((s) => observer!.observe(s));
+      recomputeTheme();
+    }, 50);
 
     // Recompute on scroll come fallback (in caso una sezione non triggeri l'observer).
     const onScroll = () => recomputeTheme();
     window.addEventListener("scroll", onScroll, { passive: true });
-    recomputeTheme();
 
     return () => {
-      observer.disconnect();
+      window.clearTimeout(setupTimer);
+      if (observer) observer.disconnect();
       window.removeEventListener("scroll", onScroll);
     };
-  }, []);
+  }, [pathname]);
 
   // Body lock quando menu mobile aperto
   useEffect(() => {

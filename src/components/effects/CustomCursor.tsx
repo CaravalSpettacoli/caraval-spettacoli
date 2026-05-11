@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import { usePathname } from "next/navigation";
 import { themeStyles, type SectionTheme } from "@/lib/theme-system";
 
 /**
@@ -24,6 +25,7 @@ export function CustomCursor() {
   const trailRef = useRef<HTMLDivElement | null>(null);
   const [enabled, setEnabled] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<SectionTheme>("dark");
+  const pathname = usePathname();
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -72,40 +74,77 @@ export function CustomCursor() {
     window.addEventListener("mouseup", onUp);
     frame = requestAnimationFrame(tick);
 
-    // IntersectionObserver: osserva solo il 20% centrale del viewport.
-    // Solo una sezione alla volta tocca questa fascia → nessun flicker.
-    const observer = new IntersectionObserver(
-      (entries) => {
-        // Trova la sezione con intersectionRatio più alto fra quelle visibili.
-        const visible = entries.filter((e) => e.isIntersecting);
-        if (visible.length === 0) return;
-        const mostVisible = visible.reduce((max, cur) =>
-          cur.intersectionRatio > max.intersectionRatio ? cur : max
-        );
-        const theme = mostVisible.target.getAttribute(
-          "data-theme"
-        ) as SectionTheme | null;
-        if (theme && (theme === "dark" || theme === "light" || theme === "accent")) {
-          setCurrentTheme(theme);
-        }
-      },
-      {
-        rootMargin: "-40% 0px -40% 0px",
-        threshold: [0, 0.25, 0.5, 0.75, 1],
-      }
-    );
+    // Setup observer + iframe listeners dopo un piccolo delay: al cambio di
+    // pathname (App Router client-side nav), il DOM della nuova pagina può
+    // non essere ancora montato quando il useEffect ri-gira.
+    let observer: IntersectionObserver | null = null;
+    const iframeBindings: Array<{
+      el: HTMLIFrameElement;
+      enter: () => void;
+      leave: () => void;
+    }> = [];
 
-    const sections = document.querySelectorAll<HTMLElement>("section[data-theme]");
-    sections.forEach((s) => observer.observe(s));
+    const setupTimer = window.setTimeout(() => {
+      observer = new IntersectionObserver(
+        (entries) => {
+          const visible = entries.filter((e) => e.isIntersecting);
+          if (visible.length === 0) return;
+          const mostVisible = visible.reduce((max, cur) =>
+            cur.intersectionRatio > max.intersectionRatio ? cur : max
+          );
+          const theme = mostVisible.target.getAttribute(
+            "data-theme"
+          ) as SectionTheme | null;
+          if (
+            theme &&
+            (theme === "dark" || theme === "light" || theme === "accent")
+          ) {
+            setCurrentTheme(theme);
+          }
+        },
+        {
+          rootMargin: "-40% 0px -40% 0px",
+          threshold: [0, 0.25, 0.5, 0.75, 1],
+        }
+      );
+
+      const sections = document.querySelectorAll<HTMLElement>(
+        "section[data-theme]"
+      );
+      sections.forEach((s) => observer!.observe(s));
+
+      // Iframe leak fix: nasconde il dot/trail quando il mouse entra in un
+      // iframe (es. YouTube embed). Il cursor:none del parent non si propaga
+      // al documento dell'iframe.
+      const iframes = document.querySelectorAll<HTMLIFrameElement>("iframe");
+      iframes.forEach((iframe) => {
+        const enter = () => {
+          if (dotRef.current) dotRef.current.style.opacity = "0";
+          if (trailRef.current) trailRef.current.style.opacity = "0";
+        };
+        const leave = () => {
+          if (dotRef.current) dotRef.current.style.opacity = "1";
+          if (trailRef.current) trailRef.current.style.opacity = "0.22";
+        };
+        iframe.addEventListener("mouseenter", enter);
+        iframe.addEventListener("mouseleave", leave);
+        iframeBindings.push({ el: iframe, enter, leave });
+      });
+    }, 50);
 
     return () => {
+      window.clearTimeout(setupTimer);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mousedown", onDown);
       window.removeEventListener("mouseup", onUp);
       cancelAnimationFrame(frame);
-      observer.disconnect();
+      if (observer) observer.disconnect();
+      iframeBindings.forEach(({ el, enter, leave }) => {
+        el.removeEventListener("mouseenter", enter);
+        el.removeEventListener("mouseleave", leave);
+      });
     };
-  }, []);
+  }, [pathname]);
 
   if (!enabled) return null;
 
