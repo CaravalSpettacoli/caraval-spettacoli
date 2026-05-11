@@ -42,7 +42,7 @@ export function GalleriaFoto({ immagini }: { immagini: GalleriaItem[] | null }) 
       : null;
 
   return (
-    <section className="bg-nero-soft py-16 md:py-20">
+    <section data-theme="dark" className="bg-nero-soft py-16 md:py-20">
       <Container>
         <h2 className="uppercase-tracked text-caption text-rosso-base mb-8">
           Galleria

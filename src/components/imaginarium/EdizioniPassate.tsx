@@ -32,6 +32,7 @@ export function EdizioniPassate({
 
   return (
     <section
+      data-theme={isRosso ? "accent" : "light"}
       className={sectionBg}
       style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
     >

@@ -1,4 +1,5 @@
 import { Container } from "@/components/ui/Container";
+import { paletteToTheme } from "@/lib/theme-system";
 
 function youtubeEmbedUrl(url: string): string | null {
   try {
@@ -61,6 +62,7 @@ export function VideoYoutube({
 
   return (
     <section
+      data-theme={paletteToTheme[palette]}
       className={bg}
       style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
     >

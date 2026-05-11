@@ -20,6 +20,7 @@ export function TestimonianzeStrip({
 
   return (
     <section
+      data-theme="dark"
       className="bg-nero-base text-crema-base"
       style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
     >

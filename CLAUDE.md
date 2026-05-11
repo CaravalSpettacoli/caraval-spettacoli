@@ -531,6 +531,64 @@ Branch `feat/blocco-2-sessione-6-chi-siamo-contatti-ospita` da `main` post-merge
 - I valori live aggiornati via `npm run sanity:seed` (richiede `SANITY_API_WRITE_TOKEN`). Dopo seed: 4 nuovi membri con bioBreve/ruoli/ordinamento, 3 singleton popolati (createOrReplace).
 - Fallback hardcoded nelle pagine garantiscono render decente anche pre-seed.
 
+### ✅ Mini-blocco 2.5a — Sistemi adattivi (FATTO)
+Branch `feat/2-5a-sistemi-adattivi` da `main` post-merge Blocco 2.
+
+**Problema risolto:**
+1. Cursore custom (dot rosso fisso `bg-rosso-base`) invisibile su sezioni rosse pieni (Ospita CTA, Counter Imaginarium accent) e poco coerente su sezioni crema.
+2. Header non adattivo sezione-per-sezione: usava regex `LIGHT_BG_ROUTES` per pagina, quindi su `/imaginarium` diventava illeggibile sulla sezione Counter rosso, e viceversa su `/` la sezione Imaginarium preview crema.
+
+**Soluzione architetturale: theme system + IntersectionObserver.**
+
+**File nuovo:**
+- `src/lib/theme-system.ts` — `SectionTheme = "dark" | "light" | "accent"`, `themeStyles` con (cursorColor, trailColor, headerVariant) per ogni tema, mappe di conversione `paletteToTheme` / `sectionBgToTheme` / `ctaVariantToTheme` per derivare il tema dalle prop esistenti senza aggiungerne di nuove.
+
+**File modificati — pattern "deriva da prop esistente":**
+- `src/components/ui/Section.tsx` — deriva auto `data-theme` da `background`. Una sola modifica copre 15+ usi della pagina (`/spettacoli`, `/calendario`, `/formazione`, `/contatti`, `/ospita` + tutti i componenti che usano `<Section>`).
+- `src/components/caraval/HeroPagina.tsx` — `data-theme={paletteToTheme[palette]}`.
+- `src/components/caraval/CounterStrip.tsx` — idem.
+- `src/components/caraval/VideoYoutube.tsx` — idem.
+- `src/components/imaginarium/ProgrammaCompleto.tsx` — idem su entrambe le section (empty state + main).
+- `src/components/imaginarium/EdizioniPassate.tsx` — `data-theme={isRosso ? "accent" : "light"}` (palette `default` qui ha bg crema → light, non dark; non riusa `paletteToTheme`).
+- `src/components/caraval/CtaFinale.tsx` — `data-theme={ctaVariantToTheme[variant]}`.
+
+**File modificati — hardcoded `data-theme` sul `<section>`:**
+- `OspitaTeaser.tsx` → `accent`
+- `ImaginariumPreview.tsx` → `light`
+- `SponsorPartnerStrip.tsx` → `light`
+- `src/app/imaginarium/[anno]/page.tsx` (fallback "Programma in caricamento") → `light`
+- 11 file con `<section>` dark hardcoded: `SpettacoliAccordionHomepage`, `HeroSpettacolo`, `GalleriaFoto`, `TrailerVideo`, `SezioneStoria`, `MembriGrid`, `PremiSezione`, `ScuolaMagiaBox`, `ProcessoIngaggio`, `TestimonianzeStrip`, `HannoIngaggiatoCaraval` → `dark`.
+
+**Cursore adattivo (`src/components/effects/CustomCursor.tsx`):**
+- State `currentTheme: SectionTheme` (default `"dark"`).
+- `IntersectionObserver` con `rootMargin: "-40% 0px -40% 0px"` (solo il 20% centrale del viewport) + `threshold: [0, 0.25, 0.5, 0.75, 1]` osserva `section[data-theme]`. La sezione con `intersectionRatio` più alto definisce il tema.
+- Colore dot e trail inline da `themeStyles[currentTheme]` (cursorColor, trailColor), `transition: background-color 220ms ease-out` (mai su transform, gestita da rAF).
+- Trail: rosso brand `#a8174a` su dark/light, nero `#0a0a0a` su accent (il rosso si fonderebbe con lo sfondo rosso pieno). Decisione mia per bilanciare visibilità e cifra cromatica brand.
+- Niente debounce: con `rootMargin -40%` solo una sezione tocca il 20% centrale → niente flicker possibile. Cleanup `observer.disconnect()` aggiunto.
+
+**Header adattivo (`src/components/layout/Header.tsx`):**
+- Rimossa logica `LIGHT_BG_ROUTES` regex + `usePathname` (sostituita da IntersectionObserver).
+- State `currentTheme: SectionTheme`. `recomputeTheme()` itera `section[data-theme]` e trova quella che ha `rect.top <= HEADER_HEIGHT && rect.bottom > HEADER_HEIGHT`. Triggerata sia da observer (`rootMargin: "-80px 0px -90% 0px"`) sia da scroll handler come fallback.
+- `dark = variant === "dark" || scrolled || open`: su scroll/menu mobile aperto si forza dark (backdrop blur nero è la scelta UX coerente).
+- Logo cross-fade: 2 `<img>` sovrapposti in wrapper `position: relative` con dimensione fissa (`width: 180px`, `h-9 md:h-12`). `opacity` 0/1 con transition 220ms. Risolve l'aspect ratio diverso tra white (2.54:1) e black (1.78:1) via `object-contain object-left`.
+
+**Decisioni autonome documentate:**
+1. **Trail rosso su dark/light, nero su accent** — per visibilità sul rosso pieno.
+2. **Cross-fade vs swap con `key` remount** — più fluido, niente flash, dimensioni fisse evitano layout shift.
+3. **`paletteToTheme` invece di nuova prop `theme`** — i componenti con palette già esistente derivano automaticamente.
+4. **`EdizioniPassate.palette="default"` non mappa a `dark`** — il suo bg è `crema-bright` (light), non nero. Hardcode ternario `isRosso ? "accent" : "light"`.
+5. **Header dark su scroll anche su pagine light** — backdrop blur nero leggibile + consistente con behavior precedente.
+
+**Verifica:**
+- `npx tsc --noEmit` pulito · `npm run lint` pulito · `npm run build` pulito.
+- Verifica HTML server-rendered con curl + grep `data-theme`:
+  - `/` → 6 dark + 1 light + 1 accent ✓
+  - `/imaginarium` → 3 light + 3 accent ✓
+  - `/ospita` → 2 dark + 1 accent ✓
+  - `/chi-siamo` → 4 dark (membri/premi renderizzano solo con dati Sanity)
+  - `/contatti` `/calendario` `/formazione` `/spettacoli` → tutti dark ✓
+- Chrome MCP non disponibile in questa sessione → niente screenshot, verifica solo via curl.
+
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 6** — Chi siamo + ospita + contatti + privacy/cookie
 - [ ] **Sessione 7** — Iubenda + Umami analytics + accessibilità WCAG AA
