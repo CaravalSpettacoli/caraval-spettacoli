@@ -30,6 +30,7 @@ export function MembriGrid({
 
   return (
     <section
+      data-theme="dark"
       className="bg-nero-soft text-crema-base"
       style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
     >

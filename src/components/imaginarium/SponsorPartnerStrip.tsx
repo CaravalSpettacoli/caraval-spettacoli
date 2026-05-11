@@ -16,7 +16,7 @@ export function SponsorPartnerStrip({ data }: { data: SponsorPartnerData | null 
   if (!haContenuto) return null;
 
   return (
-    <section className="py-12 md:py-16 bg-crema-base text-nero-base border-t border-rosso-deep/20">
+    <section data-theme="light" className="py-12 md:py-16 bg-crema-base text-nero-base border-t border-rosso-deep/20">
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-body-s">
           {patrocinio && patrocinio.length > 0 && (

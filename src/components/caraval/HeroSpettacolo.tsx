@@ -25,6 +25,7 @@ export function HeroSpettacolo({ data }: { data: HeroSpettacoloData }) {
 
   return (
     <section
+      data-theme="dark"
       className="relative w-full overflow-hidden bg-nero-deep flex items-end"
       style={{ minHeight: "70vh" }}
     >

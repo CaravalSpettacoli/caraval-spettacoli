@@ -1,5 +1,6 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/cn";
+import { sectionBgToTheme } from "@/lib/theme-system";
 
 type Background = "nero" | "nero-soft" | "crema" | "transparent";
 
@@ -24,6 +25,7 @@ export function Section({
   style,
   ...rest
 }: SectionProps) {
+  const dataTheme = sectionBgToTheme[background];
   return (
     <Tag
       className={cn(bgs[background], className)}
@@ -31,6 +33,7 @@ export function Section({
         paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
         ...style,
       }}
+      {...(dataTheme ? { "data-theme": dataTheme } : {})}
       {...rest}
     >
       {children}

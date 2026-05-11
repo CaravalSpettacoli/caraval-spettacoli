@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { urlFor } from "@/../sanity/lib/image";
+import { paletteToTheme } from "@/lib/theme-system";
 
 type CTA = { label: string; href: string; esterno?: boolean };
 
@@ -65,6 +66,7 @@ export function HeroPagina({
 
   return (
     <section
+      data-theme={paletteToTheme[palette]}
       className={`relative w-full overflow-hidden flex items-center ${bgClass}`}
       style={{ minHeight: isFull ? "100vh" : "60vh" }}
     >

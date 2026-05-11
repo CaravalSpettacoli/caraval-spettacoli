@@ -11,7 +11,7 @@ export type OspitaCopy = {
 export function OspitaTeaser({ copy }: { copy: OspitaCopy | null }) {
   if (!copy) return null;
   return (
-    <section className="relative bg-rosso-base text-crema-base py-20 md:py-24 overflow-hidden">
+    <section data-theme="accent" className="relative bg-rosso-base text-crema-base py-20 md:py-24 overflow-hidden">
       <div
         aria-hidden
         className="absolute inset-x-0 top-0 text-crema-base/15"

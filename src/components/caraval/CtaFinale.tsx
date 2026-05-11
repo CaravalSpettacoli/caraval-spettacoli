@@ -1,5 +1,6 @@
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
+import { ctaVariantToTheme } from "@/lib/theme-system";
 
 type CTA = { label: string; href: string; esterno?: boolean };
 
@@ -26,6 +27,7 @@ export function CtaFinale({
 
   return (
     <section
+      data-theme={ctaVariantToTheme[variant]}
       className={bg}
       style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
     >

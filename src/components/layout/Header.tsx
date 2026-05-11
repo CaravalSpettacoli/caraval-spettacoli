@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import { Menu, X } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { splitDisplay } from "@/lib/splitDisplay";
+import { themeStyles, type SectionTheme } from "@/lib/theme-system";
 
 const NAV_LINKS = [
   { href: "/spettacoli", label: "Spettacoli" },
@@ -18,20 +19,21 @@ const NAV_LINKS = [
 // Voce B2B "Ospita" presente solo nel menu mobile (decisione: NON in header desktop).
 const MOBILE_EXTRA_LINKS = [{ href: "/ospita", label: "Ospita Caraval" }];
 
-/** Pagine con sfondo chiaro (palette inversa). Quando l'header sta sopra
- *  uno sfondo chiaro non scrollato → testo + logo scuri. Su scroll torna
- *  comunque scuro perché il blur backdrop diventa nero semi-trasparente. */
-const LIGHT_BG_ROUTES = [/^\/imaginarium($|\/)/];
+const HEADER_HEIGHT_PX = 80;
 
 export function Header() {
-  const pathname = usePathname() ?? "/";
+  const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
+  const [currentTheme, setCurrentTheme] = useState<SectionTheme>("dark");
 
-  const isLightBg = LIGHT_BG_ROUTES.some((re) => re.test(pathname));
-  // Tema scuro (testo chiaro su sfondo scuro): default + scrolled + menu mobile aperto
-  const dark = !isLightBg || scrolled || open;
+  // Tema dell'header derivato dalla sezione che sta sotto al top dell'header.
+  // Su scroll/menu mobile aperto forziamo dark (backdrop blur nero scuro = UX
+  // consistente, e il drawer mobile è sempre nero pieno).
+  const variant = themeStyles[currentTheme].headerVariant;
+  const dark = variant === "dark" || scrolled || open;
 
+  // Scroll handler (backdrop blur)
   useEffect(() => {
     let raf = 0;
     const onScroll = () => {
@@ -48,6 +50,59 @@ export function Header() {
     };
   }, []);
 
+  // IntersectionObserver: rileva quale sezione sta sotto al top dell'header.
+  // Re-init ad ogni cambio pathname (App Router client-side nav non rimonta layout).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    // Quando una section ha rect.top <= HEADER_HEIGHT && rect.bottom > HEADER_HEIGHT
+    // significa che l'header sta passando sopra quella sezione.
+    const recomputeTheme = () => {
+      const sections = document.querySelectorAll<HTMLElement>(
+        "section[data-theme]"
+      );
+      let active: SectionTheme = "dark";
+      for (let i = 0; i < sections.length; i++) {
+        const s = sections[i];
+        const r = s.getBoundingClientRect();
+        if (r.top <= HEADER_HEIGHT_PX && r.bottom > HEADER_HEIGHT_PX) {
+          const t = s.getAttribute("data-theme") as SectionTheme | null;
+          if (t === "dark" || t === "light" || t === "accent") {
+            active = t;
+          }
+          break;
+        }
+      }
+      setCurrentTheme(active);
+    };
+
+    // Delay di 50ms: al cambio pathname il DOM della nuova pagina può non
+    // essere ancora montato quando il useEffect ri-gira.
+    let observer: IntersectionObserver | null = null;
+    const setupTimer = window.setTimeout(() => {
+      observer = new IntersectionObserver(() => recomputeTheme(), {
+        rootMargin: `-${HEADER_HEIGHT_PX}px 0px -90% 0px`,
+        threshold: [0, 0.01, 0.99, 1],
+      });
+      const sections = document.querySelectorAll<HTMLElement>(
+        "section[data-theme]"
+      );
+      sections.forEach((s) => observer!.observe(s));
+      recomputeTheme();
+    }, 50);
+
+    // Recompute on scroll come fallback (in caso una sezione non triggeri l'observer).
+    const onScroll = () => recomputeTheme();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    return () => {
+      window.clearTimeout(setupTimer);
+      if (observer) observer.disconnect();
+      window.removeEventListener("scroll", onScroll);
+    };
+  }, [pathname]);
+
+  // Body lock quando menu mobile aperto
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
     return () => {
@@ -55,21 +110,25 @@ export function Header() {
     };
   }, [open]);
 
-  // Scrim sottile in cima quando non scrollato — garantisce leggibilità del
-  // logo/nav anche su foto sfondo o sezioni di colore inaspettato.
+  // Scrim sottile in cima quando non scrollato — garantisce leggibilità
+  // anche su foto sfondo o gradient inattesi.
   const scrimClass = scrolled
     ? ""
-    : isLightBg
+    : variant === "light"
       ? "bg-gradient-to-b from-crema-base/70 to-transparent"
       : "bg-gradient-to-b from-black/55 to-transparent";
+
+  // Backdrop blur con bg coerente al tema corrente (su scroll mostra dark
+  // perché `dark` include `scrolled`).
+  const backdropClass = scrolled
+    ? "bg-nero-base/85 backdrop-blur-md border-b border-crema-faint/40"
+    : scrimClass;
 
   return (
     <header
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-base ease-cinema",
-        scrolled
-          ? "bg-nero-base/85 backdrop-blur-md border-b border-crema-faint/40"
-          : scrimClass
+        backdropClass
       )}
     >
       <div className="mx-auto flex h-16 md:h-20 max-w-container-wide items-center justify-between px-4 md:px-6 lg:px-8">
@@ -78,19 +137,41 @@ export function Header() {
           className="flex items-center hover:opacity-80 transition-opacity"
           aria-label="Caraval Spettacoli — home"
         >
-          {/* Plain <img> per evitare hydration glitch sul cambio src dinamico */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img
-            key={dark ? "white" : "black"}
-            src={dark ? "/caraval-logo-white.png" : "/caraval-logo-black.png"}
-            alt="Caraval Spettacoli"
-            className="h-9 md:h-12 w-auto"
-            style={{
-              filter: scrolled
-                ? "none"
-                : "drop-shadow(0 1px 2px rgba(0,0,0,0.25))",
-            }}
-          />
+          {/* Logo cross-fade: 2 <img> sovrapposti, opacity controllata da variant.
+              Wrapper a dimensione fissa per evitare layout shift tra aspect ratios
+              diversi del logo white (≈2.54) e black (≈1.78). */}
+          <span
+            className="relative inline-block h-9 md:h-12"
+            style={{ width: "180px" }}
+            aria-hidden
+          >
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/caraval-logo-white.png"
+              alt=""
+              className="absolute inset-0 w-full h-full object-contain object-left"
+              style={{
+                opacity: dark ? 1 : 0,
+                transition: "opacity 220ms ease-out",
+                filter: scrolled
+                  ? "none"
+                  : "drop-shadow(0 1px 2px rgba(0,0,0,0.25))",
+              }}
+            />
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
+              src="/caraval-logo-black.png"
+              alt=""
+              className="absolute inset-0 w-full h-full object-contain object-left"
+              style={{
+                opacity: dark ? 0 : 1,
+                transition: "opacity 220ms ease-out",
+                filter: scrolled
+                  ? "none"
+                  : "drop-shadow(0 1px 2px rgba(255,255,255,0.3))",
+              }}
+            />
+          </span>
         </Link>
 
         <nav

@@ -91,7 +91,7 @@ export default async function EdizionePassataPage({
           <SponsorPartnerStrip data={edizione} />
         </>
       ) : (
-        <section className="py-16 md:py-24 bg-crema-base text-nero-base">
+        <section data-theme="light" className="py-16 md:py-24 bg-crema-base text-nero-base">
           <Container>
             <div className="max-w-[640px] mx-auto text-center">
               <p className="font-display text-h2 text-rosso-deep">

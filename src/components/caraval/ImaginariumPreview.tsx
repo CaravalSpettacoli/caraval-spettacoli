@@ -77,7 +77,7 @@ export function ImaginariumPreview({
   const dateRange = formatRangeDate(edizione.dataInizio, edizione.dataFine);
 
   return (
-    <section className="bg-crema-base text-nero-base py-20 md:py-24">
+    <section data-theme="light" className="bg-crema-base text-nero-base py-20 md:py-24">
       <Container>
         <div className="text-center">
           <p className="uppercase-tracked text-caption text-rosso-deep">

@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
 import { urlFor } from "@/../sanity/lib/image";
+import { paletteToTheme } from "@/lib/theme-system";
 
 export type SpettacoloImagItem = {
   _id: string;
@@ -82,6 +83,7 @@ export function ProgrammaCompleto({
   if (!spettacoli || spettacoli.length === 0) {
     return (
       <section
+        data-theme={paletteToTheme[palette]}
         className={bg}
         style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
       >
@@ -97,6 +99,7 @@ export function ProgrammaCompleto({
 
   return (
     <section
+      data-theme={paletteToTheme[palette]}
       className={bg}
       style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
     >

@@ -22,7 +22,7 @@ export function TrailerVideo({ url }: { url?: string }) {
   const embed = youtubeEmbedUrl(url);
   if (!embed) return null;
   return (
-    <section className="bg-nero-base py-16 md:py-20">
+    <section data-theme="dark" className="bg-nero-base py-16 md:py-20">
       <Container width="narrow">
         <h2 className="uppercase-tracked text-caption text-rosso-base mb-6 text-center">
           Trailer
