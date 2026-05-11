@@ -56,14 +56,17 @@ const FALLBACK: ImpostazioniFooter = {
   ],
 };
 
-const SITE_LINKS = [
+const SITO_LINKS = [
   { href: "/spettacoli", label: "Spettacoli" },
-  { href: "/imaginarium", label: "Imaginarium" },
-  { href: "/formazione", label: "Formazione" },
-  { href: "/chi-siamo", label: "Chi siamo" },
   { href: "/calendario", label: "Calendario" },
-  { href: "/ospita", label: "Ospita" },
-  { href: "/archivio", label: "Archivio" },
+  { href: "/formazione", label: "Formazione" },
+  { href: "/imaginarium", label: "Imaginarium" },
+];
+
+const ASSOCIAZIONE_LINKS = [
+  { href: "/chi-siamo", label: "Chi siamo" },
+  { href: "/contatti", label: "Contatti" },
+  { href: "/ospita", label: "Ospita Caraval" },
 ];
 
 const SOCIAL_ICON: Record<SocialLink["piattaforma"], LucideIcon> = {
@@ -111,7 +114,7 @@ export async function Footer() {
   return (
     <footer className="bg-nero-deep text-crema-base border-t border-crema-faint mt-16">
       <Container className="py-16 md:py-20">
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-12 md:gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-12 md:gap-8">
           {/* Colonna 1 — Caraval */}
           {(() => {
             const ragione = dati.ragioneSociale || "Caraval Associazione Culturale";
@@ -142,8 +145,8 @@ export async function Footer() {
             <h3 className="text-label uppercase-tracked mb-4 text-crema-muted">
               Sito
             </h3>
-            <ul className="grid grid-cols-2 gap-y-2 gap-x-6 text-body-s">
-              {SITE_LINKS.map((l) => (
+            <ul className="space-y-2 text-body-s">
+              {SITO_LINKS.map((l) => (
                 <li key={l.href}>
                   <Link
                     href={l.href}
@@ -156,7 +159,26 @@ export async function Footer() {
             </ul>
           </nav>
 
-          {/* Colonna 3 — Contatti */}
+          {/* Colonna 3 — Associazione */}
+          <nav aria-label="Associazione">
+            <h3 className="text-label uppercase-tracked mb-4 text-crema-muted">
+              Chi siamo
+            </h3>
+            <ul className="space-y-2 text-body-s">
+              {ASSOCIAZIONE_LINKS.map((l) => (
+                <li key={l.href}>
+                  <Link
+                    href={l.href}
+                    className="hover:text-rosso-hover transition-colors"
+                  >
+                    {l.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </nav>
+
+          {/* Colonna 4 — Contatti */}
           <div>
             <h3 className="text-label uppercase-tracked mb-4 text-crema-muted">
               Contatti

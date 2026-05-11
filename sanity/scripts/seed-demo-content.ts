@@ -157,7 +157,9 @@ const membri: AnyDoc[] = [
     _type: "membro",
     nome: "Vera Rossini",
     slug: { _type: "slug", current: "vera-rossini" },
-    ruoli: ["Regista", "Attrice", "Formatrice"],
+    ruoli: ["Regista", "Formatrice"],
+    bioBreve:
+      "Fondatrice di Caraval. Cura la regia degli spettacoli di prosa e dirige l'Officina Teatrale.",
     bio: "Fondatrice di Caraval Spettacoli. Cura regia, formazione e direzione artistica del festival Imaginarium.",
     ordinamento: 1,
     referenteAreaTesto: "Formazione, regia, generale",
@@ -165,18 +167,171 @@ const membri: AnyDoc[] = [
     emailPubblica: "caravalspettacoli@gmail.com",
   },
   {
+    _id: "membro-alessio-rosin",
+    _type: "membro",
+    nome: "Alessio Rosin",
+    slug: { _type: "slug", current: "alessio-rosin" },
+    ruoli: ["Attore", "Performer"],
+    bioBreve:
+      "Attore della compagnia, presente nelle produzioni di prosa e di strada.",
+    ordinamento: 2,
+  },
+  {
     _id: "membro-nicola-pignoli",
     _type: "membro",
     nome: "Nicola Pignoli",
     slug: { _type: "slug", current: "nicola-pignoli" },
-    ruoli: ["Performer", "Tecnico fuoco"],
+    ruoli: ["Tecnico", "Performer di fuoco"],
+    bioBreve:
+      "Cura la parte tecnica degli spettacoli e le performance di fuoco.",
     bio: "Referente per gli spettacoli di fuoco e le rievocazioni storiche di Caraval.",
-    ordinamento: 2,
+    ordinamento: 3,
     referenteAreaTesto: "Spettacoli di fuoco e rievocazioni",
     telefonoPubblico: "+39 348 3399431",
     emailPubblica: "nicolapignoli8@gmail.com",
   },
+  {
+    _id: "membro-lorenzo-samanni",
+    _type: "membro",
+    nome: "Lorenzo Samanni",
+    slug: { _type: "slug", current: "lorenzo-samanni" },
+    ruoli: ["Attore"],
+    bioBreve: "Attore della compagnia.",
+    ordinamento: 4,
+  },
+  {
+    _id: "membro-marco-ravelli",
+    _type: "membro",
+    nome: "Marco Ravelli",
+    slug: { _type: "slug", current: "marco-ravelli" },
+    ruoli: ["Attore"],
+    bioBreve: "Attore della compagnia.",
+    ordinamento: 5,
+  },
+  {
+    _id: "membro-ilaria-cavalli",
+    _type: "membro",
+    nome: "Ilaria Cavalli",
+    slug: { _type: "slug", current: "ilaria-cavalli" },
+    ruoli: ["Attrice"],
+    bioBreve: "Attrice della compagnia.",
+    ordinamento: 6,
+  },
 ];
+
+// ---------- Pagina Chi Siamo — Copy ----------
+
+const paginaChiSiamoCopy: AnyDoc = {
+  _id: "paginaChiSiamoCopy",
+  _type: "paginaChiSiamoCopy",
+  heroEyebrow: "CHI SIAMO",
+  heroHeading: "Caraval Spettacoli",
+  heroSottotitolo: "Compagnia teatrale di Soncino, dal 2020.",
+  storiaEyebrow: "LA NOSTRA STORIA",
+  storiaHeading: "Da una piazza vuota a un festival",
+  storiaBody:
+    "Caraval nasce nel 2020 a Soncino, da un gruppo di amici che voleva fare teatro nei luoghi della propria infanzia. Le prime prove in un cortile, i primi spettacoli in piazza. Poi la prosa, il fuoco, la strada — tre lingue diverse per parlare allo stesso pubblico, fatto di vicini di casa e turisti, bambini e nonni.\n\nIn sei anni siamo passati da una piazza vuota a un festival che ogni estate trasforma i borghi della media pianura in palcoscenico: Imaginarium. Cinque edizioni, decine di compagnie ospitate, migliaia di spettatori. Un'idea semplice — fare teatro dove la comunità vive — che ogni anno trova nuove forme.",
+  membriEyebrow: "LA COMPAGNIA",
+  membriHeading: "Le persone di Caraval",
+  membriIntro: "Sei artisti che fanno teatro insieme.",
+  premiEyebrow: "RICONOSCIMENTI",
+  premiHeading: "I premi che abbiamo ricevuto",
+  scuolaMagiaEyebrow: "ALTRI PROGETTI",
+  scuolaMagiaHeading: "Scuola di Magia Italiana",
+  scuolaMagiaBody:
+    "Vera è anche fondatrice della Scuola di Magia Italiana, percorso formativo dedicato all'arte magica e alla prestidigitazione. Una realtà parallela a Caraval, con un suo percorso e una sua identità.",
+  scuolaMagiaUrl: "https://scuoladimagiaitaliana.it",
+};
+
+// ---------- Pagina Contatti — Copy ----------
+
+const paginaContattiCopy: AnyDoc = {
+  _id: "paginaContattiCopy",
+  _type: "paginaContattiCopy",
+  heroEyebrow: "CONTATTI",
+  heroHeading: "Restiamo in contatto",
+  heroSottotitolo:
+    "Per spettacoli, formazione, collaborazioni o solo per dirci ciao.",
+  aree: [
+    {
+      _key: "area-spettacolo",
+      icona: "spettacolo",
+      eyebrow: "PER PROGRAMMARE UNO SPETTACOLO",
+      titolo: "Hai un evento? Vuoi ingaggiarci?",
+      descrizione:
+        "Comuni, Pro Loco, dimore storiche, associazioni: scrivici per ingaggiare uno spettacolo del nostro repertorio. Prosa, fuoco o strada.",
+      referente: { _type: "reference", _ref: "membro-vera-rossini" },
+    },
+    {
+      _key: "area-formazione",
+      icona: "formazione",
+      eyebrow: "CORSI E FORMAZIONE",
+      titolo: "Officina Teatrale e laboratori",
+      descrizione:
+        "Officina Teatrale per adulti, laboratori nelle scuole. Per informazioni o iscrizioni.",
+      referente: { _type: "reference", _ref: "membro-vera-rossini" },
+    },
+    {
+      _key: "area-fuoco",
+      icona: "fuoco",
+      eyebrow: "SPETTACOLI DI FUOCO",
+      titolo: "Richieste tecniche per fuoco e strada",
+      descrizione:
+        "Per richieste tecniche specifiche sugli spettacoli di fuoco e strada.",
+      referente: { _type: "reference", _ref: "membro-nicola-pignoli" },
+    },
+    {
+      _key: "area-generale",
+      icona: "generale",
+      eyebrow: "CONTATTI GENERALI",
+      titolo: "Per qualsiasi altra richiesta",
+      descrizione:
+        "Per qualsiasi altra richiesta, scrivici o chiamaci.",
+      telefonoOverride: "+39 379 1497805",
+      emailOverride: "caravalspettacoli@gmail.com",
+    },
+  ],
+};
+
+// ---------- Pagina Ospita — Copy ----------
+
+const paginaOspitaCopy: AnyDoc = {
+  _id: "paginaOspitaCopy",
+  _type: "paginaOspitaCopy",
+  heroEyebrow: "OSPITA CARAVAL",
+  heroHeading: "Porta il teatro nella tua piazza",
+  heroSottotitolo:
+    "Un Comune, una Pro Loco, una dimora storica, un'associazione culturale. Caraval può portare uno spettacolo da te.",
+  valorePropostoEyebrow: "PERCHÉ CARAVAL",
+  valorePropostoHeading: "Teatro che funziona, dove serve",
+  valorePropostoBody:
+    "Lavoriamo da 6 anni con piazze, sagrati, cortili e teatri della Lombardia e oltre. Prosa contemporanea, teatro di fuoco, narrazione di strada. Il pubblico non si annoia mai. I committenti tornano l'anno dopo.",
+  processoIngaggioEyebrow: "COME FUNZIONA",
+  processoIngaggioHeading: "Tre passi per averci da te",
+  processoIngaggioStep: [
+    { _key: "step1", numero: "1", titolo: "Scrivici", descrizione: "Mandaci una mail con data, luogo e idea dell'evento. Anche solo un'intuizione, ti aiutiamo noi a strutturarla." },
+    { _key: "step2", numero: "2", titolo: "Scegliamo lo spettacolo giusto", descrizione: "Ti proponiamo 1-2 spettacoli del nostro repertorio compatibili con il tuo spazio e il tuo pubblico. Valutiamo insieme." },
+    { _key: "step3", numero: "3", titolo: "Veniamo a fare il sopralluogo", descrizione: "Tecnica, logistica, accoglienza. Ci occupiamo di tutto. Tu pensi solo alla piazza piena." },
+  ],
+  testimonianzeEyebrow: "DICONO DI NOI",
+  testimonianzeHeading: "Chi ci ha ospitato, lo racconta",
+  testimonianze: [
+    { _key: "t1", citazione: "Caraval è una compagnia che lavora con cura e professionalità. Lo spettacolo ha riempito la piazza di pubblico.", autore: "Mario Rossi", ente: "Sindaco, Comune di [Esempio]" },
+    { _key: "t2", citazione: "Lavorare con Caraval è stato semplice e umano. Sono tornati l'anno successivo.", autore: "Anna Bianchi", ente: "Presidente, Pro Loco di [Esempio]" },
+    { _key: "t3", citazione: "Hanno trasformato il nostro cortile in un teatro. Spettatori entusiasti.", autore: "Giorgio Verdi", ente: "Direttore, Dimora storica [Esempio]" },
+  ],
+  hannoIngaggiatoEyebrow: "HANNO INGAGGIATO CARAVAL",
+  hannoIngaggiatoElenco: [
+    "Comune di Soncino",
+    "Comune di Crema",
+    "Pro Loco Soncino",
+    "Festival X",
+    "Festival Y",
+    "Comune di Z",
+  ],
+  ctaFinaleHeading: "Pronto a portare Caraval da te?",
+  ctaFinaleBody: "Scrivici. Ti rispondiamo entro 24 ore con una proposta su misura.",
+};
 
 // ---------- Spettacoli ----------
 
@@ -652,6 +807,14 @@ async function main() {
   // 9b. Singleton paginaImaginariumCopy (Blocco 1)
   await client.createOrReplace(paginaImaginariumCopy);
   console.log("✓ paginaImaginariumCopy");
+
+  // 9c. Singleton chi-siamo / contatti / ospita (Blocco 2)
+  await client.createOrReplace(paginaChiSiamoCopy);
+  console.log("✓ paginaChiSiamoCopy");
+  await client.createOrReplace(paginaContattiCopy);
+  console.log("✓ paginaContattiCopy");
+  await client.createOrReplace(paginaOspitaCopy);
+  console.log("✓ paginaOspitaCopy");
 
   // 10. Archivio: 7 nuovi document spettacolo (idempotenti)
   for (const a of archivioSeeds) {

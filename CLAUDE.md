@@ -478,6 +478,59 @@ Branch `feat/blocco-1-polish-strutturale` da `main` post-merge Sessione 5.
 - I valori reali ("9 spettacoli", "3 anime"…) vengono popolati da seed via `createOrReplace`. Edo dovrà eseguire `npm run sanity:seed` con `SANITY_API_WRITE_TOKEN` per allineare il dataset.
 - Stato vuoto in produzione: i fallback hardcoded in `page.tsx` mostrano i valori default → niente buchi visivi pre-seed.
 
+### ✅ Blocco 2 — Sessione 6: Chi Siamo + Contatti + Ospita (FATTO)
+Branch `feat/blocco-2-sessione-6-chi-siamo-contatti-ospita` da `main` post-merge Blocco 1.
+
+**3 pagine create:**
+- `/chi-siamo` — hero compatto + storia (media-text 50/50) + griglia 6 membri (3/2/1 col, gerarchia orizzontale, foto placeholder con icona User per chi non ha foto) + sezione premi (3 card linked a spettacoli) + box Scuola di Magia (40/60 con CTA outlined target=_blank) + CTA finale (2 bottoni "Vedi spettacoli" / "Contattaci").
+- `/contatti` — hero compatto + sezione "Dove siamo" (indirizzo + P.IVA da `impostazioniSito`, no mappa) + grid 2×2 di 4 aree contatto (Spettacolo B2B, Formazione, Fuoco, Generale) con icone `lucide-react` (Theater/GraduationCap/Flame/MessageCircle) + sezione "Seguici" condizionale (renderizzata solo se `socialLinks` configurati; usa fallback hardcoded del Footer come default).
+- `/ospita` — hero compatto con CTA primaria mailto subject "Richiesta ingaggio" + valore proposto + processo 3 step (con linea di connessione gradient su desktop) + 3 testimonianze placeholder + strip "Hanno ingaggiato Caraval" (nomi separati da · in Cinzel) + CTA finale variant rosso pieno.
+
+**Schemi Sanity nuovi (3 singleton + 1 esteso):**
+- `paginaChiSiamoCopy` — groups Studio: hero / storia / membri / premi / scuolaMagia. Tutti i campi con `initialValue`.
+- `paginaContattiCopy` — groups: hero / aree. `aree[]` con object discriminato (icona enum 4 valori, eyebrow/titolo/descrizione required, ref membro opzionale, override tel/email).
+- `paginaOspitaCopy` — groups: hero / valore / processo / testimonianze / ingaggiato / ctafinale. `processoIngaggioStep[]` e `testimonianze[]` come array di object con `initialValue` 3 placeholder.
+- `membro` esteso: aggiunto `bioBreve` (text, max 200) per griglia chi-siamo, `bio` esistente rinominato "Bio (opzionale, lunga)" per uso futuro. `ordineDisplay` del prompt → riusato `ordinamento` esistente (stessa semantica).
+
+**Schemi legacy:** `paginaChiSiamo` e `paginaOspita` (definiti in `paginaInfo.ts`, mai usati nel codice) lasciati intatti per zero rischio di rompere documenti pre-esistenti. I nuovi sono `paginaChiSiamoCopy` / `paginaOspitaCopy` come da prompt.
+
+**Componenti nuovi (`src/components/caraval/`):**
+- `SezioneStoria.tsx` — media-text 50/50, foto placeholder con logo Caraval bianco low-opacity se `storiaFotoSezione` non popolato.
+- `MembriGrid.tsx` — grid 1/2/3, foto 4:5 con bg `rosso-muted` + `<User>` icona per placeholder.
+- `PremiSezione.tsx` — grid 3 card, ognuna linka allo spettacolo associato se `slug` presente.
+- `ScuolaMagiaBox.tsx` — layout 5/7 (foto/testo) con CTA outlined `border-crema-base hover:bg-crema-base hover:text-nero-base`. Placeholder icona `<Sparkles>` se foto manca.
+- `ContattiSezione.tsx` — card area contatto, icona discriminata, telefono/email con priorità override → referente → fallback impostazioni.
+- `ProcessoIngaggio.tsx` — 3 step con linea connessione (gradient dot via div assoluto top-12) visible su md+.
+- `TestimonianzeStrip.tsx` — grid 3 col, icona `<Quote>`, blockquote + footer autore/ente.
+- `HannoIngaggiatoCaraval.tsx` — paragrafo Cinzel con `·` rosso tra nomi.
+- `CtaFinale.tsx` — riusabile `variant="default" | "rosso"` (bg rosso pieno con CTA crema invertita usato in /ospita).
+
+**Seed esteso:**
+- 6 membri totali (Vera, Alessio, Nicola, Lorenzo, Marco, Ilaria) con `bioBreve` + `ordinamento` 1-6. Vera/Nicola patchati con nuova `bioBreve` + `ruoli` aggiornati.
+- 3 nuovi singleton popolati: `paginaChiSiamoCopy`, `paginaContattiCopy` (con 4 aree referenziate a Vera×2/Nicola/generale-no-ref), `paginaOspitaCopy` (con 3 step + 3 testimonianze + 6 enti placeholder).
+- Step 9c nel runner per i 3 nuovi `createOrReplace`.
+
+**Header + Footer (Task D):**
+- Header desktop: voci invariate (Spettacoli, Imaginarium, Formazione, Chi siamo, Contatti). **Ospita NON in header desktop** come da decisione esplicita.
+- Header mobile: aggiunta voce extra "Ospita Caraval" via array `MOBILE_EXTRA_LINKS` separato — visibile solo nel drawer hamburger (B2B accessibile da mobile, separato dalle voci primarie).
+- Footer: ristrutturato da grid 3 a **grid 4 colonne semantiche**: Caraval (intestazione + indirizzo) · Sito (Spettacoli, Calendario, Formazione, Imaginarium) · Chi siamo (Chi siamo, Contatti, Ospita Caraval) · Contatti (email, telefono, social).
+
+**Decisioni autonome:**
+- Estensione `membro.bioBreve` invece di rinomina campi: `bio` lungo resta per scheda dettaglio futura. `ordineDisplay` del prompt = `ordinamento` esistente (riuso).
+- Sezione "Seguici" su `/contatti` condizionale: render solo se `socialLinks` non vuoto in Sanity. Su empty state non si renderizza (no riquadro vuoto).
+- Footer 4 colonne (vs 3 del prompt): "Caraval" come intestazione separata + 3 colonne nav. La sezione "Chi siamo" in evidenza B2B include Ospita come richiesto.
+- Voce "Ospita" su mobile menu: l'utente B2B su mobile non avrebbe accesso senza scrollare al footer. Aggiunta come voce visivamente identica alle altre ma in array separato per chiarezza semantica nel codice.
+- `lucide-react` usato per tutte le icone (Theater, GraduationCap, Flame, MessageCircle, Quote, User, Sparkles, Instagram, Facebook, Youtube). Nessuna emoji.
+
+**Verifica:**
+- `npx tsc --noEmit` pulito · `npm run lint` pulito · `npm run build` pulito (24 rotte, di cui 3 nuove static `/chi-siamo`, `/contatti`, `/ospita`).
+- Screenshot Chrome MCP desktop+mobile in `.screenshots/blocco-2-{chi-siamo,contatti,ospita}-{desktop,mobile}.png`.
+
+**Stato dati:**
+- Tutti i contenuti hanno `initialValue` nello schema → Studio mostra defaults senza re-seed.
+- I valori live aggiornati via `npm run sanity:seed` (richiede `SANITY_API_WRITE_TOKEN`). Dopo seed: 4 nuovi membri con bioBreve/ruoli/ordinamento, 3 singleton popolati (createOrReplace).
+- Fallback hardcoded nelle pagine garantiscono render decente anche pre-seed.
+
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 6** — Chi siamo + ospita + contatti + privacy/cookie
 - [ ] **Sessione 7** — Iubenda + Umami analytics + accessibilità WCAG AA

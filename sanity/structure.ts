@@ -41,6 +41,30 @@ export const structure: StructureResolver = (S) =>
             .schemaType("paginaImaginariumCopy")
             .documentId("paginaImaginariumCopy")
         ),
+      S.listItem()
+        .title("Pagina Chi siamo — Copy")
+        .id("paginaChiSiamoCopy")
+        .child(
+          S.document()
+            .schemaType("paginaChiSiamoCopy")
+            .documentId("paginaChiSiamoCopy")
+        ),
+      S.listItem()
+        .title("Pagina Contatti — Copy")
+        .id("paginaContattiCopy")
+        .child(
+          S.document()
+            .schemaType("paginaContattiCopy")
+            .documentId("paginaContattiCopy")
+        ),
+      S.listItem()
+        .title("Pagina Ospita — Copy")
+        .id("paginaOspitaCopy")
+        .child(
+          S.document()
+            .schemaType("paginaOspitaCopy")
+            .documentId("paginaOspitaCopy")
+        ),
       S.divider(),
       S.documentTypeListItem("spettacolo").title("Spettacoli"),
       S.documentTypeListItem("premio").title("Premi"),
