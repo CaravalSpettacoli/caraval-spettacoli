@@ -20,6 +20,7 @@ import {
   SponsorPartnerStrip,
   type SponsorPartnerData,
 } from "@/components/imaginarium/SponsorPartnerStrip";
+import { Reveal } from "@/components/effects/Reveal";
 
 export const revalidate = 60;
 
@@ -87,8 +88,15 @@ export default async function EdizionePassataPage({
 
       {haProgramma ? (
         <>
-          <ProgrammaCompleto spettacoli={spettacoli} heading="Programma" />
-          <SponsorPartnerStrip data={edizione} />
+          <Reveal>
+            <ProgrammaCompleto
+              spettacoli={spettacoli}
+              heading={`Programma ${edizione.anno}`}
+            />
+          </Reveal>
+          <Reveal>
+            <SponsorPartnerStrip data={edizione} />
+          </Reveal>
         </>
       ) : (
         <section

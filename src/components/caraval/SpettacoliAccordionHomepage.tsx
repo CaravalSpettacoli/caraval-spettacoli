@@ -69,26 +69,24 @@ function ColonnaAccordion({
                   +
                 </span>
               </button>
-              <div
-                className={`overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
-                  isOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
-                }`}
-              >
-                <div className="pb-6">
-                  {excerpt && (
-                    <p className="text-body text-crema-muted leading-relaxed">
-                      {excerpt}
-                    </p>
-                  )}
-                  {slug && (
-                    <Link
-                      href={`/spettacoli/${slug}`}
-                      className="mt-4 inline-flex items-center gap-2 text-body-s text-crema-base underline underline-offset-4 decoration-rosso-base hover:text-rosso-hover transition-colors uppercase-tracked"
-                    >
-                      Vai allo spettacolo →
-                    </Link>
-                  )}
-                </div>
+              <div className={`accordion-body ${isOpen ? "open" : ""}`}>
+                {excerpt ? (
+                  <p className="text-body text-crema-muted leading-relaxed">
+                    {excerpt}
+                  </p>
+                ) : (
+                  <p className="text-body text-crema-muted/70 italic leading-relaxed">
+                    Descrizione in arrivo.
+                  </p>
+                )}
+                {slug && (
+                  <Link
+                    href={`/spettacoli/${slug}`}
+                    className="mt-4 inline-flex items-center gap-2 text-body-s text-crema-base underline underline-offset-4 decoration-rosso-base hover:text-rosso-hover transition-colors uppercase-tracked"
+                  >
+                    Vai allo spettacolo →
+                  </Link>
+                )}
               </div>
             </li>
           );
@@ -150,7 +148,7 @@ export function SpettacoliAccordionHomepage({
         <div className="mt-16 text-center">
           <Link
             href={ctaLink}
-            className="inline-flex items-center gap-3 font-display text-h3 text-crema-base hover:text-rosso-hover transition-colors"
+            className="cta-tertiary font-display text-h3 text-crema-base hover:text-rosso-hover transition-colors"
           >
             {ctaTesto} <span aria-hidden>→</span>
           </Link>

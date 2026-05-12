@@ -8,6 +8,7 @@ import {
   type AreaContatto,
 } from "@/components/caraval/ContattiSezione";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { Reveal } from "@/components/effects/Reveal";
 
 type ContattiCopy = {
   heroEyebrow?: string;
@@ -138,6 +139,7 @@ export default async function ContattiPage() {
       />
 
       {/* Dove siamo + Contatti diretti — 2 colonne paritarie desktop, stack mobile */}
+      <Reveal as="section">
       <Section background="nero">
         <Container>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
@@ -188,26 +190,31 @@ export default async function ContattiPage() {
         </Container>
       </Section>
 
+      </Reveal>
+
       {/* Aree contatto */}
       {aree.length > 0 && (
-        <Section background="nero-soft">
-          <Container>
-            <ul
-              role="list"
-              className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
-            >
-              {aree.map((a, i) => (
-                <li key={`${a.icona}-${i}`}>
-                  <ContattiSezione area={a} fallback={fallbackContatti} />
-                </li>
-              ))}
-            </ul>
-          </Container>
-        </Section>
+        <Reveal as="section">
+          <Section background="nero-soft">
+            <Container>
+              <ul
+                role="list"
+                className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
+              >
+                {aree.map((a, i) => (
+                  <li key={`${a.icona}-${i}`}>
+                    <ContattiSezione area={a} fallback={fallbackContatti} />
+                  </li>
+                ))}
+              </ul>
+            </Container>
+          </Section>
+        </Reveal>
       )}
 
       {/* Social */}
       {social.length > 0 && (
+        <Reveal as="section">
         <Section background="nero">
           <Container>
             <div className="text-center max-w-xl mx-auto">
@@ -242,6 +249,7 @@ export default async function ContattiPage() {
             </div>
           </Container>
         </Section>
+        </Reveal>
       )}
 
       <CtaFinale

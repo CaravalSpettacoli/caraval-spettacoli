@@ -84,7 +84,7 @@ export default defineType({
     }),
     defineField({
       name: "immagineCover",
-      title: "Immagine di copertina",
+      title: "Cover anteprima (verticale 4:5)",
       type: "image",
       options: { hotspot: true },
       fields: [
@@ -95,6 +95,24 @@ export default defineType({
         }),
       ],
       fieldset: "contenutiConsigliati",
+      description:
+        "Foto verticale per le card anteprima nelle griglie. Idealmente 4:5 o 2:3.",
+    }),
+    defineField({
+      name: "fotoHero",
+      title: "Foto hero scheda (orizzontale 16:9)",
+      type: "image",
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Testo alternativo",
+          type: "string",
+        }),
+      ],
+      fieldset: "contenutiConsigliati",
+      description:
+        "Foto orizzontale per l'hero della scheda dettaglio. Idealmente 16:9 o panoramica.",
     }),
     defineField({
       name: "gallery",

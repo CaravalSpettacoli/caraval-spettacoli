@@ -12,6 +12,7 @@ import {
 } from "@/components/caraval/TestimonianzeStrip";
 import { HannoIngaggiatoCaraval } from "@/components/caraval/HannoIngaggiatoCaraval";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { Reveal } from "@/components/effects/Reveal";
 
 type OspitaCopy = {
   heroEyebrow?: string;
@@ -74,6 +75,7 @@ export default async function OspitaPage() {
       />
 
       {/* Valore proposto */}
+      <Reveal as="section">
       <Section background="nero-soft">
         <Container>
           <div className="max-w-3xl">
@@ -93,23 +95,30 @@ export default async function OspitaPage() {
           </div>
         </Container>
       </Section>
+      </Reveal>
 
-      <ProcessoIngaggio
-        eyebrow={copy.processoIngaggioEyebrow}
-        heading={copy.processoIngaggioHeading}
-        step={copy.processoIngaggioStep ?? []}
-      />
+      <Reveal>
+        <ProcessoIngaggio
+          eyebrow={copy.processoIngaggioEyebrow}
+          heading={copy.processoIngaggioHeading}
+          step={copy.processoIngaggioStep ?? []}
+        />
+      </Reveal>
 
-      <TestimonianzeStrip
-        eyebrow={copy.testimonianzeEyebrow}
-        heading={copy.testimonianzeHeading}
-        testimonianze={copy.testimonianze ?? []}
-      />
+      <Reveal>
+        <TestimonianzeStrip
+          eyebrow={copy.testimonianzeEyebrow}
+          heading={copy.testimonianzeHeading}
+          testimonianze={copy.testimonianze ?? []}
+        />
+      </Reveal>
 
-      <HannoIngaggiatoCaraval
-        eyebrow={copy.hannoIngaggiatoEyebrow}
-        enti={copy.hannoIngaggiatoElenco ?? []}
-      />
+      <Reveal>
+        <HannoIngaggiatoCaraval
+          eyebrow={copy.hannoIngaggiatoEyebrow}
+          enti={copy.hannoIngaggiatoElenco ?? []}
+        />
+      </Reveal>
 
       <CtaFinale
         heading={copy.ctaFinaleHeading ?? "Pronto a portare Caraval da te?"}

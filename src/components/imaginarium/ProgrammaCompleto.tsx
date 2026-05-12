@@ -3,6 +3,7 @@ import { Container } from "@/components/ui/Container";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
 import { urlFor } from "@/../sanity/lib/image";
 import { paletteToTheme } from "@/lib/theme-system";
+import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 
 export type SpettacoloImagItem = {
   _id: string;
@@ -116,6 +117,13 @@ export function ProgrammaCompleto({
       <Container>
         {heading && (
           <div className="text-center mb-16 md:mb-20">
+            <div className="flex justify-center mb-4">
+              <OndaDecorativa
+                width={120}
+                variant="sottile"
+                className="text-crema-base/50"
+              />
+            </div>
             <p className={`uppercase-tracked text-caption mb-3 ${eyebrowCol}`}>
               Programma
             </p>

@@ -797,6 +797,38 @@ Branch `feat/hotfix-2-completo` da `main` post-merge PR #9. **14 task organizzat
 - Foto compagnie Imaginarium 2025 (Stivalaccio, Les Moustaches, Tournée Da Bar, Burambò, Caraval)
 - Foto schede 10 spettacoli attivi
 
+### ✅ Hotfix 3 — Pre-call Vera (FATTO)
+Continuation di `feat/hotfix-2-completo` (PR #10), commit aggiuntivo. **8 task in 75 min per la call delle 18:30.**
+
+**Cosa cambia:**
+- **Task 1 — Animazioni Reveal**: CSS `.reveal` 900ms + translateY 30px (più visibile), threshold IntersectionObserver default 0.1 + rootMargin `-8%` (aggressivo), prop `delay?` opzionale per coordinare con sipario, **fallback sincrono** all'avvio se la sezione è già in viewport (risolve hydration edge case). `<Reveal>` applicato a 7 pagine oltre homepage: chi-siamo (4 sezioni), contatti (3), ospita (4), calendario, formazione (2), imaginarium (5), imaginarium/[anno] (2). Accordion homepage: classe `.accordion-body` con animazione `max-height` 500ms ease-out (sostituisce vecchio toggle `max-h-[400px]`). CTA "Vedi tutto il repertorio" → classe `.cta-tertiary` con underline animato scaleX 0→1 hover. **NB:** /spettacoli e /spettacoli/[slug] non wrapped per evitare conflitto con il nuovo SpettacoloRow filter; le righe hanno già hover micro-interactions proprie.
+- **Task 2 — Decorazioni estese**: `OndaDecorativa` sottile 120px text-rosso-base/50 (o crema/50 su rosso) sopra eyebrow in 4 componenti riusati globalmente: SezioneStoria, MembriCarosello, ProcessoIngaggio, ProgrammaCompleto. Allineato a /formazione esistente. Discreto, niente kitsch.
+- **Task 3 — Accordion descrizioni + CTA underline**: descrizioneBreve già fetchato in query GROQ, fallback "Descrizione in arrivo" se vuoto. CTA "Vedi tutto il repertorio" con classe `.cta-tertiary`.
+- **Task 4 — /spettacoli media-text alternato**: `SpettacoliGrid` riscritto da grid 3 col a lista verticale. Nuovo `SpettacoloRow` interno: grid 2 col 50/50 con foto 4:5 alternata sx/dx (`reverse={i % 2 === 1}` + `md:order-last`). Titolo Cinzel clamp 2-3rem, CategoriaBadge, descrizioneBreve 3 righe clamp, hover scale immagine 1.02 + translate-x freccia. Mobile stack. Filtri categoria mantenuti. `SpettacoloCardLarge` non eliminato (usato in archivio).
+- **Task 5 — /imaginarium card + heading 2026**: heading dinamico `Programma ${anno}` (era hardcoded "Programma"). descrizioneBreve già renderizzato in ProgrammaCompleto con fallback. **PARZIALE**: modalitaIngresso + prezzo come campi schema separati NON implementati per time constraint — il prezzo è embedded in descrizioneBreve dei seed 2025.
+- **Task 6 — /imaginarium/2025 re-seed**: `npm run sanity:seed` eseguito con successo (SANITY_API_WRITE_TOKEN configurato). 8 spettacoli 2025 popolati: party-inaugurazione, buffoni-inferno, ciccio-speranza, brancaglione, elena, amore-psiche, due-partite, party-finale. Edizione 2025 con sponsor 7 + partner 4.
+- **Task 7 — Chi siamo 6 membri**: re-seed ha popolato tutti i 6 membri esistenti (Vera, Alessio, Nicola, Lorenzo, Marco, Ilaria con ordinamento 1-6). Niente placeholder testuali necessari — già nel seed dal Blocco 2.
+- **Task 8 — Script import foto/loghi automatico**: nuovo `scripts/import-images-to-sanity.ts`. Scansiona `MATERIALE-PER-SITO/FOTO PER SITO` + `MATERIALE-PER-SITO/LOGHI SPONSOR E PREMI`. Pattern matching robusto: hero-sito-generale → homepageHero, [pagina]-hero → singleton corrispondente, [slug]-orizzontale → spettacolo.fotoHero, [slug]-verticale|anteprima → spettacolo.immagineCover, hero-[slug] → fotoHero, [slug-membro] → membro.foto, [compagnia]-imaginarium → spettacoloImaginarium fuzzy match in JS. Normalizzazione accenti NFD + underscore→trattino + strip prefix articoli italiani (la-/il-/i-). Eseguito 2× idempotente: **24/31 file importati**. 7 falliti: 4 foto generiche senza slug, 2 compagnie imag 2026 fuzzy non match (adariapaoletta, brancaglione), 1 errore di rete transitorio (LogoProLocoSoncino). Schema esteso: `spettacolo.fotoHero` (orizzontale 16:9) accanto a `immagineCover` (verticale 4:5).
+
+**Decisioni autonome documentate (Hotfix 3):**
+1. **Reveal fallback sincrono**: la prima `<Reveal>` non si vedeva perché l'IntersectionObserver non emette se l'elemento è già in viewport al mount (in alcuni casi di hydration). Aggiunto `getBoundingClientRect()` check sincrono nell'useEffect → trigger immediato se già visibile.
+2. **Threshold 0.1 + rootMargin negativo**: aggressivo, attiva l'animazione anche su sezioni piccole o quando scroll riveal piccoli pezzi.
+3. **Decorazioni nei componenti riutilizzati invece di nelle page.tsx**: una modifica copre N usi automaticamente. Pattern: `OndaDecorativa` sopra eyebrow.
+4. **SpettacoloRow inline in SpettacoliGrid.tsx invece di file separato**: nuovo componente specifico per il layout media-text, niente nuova architettura. SpettacoloCardLarge resta intatto.
+5. **Niente placeholder Artista 1-4**: il seed esistente ha già 6 membri reali. Edo doveva semplicemente lanciare il seed (token già configurato).
+6. **`spettacolo.fotoHero` come nuovo campo**: vs rinominare `immagineCover`. Backward compatible, descrizione esplicita "orizzontale 16:9".
+7. **Loghi patrocini duplicati**: il primo run ha appeso entries con nomi ricavati dal filename ("Logocariplo", "Iter", "Stemma"…), che NON matchavano i 5 placeholder seed ("Comune di Soncino", "Pro Loco Soncino"…). Risultato: 13 entries in `patrociniHomepage` invece di 5. **Edo deve pulire i duplicati in Sanity Studio prima della call.**
+8. **modalitaIngresso/prezzo schema PARZIALE**: time constraint, prezzo già embedded in descrizioneBreve dei 2025. Per i 2026 sarà popolato da Vera quando ci saranno biglietti.
+
+**Verifica:**
+- `npx tsc --noEmit` pulito · `npm run lint` pulito · `npm run build` pulito (24 rotte invariate).
+- `npm run sanity:seed` eseguito con successo.
+- `npx tsx scripts/import-images-to-sanity.ts` eseguito 2 volte: 24/31 importati.
+
+**Cosa Edo deve fare prima della call:**
+1. Cancellare manualmente i duplicati in `patrociniHomepage` da Sanity Studio (lasciare solo i loghi reali, eliminare i 5 placeholder testuali "Comune di Soncino"/"Danesi"/"Bacco da Seta"/"Pro Loco Soncino"/"I Viaggiastorie").
+2. Caricare a mano in Studio le 7 foto non mappate (DSC00276, IMAGINARIUM_DAY02, IMAGINARIUM_sala, adariapaoletta-imaginarium, brancaglione-imaginarium, imaginarium-maglietta-foto, LogoProLocoSoncino).
+
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 6** — Chi siamo + ospita + contatti + privacy/cookie
 - [ ] **Sessione 7** — Iubenda + Umami analytics + accessibilità WCAG AA

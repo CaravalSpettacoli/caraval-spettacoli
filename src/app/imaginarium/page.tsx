@@ -26,6 +26,7 @@ import {
 import { CounterStrip, type CounterItem } from "@/components/caraval/CounterStrip";
 import { VideoYoutube } from "@/components/caraval/VideoYoutube";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { Reveal } from "@/components/effects/Reveal";
 
 export const revalidate = 60;
 
@@ -165,27 +166,41 @@ export default async function ImaginariumPage() {
         logoSrc="/imaginarium-logo.png"
         logoAlt="Imaginarium — Festival di Teatro Itinerante"
       />
-      <CounterStrip
-        eyebrow={paginaCopy?.counterEyebrow ?? "IMAGINARIUM IN NUMERI"}
-        numeri={counterNumeri}
-        palette="imaginarium"
-      />
-      <VideoYoutube
-        url={
-          paginaCopy?.videoYoutubeUrl ??
-          "https://www.youtube.com/watch?v=KNRC35KjVeA"
-        }
-        eyebrow={paginaCopy?.videoEyebrow ?? "GUARDA"}
-        heading={paginaCopy?.videoHeading ?? "Imaginarium in due minuti"}
-        palette="imaginarium"
-      />
-      <ProgrammaCompleto
-        spettacoli={spettacoliCorrente}
-        heading="Programma"
-        palette="imaginarium"
-      />
-      <SponsorPartnerStrip data={edizioneCorrente} />
-      <EdizioniPassate edizioni={edizioniPassate} />
+      <Reveal>
+        <CounterStrip
+          eyebrow={paginaCopy?.counterEyebrow ?? "IMAGINARIUM IN NUMERI"}
+          numeri={counterNumeri}
+          palette="imaginarium"
+        />
+      </Reveal>
+      <Reveal>
+        <VideoYoutube
+          url={
+            paginaCopy?.videoYoutubeUrl ??
+            "https://www.youtube.com/watch?v=KNRC35KjVeA"
+          }
+          eyebrow={paginaCopy?.videoEyebrow ?? "GUARDA"}
+          heading={paginaCopy?.videoHeading ?? "Imaginarium in due minuti"}
+          palette="imaginarium"
+        />
+      </Reveal>
+      <Reveal>
+        <ProgrammaCompleto
+          spettacoli={spettacoliCorrente}
+          heading={
+            edizioneCorrente?.anno
+              ? `Programma ${edizioneCorrente.anno}`
+              : "Programma"
+          }
+          palette="imaginarium"
+        />
+      </Reveal>
+      <Reveal>
+        <SponsorPartnerStrip data={edizioneCorrente} />
+      </Reveal>
+      <Reveal>
+        <EdizioniPassate edizioni={edizioniPassate} />
+      </Reveal>
       <CtaFinale
         variant="dark"
         heading="Imaginarium è un progetto della comunità."
