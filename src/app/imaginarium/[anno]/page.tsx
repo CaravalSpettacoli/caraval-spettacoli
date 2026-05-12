@@ -72,7 +72,7 @@ export default async function EdizionePassataPage({
     .join("\n\n") || edizione.descrizioneBreve;
 
   return (
-    <div className="theme-imaginarium">
+    <div>
       <HeroPagina
         eyebrow={`Edizione ${edizione.anno}`}
         heading={`Imaginarium ${edizione.anno}`}

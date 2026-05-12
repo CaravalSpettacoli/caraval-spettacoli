@@ -148,7 +148,7 @@ export default async function ImaginariumPage() {
     .join("\n\n");
 
   return (
-    <div className="theme-imaginarium">
+    <div>
       <HeroPagina
         eyebrow="Festival di Teatro Itinerante"
         heading={
