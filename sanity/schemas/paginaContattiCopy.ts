@@ -20,6 +20,14 @@ export default defineType({
       initialValue: "Per spettacoli, formazione, collaborazioni o solo per dirci ciao.",
     }),
     defineField({
+      name: "heroFotoSfondo",
+      title: "Hero — Foto sfondo",
+      type: "image",
+      options: { hotspot: true },
+      group: "hero",
+      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+    }),
+    defineField({
       name: "aree",
       title: "Aree di contatto",
       type: "array",

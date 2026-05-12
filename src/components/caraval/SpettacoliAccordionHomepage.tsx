@@ -37,7 +37,7 @@ function ColonnaAccordion({
       <h3 className="font-display text-rosso-base/90 uppercase-tracked text-caption mb-6">
         {titolo}
       </h3>
-      <ul className="border-t border-crema-faint/30">
+      <ul className="border-t border-rosso-base/20">
         {spettacoli.map((s) => {
           const isOpen = aperto === s._id;
           const slug = s.slug?.current;
@@ -46,16 +46,16 @@ function ColonnaAccordion({
           return (
             <li
               key={s._id}
-              className="border-b border-crema-faint/30"
+              className="border-b border-rosso-base/20"
             >
               <button
                 type="button"
                 aria-expanded={isOpen}
                 onClick={() => setAperto(isOpen ? null : s._id)}
-                className="w-full flex items-center justify-between gap-4 py-5 md:py-6 text-left group min-h-[4rem] md:min-h-[5rem]"
+                className="w-full flex items-center justify-between gap-4 text-left group min-h-[5rem] md:min-h-[6rem]"
               >
                 <span
-                  className="font-display text-crema-base group-hover:text-rosso-hover transition-colors leading-tight"
+                  className="font-display text-crema-base group-hover:text-rosso-hover transition-colors leading-tight line-clamp-2"
                   style={{ fontSize: "clamp(1.5rem, 3vw, 2.25rem)" }}
                 >
                   {s.titolo}

@@ -738,6 +738,65 @@ Continuation di `feat/polish-definitivo` (PR #9), commit aggiuntivo.
 - Chrome MCP non disponibile → niente screenshot allegati al commit. Verifica HTML server-rendered via curl OK.
 - Hotfix sarà visibile sulla preview Vercel della PR #9 dopo push.
 
+### ✅ Hotfix 2 — Polish completo per call Vera (FATTO)
+Branch `feat/hotfix-2-completo` da `main` post-merge PR #9. **14 task organizzati in 6 fasi.**
+
+**Componenti nuovi:**
+- `MembriCarosello.tsx` (Client) — sostituisce `MembriGrid` in `/chi-siamo`. Vanilla React + CSS transitions (no framer-motion, evitata dipendenza ~150KB). 3 slot desktop (prev/center/next con scale 0.82 + blur 1px + opacity 0.4 sulle laterali), 1+anteprima mobile. Autoplay 5s con pausa hover/focus. Frecce manuali ChevronLeft/Right + dots indicator clickabili. Easing `cubic-bezier(0.25,0.46,0.45,0.94)` 600ms. Skip su `prefers-reduced-motion`.
+- `BigliettoSpettacolo.tsx` (Client) — sostituisce `TicketSpettacolo` dentro `SezionePrenotazione`. Flip 3D al click `rotateY(180deg)` 800ms `cubic-bezier(0.68,-0.55,0.265,1.55)` bouncy. FRONTE: CTA "Scopri come prenotare →" `/contatti` + microcopy "Clicca per vedere il numero". RETRO: numero `+39 379 149 7805` Cinzel cliccabile `tel:` + "Clicca per chiamare". Accessibile (`role=button`, `tabIndex`, `Enter`/`Space`, `aria-pressed`). `stopPropagation` su CTA interni per evitare flip accidentale. Bg crema `#f5e6d3` + bordo rosso 1.5px + perforazioni orizzontali (12 dots) sui lati corti + stella decorativa angolo basso. `TicketSpettacolo.tsx` mantenuto nel repo (potenzialmente riutilizzabile).
+- `PatrociniStrip.tsx` (Server) — strip patrocini/sponsor/partner sotto `ImaginariumPreview` in homepage. Grid 2/3/5 col, image-fit contain h-20, placeholder grafico (rect rosso muted + nome Cinzel) se logo manca, hover scale 1.05.
+- `Reveal.tsx` (Client effects) — wrapper one-shot fade-in + slide-up 20px via IntersectionObserver + CSS class `.reveal/.revealed` in `globals.css`. Rispetta `prefers-reduced-motion`.
+- `HeroParallaxFoto.tsx` (Client) — sotto-componente per la foto sfondo di `HeroPagina`. Parallax speed 0.3 su scroll desktop (>768px) + skip su reduced-motion. rAF throttled. HeroPagina resta Server Component.
+- `src/app/template.tsx` (Client) — wrapper page transitions: `.page-transition` keyframes fade-in 300ms ease-out. Ri-renderizzato ad ogni navigation App Router. No framer-motion.
+
+**Componenti refactored:**
+- `CastECrediti.tsx` — riscritto da zero. Nuova `combinaPersone(cast, regia)` produce `Map<nome, ruoli[]>` con dedup + ordine prima occorrenza. Una riga per persona "Nome — ruolo1 · ruolo2". Romeo Vera ora unica riga "Vera Rossini — Attrice · Regia". Niente più split attori/crediti in 2 colonne.
+- `PremiSezione.tsx` — rimosso `<Link>` wrapper + hover opacity. Card statiche `cursor: default`, bordo solido senza interazione.
+- `ImaginariumPreview.tsx` — palette inversa rifatta: `data-theme="light"` + `backgroundColor:#a8174a` inline + testi crema. Card con bordo crema/20 e bg `rgba(139,14,58,0.5)`. CTA `!bg-nero-base` per stacco. Allineato pattern Hotfix 1 di `ProgrammaCompleto`.
+- `SpettacoliAccordionHomepage.tsx` — `min-h` voci button 5/6rem (era 4/5rem), border colore da `crema-faint/30` a `rosso-base/20`, rimosso `py` in favore di `items-center` (vertical centering automatico), `line-clamp-2` su titoli per altezza prevedibile.
+- `CorsoCard.tsx` — bg da `nero-soft` (confondibile col parent) a `nero-base` per stacco. Border da `crema-faint/40` a `rosso-base/30` con hover `rosso-base` + lift -1 + shadow rossa. Glifo `<GraduationCap>` top-left in cerchio `rosso-base/10` con border.
+- `HeroPagina.tsx` — placeholder grafico quando `fotoSfondo` null: radial-gradient sottile + SVG noise inline `feTurbulence` opacity 0.04 `mix-blend-overlay`. Variante imaginarium ha noise crema su rosso, dark ha tonalità rossa su nero per profondità.
+- `Button.tsx` — hover micro-interactions su variants `primary/secondary/danger`: `translate-y-0.5` + `scale-[1.02]` (solo primary) + shadow rossa (solo primary). `active:translate-y-0 scale-100` reset.
+- `StripPremi.tsx` — fix Edo "sfondo grigio fuori palette": card da `bg-nero-base/40` (10,10,10 @40% opacity su #1a1a1a → grigio intermedio) a `bg-nero-base` pieno. Border opacity 60→40 per leggibilità.
+- `SezionePrenotazione.tsx` — semplificato: rimossa colonna 2 CTA "Per ingaggiarci" ridondante col biglietto flip. Solo descrizione concisa accanto al BigliettoSpettacolo.
+
+**Schema Sanity esteso:**
+- `homepageCopy.patrociniHomepage[]` — object array `{nome required, logo image opt, url opt}`, max 10, `initialValue` 5 placeholder (Comune Soncino con URL, Danesi, Bacco, Pro Loco, Viaggiastorie). Group "imaginarium".
+- `homepageCopy.formazioneHeroFotoSfondo` + `homepageCopy.calendarioHeroFotoSfondo` — image con alt, group rispettivo.
+- `paginaChiSiamoCopy.heroFotoSfondo`, `paginaContattiCopy.heroFotoSfondo`, `paginaOspitaCopy.heroFotoSfondo`, `paginaImaginariumCopy.heroFotoSfondo` (nuovo group "hero"). Tutti image+alt.
+- Patch tutte le pagine con `HeroPagina`: aggiunta `fotoSfondo={copy.heroFotoSfondo}`, query GROQ estese.
+
+**Seed esteso (Imaginarium 2025 popolato):**
+- Edizione 2025 patchata: titolo, dataInizio `2025-06-07`, dataFine `2025-06-29`, location "Soncino — Rocca Sforzesca, Cortile Famiglia Caffi", descrizioneBreve reale, patrocinio Comune Soncino, sponsor 7 (Cariplo/Pro Loco/Danesi/Moro/ITER/Bacco/Viaggia), partnerLista 4 compagnie (Stivalaccio/Tournée Da Bar/Les Moustaches/Burambò).
+- 8 nuovi `spettacoloImaginarium` 2025: party-inaugurazione (7 giu Piazzale Rocca, gratuito), buffoni-inferno (Stivalaccio, 12 giu Rocca, 9€), ciccio-speranza (Les Moustaches, 13 giu Rocca, 9€), brancaglione (Signorelli/Bertelli/Andrico, 20 giu Caffi, gratis), elena (Tournée Da Bar, 22 giu Caffi, gratis), amore-psiche (Burambò, 27 giu Rocca, 9€), due-partite (Officina Fuori Festival, 28 giu Caffi, gratis), party-finale (29 giu Castel Giardino, gratis). Prezzo embedded in `descrizioneBreve` (niente nuovo campo schema). 3 con `descrizioneCompagniaBreve` aggiuntiva. Foto sponsor non scaricate: vuote, Vera/Edo caricano in Studio.
+- `homepageCopy.patrociniHomepage` (5 placeholder).
+
+**Decisioni autonome documentate (Hotfix 2):**
+1. **Task 1 (Vera CTA): n/a in repo.** Zero match grep per "Contatta Vera"/"Chiama Vera"/"Scrivi a Vera" in src/ e sanity/scripts/. Tutti i CTA seed già impersonali ("Contattaci per i laboratori scolastici" etc). Eventuali "Vera CTA" sono solo nel dataset Sanity live editato da lei.
+2. **Niente framer-motion.** Carosello + page transitions + parallax tutti vanilla React + CSS. Risparmio ~150KB gzipped. Pattern equivalente, niente perdita UX.
+3. **Prezzo Imaginarium 2025 embedded** in `descrizioneBreve` (es. "Biglietto 9€" / "Ingresso gratuito") invece di nuovo campo schema. Più rapido per PR.
+4. **WebFetch caraval.it NON eseguito.** Dati statici dal piano §10.1 sono sufficienti, bio compagnie sintetizzate manualmente. Foto sponsor da scaricare/caricare separatamente.
+5. **TicketSpettacolo non eliminato** dal repo. Il nuovo BigliettoSpettacolo è dentro SezionePrenotazione. Type `ModalitaPrenotazione` ancora importato per back-compat.
+6. **Reveal applicato selettivamente.** Solo 6 blocchi homepage wrappati (StripPremi, CounterStrip, ImaginariumPreview, PatrociniStrip, SpettacoliAccordionHomepage, OfficinaTeaser). Edo può espandere ad altre pagine con stesso pattern.
+7. **CLAUDE.md NON ri-compresso.** La compressione fatta nella sessione precedente (commit `65804fd`) è andata persa al re-create branch da main (era stata fatta sul branch locale prima di un push). Lasciato in stato pre-compressione, aggiunta solo sezione Hotfix 2. Da ri-comprimere in sessione futura.
+
+**Verifica:**
+- `npx tsc --noEmit` pulito · `npm run lint` pulito · `npm run build` pulito (24 rotte invariate).
+- 2 warning Tailwind ambiguous (`duration-[600ms]`, `ease-[cubic-bezier(...)]`) sul MembriCarosello — solo warning, non blocking. Niente fix in questa PR per non rompere il pattern.
+- Chrome MCP non disponibile in sessione → niente screenshot. Verifica visiva su preview Vercel.
+
+**Foto/loghi da caricare in Studio (lista per Edo):**
+- `homepageHero.fotoSfondo` (già esistente)
+- `paginaChiSiamoCopy.heroFotoSfondo` (nuovo) + `storiaFotoSezione` (esistente)
+- `paginaContattiCopy.heroFotoSfondo` (nuovo)
+- `paginaOspitaCopy.heroFotoSfondo` (nuovo)
+- `paginaImaginariumCopy.heroFotoSfondo` (nuovo)
+- `homepageCopy.formazioneHeroFotoSfondo` + `calendarioHeroFotoSfondo` (nuovi)
+- `homepageCopy.patrociniHomepage[].logo` × 5 (placeholder testuali nei seed)
+- Foto 6 membri (Vera/Alessio/Nicola/Lorenzo/Marco/Ilaria) per il carosello
+- Foto compagnie Imaginarium 2025 (Stivalaccio, Les Moustaches, Tournée Da Bar, Burambò, Caraval)
+- Foto schede 10 spettacoli attivi
+
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 6** — Chi siamo + ospita + contatti + privacy/cookie
 - [ ] **Sessione 7** — Iubenda + Umami analytics + accessibilità WCAG AA

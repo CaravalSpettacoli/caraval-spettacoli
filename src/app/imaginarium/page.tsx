@@ -37,6 +37,7 @@ type PaginaImagCopy = {
   videoEyebrow?: string;
   videoHeading?: string;
   videoYoutubeUrl?: string;
+  heroFotoSfondo?: { asset?: { _ref?: string }; alt?: string };
 };
 
 async function getImaginariumData() {
@@ -52,7 +53,8 @@ async function getImaginariumData() {
     client.fetch<PaginaImagCopy | null>(
       `*[_type == "paginaImaginariumCopy"][0]{
         counterEyebrow, counterElenco,
-        videoEyebrow, videoHeading, videoYoutubeUrl
+        videoEyebrow, videoHeading, videoYoutubeUrl,
+        heroFotoSfondo
       }`
     ),
   ]);
@@ -157,7 +159,7 @@ export default async function ImaginariumPage() {
             : "Imaginarium"
         }
         sottotitolo={sottotitoloHero || undefined}
-        fotoSfondo={edizioneCorrente?.fotoSfondoHero}
+        fotoSfondo={paginaCopy?.heroFotoSfondo ?? edizioneCorrente?.fotoSfondoHero}
         palette="imaginarium"
         altezza="full"
         logoSrc="/imaginarium-logo.png"

@@ -1,4 +1,3 @@
-import Link from "next/link";
 import { Container } from "@/components/ui/Container";
 import type { PremioItem } from "@/components/caraval/StripPremi";
 
@@ -37,12 +36,9 @@ export function PremiSezione({
           role="list"
           className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8"
         >
-          {premi.map((p) => {
-            const slug = p.spettacoloAssociato?.slug?.current;
-            const inner = (
-              <article
-                className="h-full flex flex-col gap-3 p-6 md:p-8 bg-nero-soft border border-rosso-base/40 hover:border-rosso-base transition-colors duration-base"
-              >
+          {premi.map((p) => (
+            <li key={p._id} className="h-full">
+              <article className="h-full flex flex-col gap-3 p-6 md:p-8 bg-nero-soft border border-rosso-base/40">
                 <span
                   className="font-display text-rosso-hover leading-none"
                   style={{ fontSize: "clamp(2.5rem, 5vw, 3.5rem)" }}
@@ -68,22 +64,8 @@ export function PremiSezione({
                   </p>
                 )}
               </article>
-            );
-            return (
-              <li key={p._id} className="h-full">
-                {slug ? (
-                  <Link
-                    href={`/spettacoli/${slug}`}
-                    className="block h-full hover:opacity-90 transition-opacity"
-                  >
-                    {inner}
-                  </Link>
-                ) : (
-                  inner
-                )}
-              </li>
-            );
-          })}
+            </li>
+          ))}
         </ul>
       </Container>
     </section>

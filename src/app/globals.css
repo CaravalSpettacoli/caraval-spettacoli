@@ -193,6 +193,32 @@ body {
   transform: translateY(0);
 }
 
+/* Reveal on scroll: usato dal componente <Reveal>. Stessa cifra estetica
+   del fade-in-on-scroll ma con durata leggermente più rapida (800ms)
+   per non rallentare il flusso di lettura. One-shot. */
+.reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 800ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+.reveal.revealed {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Page transition (template.tsx): fade tra route. 300ms ease-out.
+   Niente translate per non rompere lo scroll restore. */
+.page-transition {
+  animation: page-fade-in 300ms ease-out;
+}
+@keyframes page-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -210,6 +236,14 @@ body {
   .fade-in-on-scroll {
     opacity: 1 !important;
     transform: none !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .page-transition {
+    animation: none !important;
   }
 }
 

@@ -23,6 +23,14 @@ export default defineType({
       group: "hero",
       initialValue: "Compagnia teatrale di Soncino, dal 2016.",
     }),
+    defineField({
+      name: "heroFotoSfondo",
+      title: "Hero — Foto sfondo",
+      type: "image",
+      options: { hotspot: true },
+      group: "hero",
+      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+    }),
 
     // Storia
     defineField({ name: "storiaEyebrow", title: "Storia — Eyebrow", type: "string", group: "storia", initialValue: "LA NOSTRA STORIA" }),

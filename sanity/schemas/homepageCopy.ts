@@ -75,6 +75,41 @@ export default defineType({
       type: "string",
       group: "imaginarium",
     }),
+    defineField({
+      name: "patrociniHomepage",
+      title: "Strip patrocini & partner (homepage)",
+      type: "array",
+      group: "imaginarium",
+      description:
+        "Loghi patrocini/sponsor/partner mostrati sotto la preview Imaginarium in homepage. Se logo manca, viene mostrato un placeholder col nome.",
+      of: [
+        {
+          type: "object",
+          name: "patrocinioItem",
+          fields: [
+            {
+              name: "nome",
+              title: "Nome",
+              type: "string",
+              validation: (R) => R.required(),
+            },
+            { name: "logo", title: "Logo", type: "image", options: { hotspot: true } },
+            { name: "url", title: "URL (opzionale)", type: "url" },
+          ],
+          preview: {
+            select: { title: "nome", media: "logo" },
+          },
+        },
+      ],
+      initialValue: [
+        { nome: "Comune di Soncino", url: "https://www.comune.soncino.cr.it" },
+        { nome: "Danesi" },
+        { nome: "Bacco da Seta" },
+        { nome: "Pro Loco Soncino" },
+        { nome: "I Viaggiastorie" },
+      ],
+      validation: (R) => R.max(10),
+    }),
 
     // Repertorio
     defineField({
@@ -210,6 +245,14 @@ export default defineType({
       rows: 2,
       group: "calendario",
     }),
+    defineField({
+      name: "calendarioHeroFotoSfondo",
+      title: "Hero — Foto sfondo",
+      type: "image",
+      options: { hotspot: true },
+      group: "calendario",
+      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+    }),
 
     // Formazione (pagina)
     defineField({
@@ -236,6 +279,14 @@ export default defineType({
       type: "text",
       rows: 3,
       group: "formazione",
+    }),
+    defineField({
+      name: "formazioneHeroFotoSfondo",
+      title: "Hero — Foto sfondo",
+      type: "image",
+      options: { hotspot: true },
+      group: "formazione",
+      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
     }),
     defineField({
       name: "corsiSezioneEyebrow",

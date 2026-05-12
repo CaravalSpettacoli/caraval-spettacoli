@@ -91,19 +91,26 @@ export default async function EdizionePassataPage({
           <SponsorPartnerStrip data={edizione} />
         </>
       ) : (
-        <section data-theme="light" className="py-16 md:py-24 bg-crema-base text-nero-base">
+        <section
+          data-theme="light"
+          className="text-crema-base"
+          style={{
+            backgroundColor: "#a8174a",
+            paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
+          }}
+        >
           <Container>
             <div className="max-w-[640px] mx-auto text-center">
-              <p className="font-display text-h2 text-rosso-deep">
+              <p className="font-display text-h2 text-crema-bright">
                 Programma in caricamento
               </p>
-              <p className="mt-4 text-body-l text-nero-base/80">
+              <p className="mt-4 text-body-l text-crema-base/85">
                 Stiamo riportando online la documentazione di questa edizione.
                 Torna a breve.
               </p>
               <a
                 href="/imaginarium"
-                className="mt-8 inline-flex items-center text-body text-rosso-deep underline underline-offset-4 hover:text-rosso-base"
+                className="mt-8 inline-flex items-center text-body text-crema-base underline underline-offset-4 hover:text-crema-bright decoration-crema-base/60"
               >
                 ← Torna a Imaginarium
               </a>

@@ -37,7 +37,7 @@ export function StripPremi({
             {premi.map((p) => (
               <li
                 key={p._id}
-                className="border border-rosso-base/60 hover:border-rosso-base p-6 transition-colors duration-base bg-nero-base/40"
+                className="border border-rosso-base/40 hover:border-rosso-base p-6 transition-colors duration-base bg-nero-base"
               >
                 <div className="font-display text-h2 text-rosso-base leading-none">
                   {p.anno ?? ""}

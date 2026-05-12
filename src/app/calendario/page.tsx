@@ -24,6 +24,7 @@ type CopyCalendario = {
   calendarioHeroEyebrow?: string;
   calendarioHeroHeading?: string;
   calendarioHeroIntro?: string;
+  calendarioHeroFotoSfondo?: { asset?: { _ref?: string }; alt?: string };
   ospitaHeading?: string;
   ospitaBody?: string;
   ospitaCtaTesto?: string;
@@ -56,6 +57,7 @@ async function getCalendarioData() {
     client.fetch<CopyCalendario | null>(
       `*[_type == "homepageCopy"][0]{
         calendarioHeroEyebrow, calendarioHeroHeading, calendarioHeroIntro,
+        calendarioHeroFotoSfondo,
         ospitaHeading, ospitaBody, ospitaCtaTesto, ospitaCtaLink
       }`
     ),
@@ -91,6 +93,7 @@ export default async function CalendarioPage() {
         eyebrow={eyebrow}
         heading={heading}
         sottotitolo={intro}
+        fotoSfondo={copy.calendarioHeroFotoSfondo}
         palette="default"
         altezza="compatto"
       />

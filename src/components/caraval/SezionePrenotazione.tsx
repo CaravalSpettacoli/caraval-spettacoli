@@ -1,9 +1,7 @@
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
-import {
-  TicketSpettacolo,
-  type ModalitaPrenotazione,
-} from "@/components/caraval/TicketSpettacolo";
+import { BigliettoSpettacolo } from "@/components/caraval/BigliettoSpettacolo";
+import type { ModalitaPrenotazione } from "@/components/caraval/TicketSpettacolo";
 
 export type ReferenteContatto = {
   nome?: string;
@@ -27,10 +25,6 @@ export type SezionePrenotazioneSpettacolo = {
   };
 };
 
-function pulisciTel(tel?: string) {
-  return tel ? tel.replace(/\s+/g, "") : "";
-}
-
 export function SezionePrenotazione({
   spettacolo,
   referente,
@@ -40,70 +34,33 @@ export function SezionePrenotazione({
   referente?: ReferenteContatto | null;
   fallbackContatti?: { email?: string; telefono?: string } | null;
 }) {
-  const slug = spettacolo.slug?.current ?? "spettacolo";
+  const telefono =
+    referente?.telefonoPubblico ?? fallbackContatti?.telefono ?? undefined;
   const titolo = spettacolo.titolo ?? "Spettacolo";
-
-  const contattiTicket = {
-    email: referente?.emailPubblica ?? fallbackContatti?.email,
-    telefono: referente?.telefonoPubblico ?? fallbackContatti?.telefono,
-  };
 
   return (
     <Section background="nero-soft" id="prenotazione">
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-10 lg:gap-16 items-start">
-          <div className="mx-auto lg:mx-0">
-            <TicketSpettacolo
-              titolo={titolo}
-              sottotitolo={spettacolo.sottotitolo}
-              categoria={spettacolo.categoria}
-              anno={spettacolo.annoCreazione}
-              slug={slug}
-              prenotazione={spettacolo.prenotazione}
-              contattiPubblici={contattiTicket}
-            />
-          </div>
+        <div className="grid grid-cols-1 lg:grid-cols-[320px_1fr] gap-10 lg:gap-16 items-center">
+          <BigliettoSpettacolo telefono={telefono} />
 
-          <div className="max-w-[640px]">
+          <div className="max-w-[560px]">
             <p className="uppercase-tracked text-caption text-rosso-base">
-              Per ingaggiarci
+              Per vedere {titolo}
             </p>
-            <h2 className="mt-3 font-display text-display-m text-crema-base text-balance">
-              Vuoi questo spettacolo nel tuo evento?
+            <h2 className="mt-3 font-display text-display-m text-crema-base text-balance leading-tight">
+              Contattaci per le date
             </h2>
             <p className="mt-4 text-body-l text-crema-muted">
-              Per portare questo spettacolo nel tuo teatro, piazza o rievocazione, contattaci.
+              Le modalità di prenotazione e ingresso cambiano in base al teatro
+              o all&apos;ente ospitante. Clicca il biglietto per vedere il numero
+              o scrivici via email — ti rispondiamo entro 24 ore.
             </p>
-
-            <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-3">
-              {contattiTicket.email && (
-                <a
-                  href={`mailto:${contattiTicket.email}?subject=${encodeURIComponent(`Ingaggio ${titolo}`)}`}
-                  className="group flex flex-col items-start border border-rosso-base/60 hover:border-rosso-base bg-nero-base p-5 transition-colors duration-base"
-                >
-                  <span className="uppercase-tracked text-caption text-rosso-base">
-                    Email
-                  </span>
-                  <span className="mt-2 font-display text-body-l text-crema-base group-hover:text-crema-bright break-all">
-                    {contattiTicket.email}
-                  </span>
-                </a>
-              )}
-              {contattiTicket.telefono && (
-                <a
-                  href={`tel:${pulisciTel(contattiTicket.telefono)}`}
-                  className="group flex flex-col items-start border border-rosso-base/60 hover:border-rosso-base bg-nero-base p-5 transition-colors duration-base"
-                >
-                  <span className="uppercase-tracked text-caption text-rosso-base">
-                    Telefono
-                  </span>
-                  <span className="mt-2 font-display text-body-l text-crema-base group-hover:text-crema-bright">
-                    {contattiTicket.telefono}
-                  </span>
-                </a>
-              )}
-            </div>
-
+            {spettacolo.prenotazione?.noteAggiuntive && (
+              <p className="mt-4 text-body-s text-crema-muted italic">
+                {spettacolo.prenotazione.noteAggiuntive}
+              </p>
+            )}
           </div>
         </div>
       </Container>

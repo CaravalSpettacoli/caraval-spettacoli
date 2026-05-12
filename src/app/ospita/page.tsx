@@ -17,6 +17,7 @@ type OspitaCopy = {
   heroEyebrow?: string;
   heroHeading?: string;
   heroSottotitolo?: string;
+  heroFotoSfondo?: { asset?: { _ref?: string }; alt?: string };
   valorePropostoEyebrow?: string;
   valorePropostoHeading?: string;
   valorePropostoBody?: string;
@@ -67,6 +68,7 @@ export default async function OspitaPage() {
         heading={copy.heroHeading ?? "Porta il teatro nella tua piazza"}
         sottotitolo={copy.heroSottotitolo}
         ctaPrimaria={{ label: "Contattaci ora →", href: ctaHref, esterno: false }}
+        fotoSfondo={copy.heroFotoSfondo}
         palette="default"
         altezza="compatto"
       />

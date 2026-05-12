@@ -130,6 +130,14 @@ const homepageCopy: AnyDoc = {
     { valore: "6", etichetta: "anni" },
     { valore: "1", etichetta: "festival" },
   ],
+  // Strip patrocini homepage (Hotfix 2). Loghi caricati da Vera/Edo in Studio.
+  patrociniHomepage: [
+    { _key: "pat-comune-soncino", nome: "Comune di Soncino", url: "https://www.comune.soncino.cr.it" },
+    { _key: "pat-danesi", nome: "Danesi" },
+    { _key: "pat-bacco", nome: "Bacco da Seta" },
+    { _key: "pat-proloco", nome: "Pro Loco Soncino" },
+    { _key: "pat-viaggiastorie", nome: "I Viaggiastorie" },
+  ],
 };
 
 // ---------- Pagina Imaginarium — Copy ----------
@@ -553,11 +561,14 @@ const edizioni: AnyDoc[] = [
     corrente: false,
     mostraInHomepage: false,
     titoloEdizione: "Imaginarium 2025 — II Edizione",
-    dataInizio: "2025-06-05",
-    dataFine: "2025-06-22",
-    locationPrincipale: "Rocca Sforzesca, Soncino",
+    dataInizio: "2025-06-07",
+    dataFine: "2025-06-29",
+    locationPrincipale: "Soncino — Rocca Sforzesca, Cortile Famiglia Caffi",
     descrizioneBreve:
-      "Programma in caricamento. Le date e i titoli saranno pubblicati a breve.",
+      "Otto serate, sei compagnie ospiti, tre location. La seconda edizione di Imaginarium tra Rocca Sforzesca, Cortile Famiglia Caffi e Area Castel Giardino.",
+    patrocinio: ["Comune di Soncino"],
+    sponsor: ["Fondazione Cariplo", "Pro Loco Soncino", "Danesi", "Moro", "ITER", "Bacco da Seta", "Viaggia"],
+    partnerLista: ["Stivalaccio Teatro", "Tournée Da Bar", "Les Moustaches", "Compagnia Burambò"],
   },
   {
     _id: "edizione-imaginarium-2024",
@@ -656,6 +667,130 @@ function spettacoloImagDoc(s: SpettacoloImagSeed): AnyDoc {
     },
     dataInizio: s.data,
     ...(s.descrizioneBreve ? { descrizioneBreve: s.descrizioneBreve } : {}),
+  };
+}
+
+// ---------- Spettacoli Imaginarium 2025 (Hotfix 2) ----------
+// Dati estratti da caraval.it/imaginarium (edizione passata).
+type SpettacoloImag2025Seed = {
+  _id: string;
+  data: string;
+  titolo: string;
+  compagnia: string;
+  locationSpecifica: string;
+  descrizioneBreve: string;
+  eCaraval?: boolean;
+  eOfficina?: boolean;
+  urlSitoCompagnia?: string;
+  descrizioneCompagniaBreve?: string;
+};
+
+const spettacoliImag2025: SpettacoloImag2025Seed[] = [
+  {
+    _id: "imag-2025-party-inaugurazione",
+    data: "2025-06-07T18:00:00",
+    titolo: "Party di Inaugurazione",
+    compagnia: "Caraval Spettacoli",
+    eCaraval: true,
+    locationSpecifica: "Piazzale Esterno Rocca, Soncino",
+    descrizioneBreve:
+      "Apertura ufficiale della seconda edizione di Imaginarium. Musica, brindisi, anteprime. Ingresso gratuito.",
+  },
+  {
+    _id: "imag-2025-buffoni-inferno",
+    data: "2025-06-12T21:30:00",
+    titolo: "Buffoni All'Inferno",
+    compagnia: "Stivalaccio Teatro",
+    locationSpecifica: "Rocca Sforzesca, Soncino",
+    descrizioneBreve:
+      "Commedia dell'Arte e teatro fisico. Biglietto 9€.",
+    descrizioneCompagniaBreve:
+      "Compagnia veneta specializzata in Commedia dell'Arte e teatro popolare.",
+  },
+  {
+    _id: "imag-2025-ciccio-speranza",
+    data: "2025-06-13T21:30:00",
+    titolo: "La Difficilissima Storia di Ciccio Speranza",
+    compagnia: "Les Moustaches",
+    locationSpecifica: "Rocca Sforzesca, Soncino",
+    descrizioneBreve:
+      "Narrazione comica e poetica. Biglietto 9€.",
+    descrizioneCompagniaBreve:
+      "Compagnia di teatro contemporaneo che intreccia narrazione e clownerie.",
+  },
+  {
+    _id: "imag-2025-brancaglione",
+    data: "2025-06-20T21:30:00",
+    titolo: "Brancaglione Da Norcia",
+    compagnia: "Mirko Signorelli, Renato Bertelli, Giacomo Andrico",
+    locationSpecifica: "Cortile Famiglia Caffi, Soncino",
+    descrizioneBreve:
+      "Teatro di narrazione con musiche dal vivo. Ingresso gratuito.",
+  },
+  {
+    _id: "imag-2025-elena",
+    data: "2025-06-22T21:30:00",
+    titolo: "Elena",
+    compagnia: "Tournée Da Bar",
+    locationSpecifica: "Cortile Famiglia Caffi, Soncino",
+    descrizioneBreve:
+      "Rilettura contemporanea del mito di Elena. Ingresso gratuito.",
+    descrizioneCompagniaBreve:
+      "Collettivo teatrale milanese noto per le riscritture irriverenti dei classici.",
+  },
+  {
+    _id: "imag-2025-amore-psiche",
+    data: "2025-06-27T21:30:00",
+    titolo: "Amore & Psiche",
+    compagnia: "Compagnia Burambò",
+    locationSpecifica: "Rocca Sforzesca, Soncino",
+    descrizioneBreve:
+      "Teatro di figura e narrazione del mito. Biglietto 9€.",
+    descrizioneCompagniaBreve:
+      "Compagnia pugliese specializzata in teatro di figura, burattini e maschere.",
+  },
+  {
+    _id: "imag-2025-due-partite",
+    data: "2025-06-28T21:30:00",
+    titolo: "Due Partite e Mezzo (Fuori Festival)",
+    compagnia: "Officina Teatrale Caraval",
+    eOfficina: true,
+    locationSpecifica: "Cortile Famiglia Caffi, Soncino",
+    descrizioneBreve:
+      "Spettacolo finale degli allievi adulti dell'Officina Teatrale. Ingresso gratuito.",
+  },
+  {
+    _id: "imag-2025-party-finale",
+    data: "2025-06-29T21:00:00",
+    titolo: "Party di Fine Festival",
+    compagnia: "Caraval Spettacoli",
+    eCaraval: true,
+    locationSpecifica: "Area Castel Giardino, Soncino",
+    descrizioneBreve:
+      "Chiusura della seconda edizione. Musica, performance brevi, saluti. Ingresso gratuito.",
+  },
+];
+
+function spettacoloImag2025Doc(s: SpettacoloImag2025Seed): AnyDoc {
+  const slug = s._id.replace(/^imag-2025-/, "");
+  return {
+    _id: s._id,
+    _type: "spettacoloImaginarium",
+    titolo: s.titolo,
+    slug: { _type: "slug", current: slug },
+    edizioneRif: ref("edizione-imaginarium-2025"),
+    compagnia: {
+      nome: s.compagnia,
+      eCaraval: !!s.eCaraval,
+      eOfficina: !!s.eOfficina,
+      ...(s.urlSitoCompagnia ? { urlSitoCompagnia: s.urlSitoCompagnia } : {}),
+      ...(s.descrizioneCompagniaBreve
+        ? { descrizioneCompagniaBreve: s.descrizioneCompagniaBreve }
+        : {}),
+    },
+    dataInizio: s.data,
+    locationSpecifica: s.locationSpecifica,
+    descrizioneBreve: s.descrizioneBreve,
   };
 }
 
@@ -806,6 +941,12 @@ async function main() {
   for (const s of spettacoliImag2026) {
     await upsert(spettacoloImagDoc(s));
     console.log(`✓ spettacolo Imaginarium 2026: ${s.titolo}`);
+  }
+
+  // 7b. Spettacoli Imaginarium 2025 (Hotfix 2 — popolazione edizione passata)
+  for (const s of spettacoliImag2025) {
+    await upsert(spettacoloImag2025Doc(s));
+    console.log(`✓ spettacolo Imaginarium 2025: ${s.titolo}`);
   }
 
   // 8. Corsi

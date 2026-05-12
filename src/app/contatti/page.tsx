@@ -13,6 +13,7 @@ type ContattiCopy = {
   heroEyebrow?: string;
   heroHeading?: string;
   heroSottotitolo?: string;
+  heroFotoSfondo?: { asset?: { _ref?: string }; alt?: string };
   aree?: AreaContatto[];
 };
 
@@ -66,6 +67,7 @@ async function getData() {
     client.fetch<ContattiCopy | null>(
       `*[_type == "paginaContattiCopy"][0]{
         heroEyebrow, heroHeading, heroSottotitolo,
+        heroFotoSfondo,
         aree[]{
           icona, eyebrow, titolo, descrizione,
           telefonoOverride, emailOverride,
@@ -130,24 +132,58 @@ export default async function ContattiPage() {
           copy.heroSottotitolo ??
           "Per spettacoli, formazione, collaborazioni o solo per dirci ciao."
         }
+        fotoSfondo={copy.heroFotoSfondo}
         palette="default"
         altezza="compatto"
       />
 
-      {/* Dove siamo */}
+      {/* Dove siamo + Contatti diretti — 2 colonne paritarie desktop, stack mobile */}
       <Section background="nero">
         <Container>
-          <div className="max-w-2xl">
-            <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
-              DOVE SIAMO
-            </p>
-            <h2 className="font-display text-h1 text-crema-base leading-tight">
-              {dati.ragioneSociale ?? "Caraval Spettacoli"}
-            </h2>
-            <address className="not-italic mt-4 text-body-l text-crema-muted leading-relaxed">
-              {indirizzo && <div>{indirizzo}</div>}
-              {dati.partitaIva && <div>P.IVA {dati.partitaIva}</div>}
-            </address>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
+            <div>
+              <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
+                DOVE SIAMO
+              </p>
+              <h2 className="font-display text-h2 text-crema-base leading-tight">
+                {dati.ragioneSociale ?? "Caraval Spettacoli"}
+              </h2>
+              {indirizzo && (
+                <address className="not-italic mt-4 text-body-l text-crema-muted leading-relaxed">
+                  {indirizzo}
+                </address>
+              )}
+            </div>
+            <div>
+              <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
+                CONTATTI
+              </p>
+              <h2 className="font-display text-h2 text-crema-base leading-tight">
+                Scrivici o chiamaci
+              </h2>
+              <ul className="mt-4 flex flex-col gap-2 text-body-l">
+                {fallbackContatti.telefono && (
+                  <li>
+                    <a
+                      href={`tel:${fallbackContatti.telefono.replace(/\s+/g, "")}`}
+                      className="text-crema-base hover:text-rosso-hover transition-colors underline underline-offset-4 decoration-rosso-base/50"
+                    >
+                      {fallbackContatti.telefono}
+                    </a>
+                  </li>
+                )}
+                {fallbackContatti.email && (
+                  <li>
+                    <a
+                      href={`mailto:${fallbackContatti.email}`}
+                      className="text-crema-base hover:text-rosso-hover transition-colors underline underline-offset-4 decoration-rosso-base/50 break-all"
+                    >
+                      {fallbackContatti.email}
+                    </a>
+                  </li>
+                )}
+              </ul>
+            </div>
           </div>
         </Container>
       </Section>

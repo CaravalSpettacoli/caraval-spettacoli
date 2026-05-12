@@ -77,30 +77,37 @@ export function ImaginariumPreview({
   const dateRange = formatRangeDate(edizione.dataInizio, edizione.dataFine);
 
   return (
-    <section data-theme="light" className="bg-crema-base text-nero-base py-20 md:py-24">
+    <section
+      data-theme="light"
+      className="text-crema-base"
+      style={{
+        backgroundColor: "#a8174a",
+        paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
+      }}
+    >
       <Container>
         <div className="text-center">
-          <p className="uppercase-tracked text-caption text-rosso-deep">
+          <p className="uppercase-tracked text-caption text-crema-base/80">
             Festival
           </p>
           <h2
-            className="font-display text-rosso-deep mt-3 leading-none"
+            className="font-display text-crema-bright mt-3 leading-none"
             style={{ fontSize: "clamp(3rem, 9vw, 7rem)", letterSpacing: "0.02em" }}
           >
             IMAGINARIUM
           </h2>
-          <p className="mt-4 text-body-l text-nero-base">
+          <p className="mt-4 text-body-l text-crema-base">
             Festival di Teatro Itinerante
           </p>
           {(dateRange || edizione.locationPrincipale) && (
-            <p className="mt-1 text-body text-nero-base/80">
+            <p className="mt-1 text-body text-crema-base/80">
               {edizione.locationPrincipale}
               {edizione.locationPrincipale && dateRange && " · "}
               {dateRange}
             </p>
           )}
           {body && (
-            <p className="mt-6 max-w-[700px] mx-auto text-body text-nero-base/85">
+            <p className="mt-6 max-w-[700px] mx-auto text-body text-crema-base/85">
               {body}
             </p>
           )}
@@ -117,22 +124,23 @@ export function ImaginariumPreview({
               return (
                 <li
                   key={s._id}
-                  className="border border-rosso-deep/30 hover:border-rosso-deep bg-crema-bright p-5 transition-colors duration-base"
+                  className="border border-crema-base/20 hover:border-crema-base/50 p-5 transition-colors duration-base"
+                  style={{ backgroundColor: "rgba(139, 14, 58, 0.5)" }}
                 >
-                  <div className="font-display text-h4 text-rosso-deep leading-tight">
+                  <div className="font-display text-h4 text-crema-bright leading-tight">
                     {formatData(s.dataInizio)}
                   </div>
-                  <div className="mt-2 text-body font-semibold text-nero-base">
+                  <div className="mt-2 text-body font-semibold text-crema-bright">
                     {s.titolo}
                   </div>
                   {s.compagnia?.nome && (
-                    <div className="mt-1 text-body-s text-nero-base/70 italic">
+                    <div className="mt-1 text-body-s text-crema-base/75 italic">
                       {linkCompagnia ? (
                         <a
                           href={linkCompagnia}
                           target="_blank"
                           rel="noreferrer noopener"
-                          className="hover:text-rosso-deep underline underline-offset-4"
+                          className="hover:text-crema-bright underline underline-offset-4 decoration-crema-base/40"
                         >
                           {s.compagnia.nome}
                         </a>
@@ -148,33 +156,33 @@ export function ImaginariumPreview({
         )}
 
         {/* Strip patrocinio / sponsor / partner */}
-        <div className="mt-12 border-t border-rosso-deep/20 pt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-body-s">
+        <div className="mt-12 border-t border-crema-base/20 pt-8 grid grid-cols-1 md:grid-cols-3 gap-6 text-body-s">
           {edizione.patrocinio && edizione.patrocinio.length > 0 && (
             <div>
-              <p className="uppercase-tracked text-caption text-rosso-deep">
+              <p className="uppercase-tracked text-caption text-crema-base/80">
                 Con il patrocinio di
               </p>
-              <p className="mt-1 text-nero-base">
+              <p className="mt-1 text-crema-base">
                 {edizione.patrocinio.join(" · ")}
               </p>
             </div>
           )}
           {edizione.sponsor && edizione.sponsor.length > 0 && (
             <div>
-              <p className="uppercase-tracked text-caption text-rosso-deep">
+              <p className="uppercase-tracked text-caption text-crema-base/80">
                 Sponsor
               </p>
-              <p className="mt-1 text-nero-base">
+              <p className="mt-1 text-crema-base">
                 {edizione.sponsor.join(" · ")}
               </p>
             </div>
           )}
           {edizione.partnerLista && edizione.partnerLista.length > 0 && (
             <div>
-              <p className="uppercase-tracked text-caption text-rosso-deep">
+              <p className="uppercase-tracked text-caption text-crema-base/80">
                 Partner
               </p>
-              <p className="mt-1 text-nero-base">
+              <p className="mt-1 text-crema-base">
                 {edizione.partnerLista.join(" · ")}
               </p>
             </div>
@@ -188,7 +196,7 @@ export function ImaginariumPreview({
               href="/imaginarium"
               variant="primary"
               size="lg"
-              className="bg-rosso-deep hover:bg-rosso-base"
+              className="!bg-nero-base hover:!bg-nero-soft text-crema-base"
             >
               {ctaTesto}
             </Button>
