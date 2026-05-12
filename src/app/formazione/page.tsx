@@ -114,7 +114,7 @@ export default async function FormazionePage() {
 
       {/* Sezione corsi */}
       <Reveal as="section">
-      <Section theme="dark" bgVariant="soft">
+      <Section theme="dark" bgVariant="soft" glow="top-left">
         <Container>
           <div className="mb-10 flex flex-col items-start gap-4">
             <OndaDecorativa

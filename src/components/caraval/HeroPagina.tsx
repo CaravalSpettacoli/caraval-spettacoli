@@ -23,6 +23,9 @@ export interface HeroPaginaProps {
   /** Se settato, sostituisce l'heading testuale con un'immagine logo. */
   logoSrc?: string;
   logoAlt?: string;
+  /** Object-position della foto sfondo. Default "center". Esempio "center 30%"
+   *  per ritratti dove servono visibili i volti (es. /chi-siamo). */
+  fotoObjectPosition?: string;
 }
 
 export function HeroPagina({
@@ -36,6 +39,7 @@ export function HeroPagina({
   altezza = "compatto",
   logoSrc,
   logoAlt,
+  fotoObjectPosition,
 }: HeroPaginaProps) {
   const isImag = palette === "imaginarium";
   const isFull = altezza === "full";
@@ -72,7 +76,11 @@ export function HeroPagina({
     >
       {fotoUrl ? (
         <>
-          <HeroParallaxFoto src={fotoUrl} alt={fotoSfondo?.alt ?? ""} />
+          <HeroParallaxFoto
+            src={fotoUrl}
+            alt={fotoSfondo?.alt ?? ""}
+            objectPosition={fotoObjectPosition}
+          />
           {/* Overlay scuro su entrambe le palette: il testo crema sopra foto
               ha bisogno di overlay scuro per leggibilità. */}
           <div

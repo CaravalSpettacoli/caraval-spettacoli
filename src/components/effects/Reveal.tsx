@@ -9,11 +9,14 @@ import { cn } from "@/lib/cn";
  *  Hotfix 3 — threshold default 0.1 (aggressivo) + rootMargin "0px 0px -8% 0px"
  *  per attivare l'animazione appena la sezione spunta. Prop `delay` opzionale
  *  per coordinare con il preloader sipario (es. hero homepage). */
+export type RevealDirection = "up" | "left" | "right";
+
 export function Reveal({
   children,
   threshold = 0.1,
   rootMargin = "0px 0px -8% 0px",
   delay = 0,
+  direction = "up",
   className,
   as: Tag = "div",
 }: {
@@ -22,6 +25,9 @@ export function Reveal({
   rootMargin?: string;
   /** Ritardo in ms prima di aggiungere la classe `revealed`. Default 0. */
   delay?: number;
+  /** Direzione slide-in. "up" default (translateY +30 → 0),
+   *  "left" (translateX -40 → 0), "right" (translateX +40 → 0). */
+  direction?: RevealDirection;
   className?: string;
   as?: "div" | "section" | "article";
 }) {
@@ -72,10 +78,17 @@ export function Reveal({
     return () => observer.disconnect();
   }, [threshold, rootMargin, delay]);
 
+  const directionClass =
+    direction === "left"
+      ? "reveal-left"
+      : direction === "right"
+        ? "reveal-right"
+        : "";
+
   return (
     <Tag
       ref={ref as React.Ref<HTMLDivElement>}
-      className={cn("reveal", revealed && "revealed", className)}
+      className={cn("reveal", directionClass, revealed && "revealed", className)}
     >
       {children}
     </Tag>

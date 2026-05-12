@@ -130,14 +130,11 @@ const homepageCopy: AnyDoc = {
     { valore: "6", etichetta: "anni" },
     { valore: "1", etichetta: "festival" },
   ],
-  // Strip patrocini homepage (Hotfix 2). Loghi caricati da Vera/Edo in Studio.
-  patrociniHomepage: [
-    { _key: "pat-comune-soncino", nome: "Comune di Soncino", url: "https://www.comune.soncino.cr.it" },
-    { _key: "pat-danesi", nome: "Danesi" },
-    { _key: "pat-bacco", nome: "Bacco da Seta" },
-    { _key: "pat-proloco", nome: "Pro Loco Soncino" },
-    { _key: "pat-viaggiastorie", nome: "I Viaggiastorie" },
-  ],
+  // Hotfix 4: i patrocini sono stati spostati come RENDER da homepage a
+  // /imaginarium (cambia solo dove vengono mostrati, non dove sono salvati).
+  // Il campo resta in homepageCopy come fonte dati condivisa. NON lo azzeriamo
+  // qui per non perdere i loghi caricati dall'import script in Hotfix 3.
+  // Edo deve cancellare manualmente in Studio i duplicati testuali senza logo.
 };
 
 // ---------- Pagina Imaginarium — Copy ----------
@@ -1133,6 +1130,69 @@ async function main() {
       .setIfMissing({ descrizioneNarrativa: blocks })
       .commit();
     console.log(`✓ patch: ${id}.descrizioneNarrativa (da caraval.it)`);
+  }
+
+  // 14b. Patch descrizioneBreve sugli 8 spettacoli homepage accordion (Hotfix 4).
+  //      setIfMissing → non sovrascrive se Vera ha editato. Excerpt 1-2 righe
+  //      per ogni voce accordion del repertorio homepage.
+  const descrizioniHomepage: Array<{ id: string; testo: string }> = [
+    {
+      id: "spettacolo-romeo-giulietta",
+      testo:
+        "Una rilettura cruda di Shakespeare ambientata all'Inferno. Due personaggi-diavoli trovano un baule e un copione: il gioco diventa tragedia.",
+    },
+    {
+      id: "spettacolo-fine-del-mondo",
+      testo:
+        "Drammaturgia originale premiata Atelier Leà 2025. Una riflessione sul confine tra realtà e proiezione.",
+    },
+    {
+      id: "spettacolo-arlecchino",
+      testo:
+        "La maschera classica della Commedia dell'Arte rivista in chiave contemporanea, tra zanni e padroni innamorati.",
+    },
+    {
+      id: "spettacolo-banalita-del-male",
+      testo:
+        "Una rilettura teatrale ispirata all'opera di Hannah Arendt sul tema del male ordinario.",
+    },
+    {
+      id: "spettacolo-cubiculum-diaboli",
+      testo:
+        "Spettacolo di fuoco notturno. Atmosfere infernali, fiamme e narrazione per spazi all'aperto.",
+    },
+    {
+      id: "spettacolo-macbeth",
+      testo:
+        "Il dramma shakespeariano portato in piazza con elementi di teatro di fuoco e maschere.",
+    },
+    {
+      id: "spettacolo-skog",
+      testo:
+        "Narrazione e fuoco per un racconto fantastico ispirato alla natura selvaggia delle terre del nord.",
+    },
+    {
+      id: "spettacolo-legend",
+      testo:
+        "Spettacolo di fuoco e narrazione su miti e leggende popolari, per rievocazioni e feste medievali.",
+    },
+    {
+      id: "spettacolo-christmas-carol",
+      testo:
+        "Tra atmosfere noir e giochi di luci e ombre, la magia del Natale di Dickens prende vita col fuoco.",
+    },
+    {
+      id: "spettacolo-viaggiastorie",
+      testo:
+        "Teatro di strada: storie portate di piazza in piazza con maschere e oggetti di scena.",
+    },
+  ];
+  for (const { id, testo } of descrizioniHomepage) {
+    await client
+      .patch(id)
+      .setIfMissing({ descrizioneBreve: testo })
+      .commit();
+    console.log(`✓ patch: ${id}.descrizioneBreve (Hotfix 4)`);
   }
 
   // 15. Patch descrizioniBreve sui 6 spettacoli Imaginarium 2026 (Hotfix 1).

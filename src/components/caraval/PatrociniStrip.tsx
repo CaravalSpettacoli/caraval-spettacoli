@@ -9,63 +9,84 @@ export type PatrocinioItem = {
   url?: string;
 };
 
+type Palette = "dark" | "light";
+
+/** Strip patrocini/sponsor/partner con loghi.
+ *
+ *  Hotfix 4: usato in /imaginarium con `palette="light"` (sfondo rosso saturo
+ *  della pagina). I loghi PNG hanno sfondo bianco proprio, quindi vanno
+ *  inseriti in box bianchi/crema per non perderne la leggibilità.
+ *  Aspect-ratio 4/3 fisso → tutti i box hanno stessa dimensione.
+ *  object-fit: contain → i loghi non vengono tagliati. */
 export function PatrociniStrip({
   patrocini,
   eyebrow = "Partner & patrocini",
+  palette = "dark",
 }: {
   patrocini: PatrocinioItem[] | null;
   eyebrow?: string;
+  palette?: Palette;
 }) {
   if (!patrocini || patrocini.length === 0) return null;
 
+  // Filtra entries senza logo (placeholder testuali) — non li mostriamo più
+  // visivamente. Il fix completo dei duplicati va fatto manualmente in Studio.
+  const conLogo = patrocini.filter((p) => p.logo?.asset?._ref);
+  if (conLogo.length === 0) return null;
+
+  const isLight = palette === "light";
+
   return (
     <section
-      data-theme="dark"
-      className="bg-nero-base text-crema-base"
+      data-theme={isLight ? "light" : "dark"}
+      className={isLight ? "text-crema-base" : "bg-nero-base text-crema-base"}
       style={{
-        paddingBlock: "var(--space-block-y, clamp(2rem, 4vw, 4rem))",
+        paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
+        ...(isLight ? { backgroundColor: "#a8174a" } : {}),
       }}
     >
       <Container>
-        <p className="uppercase-tracked text-caption text-rosso-base text-center mb-8">
+        <p
+          className={`uppercase-tracked text-caption text-center mb-10 ${
+            isLight ? "text-crema-base/85" : "text-rosso-base"
+          }`}
+        >
           {eyebrow}
         </p>
         <ul
           role="list"
-          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-6 md:gap-8 items-center"
+          className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 items-stretch"
         >
-          {patrocini.map((p, idx) => {
+          {conLogo.map((p, idx) => {
             const fotoUrl =
               p.logo?.asset?._ref &&
               urlFor(p.logo as Parameters<typeof urlFor>[0])
                 .width(400)
-                .height(160)
+                .height(300)
                 .fit("max")
                 .url();
 
-            const inner = fotoUrl ? (
-              <div className="relative w-full h-20">
-                <Image
-                  src={fotoUrl}
-                  alt={p.logo?.alt ?? p.nome}
-                  fill
-                  sizes="(min-width: 768px) 20vw, 40vw"
-                  className="object-contain"
-                />
-              </div>
-            ) : (
+            const box = (
               <div
-                className="w-full h-20 border border-rosso-base/30 flex items-center justify-center px-3 text-center"
-                style={{ backgroundColor: "rgba(168, 23, 74, 0.08)" }}
+                className="logo-box flex items-center justify-center p-3 md:p-4 rounded-md transition-transform duration-base hover:scale-105"
+                style={{
+                  backgroundColor: "#ffffff",
+                  aspectRatio: "4 / 3",
+                }}
               >
-                <span className="font-display text-caption text-crema-base/70 leading-tight">
-                  {p.nome}
-                </span>
+                {fotoUrl && (
+                  <div className="relative w-full h-full">
+                    <Image
+                      src={fotoUrl}
+                      alt={p.logo?.alt ?? p.nome}
+                      fill
+                      sizes="(min-width: 1024px) 18vw, (min-width: 768px) 22vw, 45vw"
+                      className="object-contain"
+                    />
+                  </div>
+                )}
               </div>
             );
-
-            const wrapperClass =
-              "block transition-transform duration-base hover:scale-105";
 
             return (
               <li key={p._key ?? idx}>
@@ -75,12 +96,12 @@ export function PatrociniStrip({
                     target="_blank"
                     rel="noreferrer noopener"
                     aria-label={p.nome}
-                    className={wrapperClass}
+                    className="block h-full"
                   >
-                    {inner}
+                    {box}
                   </a>
                 ) : (
-                  <div className={wrapperClass}>{inner}</div>
+                  box
                 )}
               </li>
             );

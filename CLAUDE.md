@@ -829,6 +829,47 @@ Continuation di `feat/hotfix-2-completo` (PR #10), commit aggiuntivo. **8 task i
 1. Cancellare manualmente i duplicati in `patrociniHomepage` da Sanity Studio (lasciare solo i loghi reali, eliminare i 5 placeholder testuali "Comune di Soncino"/"Danesi"/"Bacco da Seta"/"Pro Loco Soncino"/"I Viaggiastorie").
 2. Caricare a mano in Studio le 7 foto non mappate (DSC00276, IMAGINARIUM_DAY02, IMAGINARIUM_sala, adariapaoletta-imaginarium, brancaglione-imaginarium, imaginarium-maglietta-foto, LogoProLocoSoncino).
 
+### ✅ Hotfix 4 — Polish completo post-call (FATTO)
+Continuation di `feat/hotfix-2-completo` (PR #10), commit aggiuntivo. **18 task in ~90 min.**
+
+**Cosa cambia:**
+- **Task 1+14+15 — Animazioni elemento-per-elemento**: `Reveal` esteso con `direction: "up" | "left" | "right"` + classi `.reveal-left`/`.reveal-right`. Pattern CSS-only stagger: classe `.reveal-stagger` su container (`<ul>`, `<div>`) → figli ricevono fade-in + slide-up con `transition-delay` incrementale (0-700ms via `:nth-child`) quando parent `.reveal` entra in viewport. Applicato a: StripPremi, ProgrammaCompleto, SpettacoliGrid, ContattiSezione list. Accordion homepage: durata 250ms snappy con `cubic-bezier(0.4, 0, 0.2, 1)`. Componente `RevealStagger` creato come opzione ma non usato per evitare rompere semantica `<ul><li>`.
+- **Task 2 — Patrocini spostati in /imaginarium**: PatrociniStrip rifatto con prop `palette: "dark" | "light"`. In light: box bianco `#ffffff` aspect-ratio 4/3 padding 3-4 con `object-fit: contain` (no taglio loghi). Render rimosso dalla homepage, aggiunto in /imaginarium dopo SponsorPartnerStrip via fetch da `homepageCopy.patrociniHomepage` (i loghi sono già lì, no nuova chiave Sanity). eyebrow "Con il sostegno di".
+- **Task 3 — Descrizioni accordion homepage**: 10 `descrizioneBreve` seedate via `setIfMissing` (Romeo, Fine del Mondo, Arlecchino, Banalità, Cubiculum, Macbeth, Skog, Legend, Christmas Carol, Viaggiastorie). Step 14b nel seed runner.
+- **Task 4 — CTA .cta-tertiary**: underline `border-bottom 1px currentColor` sempre visibile, al hover cambia colore (`rosso-base`). Più chiaro che è cliccabile.
+- **Task 6.1 — /imaginarium hero dark**: cambiato `palette="imaginarium"` (rosso pieno) → `palette="default"` (nero pieno). Distacco visivo netto tra hero nera e sezione Programma rossa successiva. Logo Imaginarium PNG beige naturale → leggibile su nero. Resto pagina (counter/programma/sponsor/edizioni) resta light.
+- **Task 7 — Header hover Imaginarium nero**: aggiunta prop `headerHoverColor` a `ThemeStyle`. dark=#c01d56 (rosso-hover storico), light=#0a0a0a (nero, perché rosso si fonde col bg rosso pieno), accent=#0a0a0a. Header.tsx: voci nav con CSS custom property `--header-hover` inline + classe `.header-link:hover` in globals.css.
+- **Task 8 — Hero subtle-zoom**: keyframe `subtle-zoom 20s ease-in-out infinite alternate` (scale 1 → 1.08). Applicato a `HeroParallaxFoto.tsx` via classe `.hero-foto-sfondo` + propagato a `HeroSpettacolo.tsx`. Skip su prefers-reduced-motion.
+- **Task 9 — Glow sfondo**: nuovo `GlowSfondo` Server Component (radial-gradient + class `.glow-sfondo` con `glow-pulse 8s infinite alternate`). 5 posizioni (`center/top-left/top-right/bottom-left/bottom-right`) + 3 intensità (`low/medium/high`). `Section` esteso con prop `glow?: GlowPosizione` che attiva `relative overflow-hidden` + inserisce `<GlowSfondo>` + wrap content in `z-index: 1`. Applicato a 4 sezioni alternate: StripPremi (bottom-left), /spettacoli grid (top-right), /ospita valore-proposto (bottom-right), /formazione corsi (top-left).
+- **Task 10 — /chi-siamo foto object-position**: aggiunta prop `fotoObjectPosition?: string` a HeroPagina, propagata a HeroParallaxFoto. /chi-siamo usa `"center 30%"` (volti visibili).
+- **Task 12.2 — Card contatti uniformate**: `min-h-[280px]` su `ContattiSezione`. Le card avevano già `mt-auto pt-4` sui recapiti → space-between automatico. Aggiunto `.reveal-stagger` sull'`<ul>` parent per fade-in incrementale.
+- **Task 13 — Biglietto polish**: max-w da 320 a 360 (più respiro), spacing rivisto (mt-5/7), tracking esteso eyebrow (0.18em), CTA con hover lift -0.5, microcopy fronte/retro italic + icone `RotateCw`/`ArrowLeft`, retro centrato verticalmente. NO riscrittura completa (senza screenshot specifico Edo).
+- **Task 13.3 — HeroSpettacolo zoom fix**: classe `.hero-foto-sfondo` + `objectPosition: "center 35%"` esplicito.
+- **Task 16 — patrociniHomepage**: il wipe iniziale è stato annullato (avrebbe cancellato i 7 loghi caricati). Strategia: il campo resta in `homepageCopy` come fonte dati condivisa, lo spostamento concettuale è solo nel render. Edo deve cancellare manualmente in Studio i duplicati testuali senza logo.
+- **Task 17 — Foto Imaginarium 2026 (diagnosi)**: schema/query/render OK. Possibili cause: (a) caricate sotto chiave Sanity sbagliata (es. fotoHero invece di immagineCover); (b) caricate sull'edizione 2025 invece di 2026. Da verificare manualmente in Studio.
+- **Task 5 — Foto archivio (diagnosi)**: solo Miseria_Nobiltà presente in MATERIALE-PER-SITO. Mancano 7 produzioni archivio.
+
+**Decisioni autonome documentate (Hotfix 4):**
+1. **CSS-only stagger** invece di RevealStagger wrapper React: non rompe semantica `<ul><li>`. Pattern `:nth-child` con `transition-delay` su `.reveal-stagger > *`, triggerato dal parent `.reveal.revealed`.
+2. **patrociniHomepage NON wipped**: avrebbe cancellato i loghi caricati dall'import script di Hotfix 3. Solo lo spostamento del render (homepage → imaginarium).
+3. **PatrociniStrip filtra entries senza logo**: i 5 placeholder testuali residui dal seed non vengono più mostrati. Quando Edo carica nuovi loghi, appariranno.
+4. **Glow su Section prop**: una modifica copre tutti gli usi. Pattern semplice.
+5. **Biglietto polish, no riscrittura**: senza screenshot Edo. Edo dirà cosa cambiare al prossimo round se serve.
+6. **Hero /imaginarium dark**: cambio palette su HeroPagina invece di nuovo componente. Logo beige resta visibile su nero.
+7. **Task 17 + Task 5 = diagnosi only**: non avendo accesso runtime live, annoto causa probabile nella PR. Edo verifica manualmente.
+
+**Verifica:**
+- `npx tsc --noEmit` pulito · `npm run lint` pulito · `npm run build` pulito (24 rotte invariate).
+- `npm run sanity:seed` eseguito con successo (10 descrizioniHomepage nuove).
+
+**Cosa Edo deve fare prima della call:**
+1. **Pulire `patrociniHomepage` in Sanity Studio**: cancellare manualmente le entries placeholder duplicate (~5-6 testuali senza logo). Tenere solo i ~7 con logo caricato. Componente filtra automaticamente in render.
+2. **Verificare foto Imaginarium 2026**: aprire i 6 doc `imag-2026-*` in Studio e controllare quale campo è popolato (`immagineCover` vs `fotoHero` vs altri).
+3. **Caricare foto archivio mancanti**: 7 produzioni archivio (Giovanna D'Arco, Inferno di Dante, Folli Notre Dame, Servitore due padroni, Sogno notte mezza estate, Ezzelino, Battute fuori scena) → caricare via Studio o aggiungere file in MATERIALE-PER-SITO con naming `{slug}-verticale.jpg` e ri-eseguire `npx tsx scripts/import-images-to-sanity.ts`.
+4. **URL Scuola di Magia**: da passare a Vera per inserimento in `paginaChiSiamoCopy.scuolaMagiaUrl`.
+5. **Foto Scuola di Magia**: da caricare in `paginaChiSiamoCopy.scuolaMagiaFoto`.
+6. **Foto hero /contatti**: caricare in `paginaContattiCopy.heroFotoSfondo` (campo già pronto).
+
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 6** — Chi siamo + ospita + contatti + privacy/cookie
 - [ ] **Sessione 7** — Iubenda + Umami analytics + accessibilità WCAG AA

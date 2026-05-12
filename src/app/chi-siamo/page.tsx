@@ -70,6 +70,7 @@ export default async function ChiSiamoPage() {
           copy.heroSottotitolo ?? "Compagnia teatrale di Soncino, dal 2016."
         }
         fotoSfondo={copy.heroFotoSfondo}
+        fotoObjectPosition="center 30%"
         palette="default"
         altezza="compatto"
       />

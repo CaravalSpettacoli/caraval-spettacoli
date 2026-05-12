@@ -209,11 +209,16 @@ export function Header() {
               key={l.href}
               href={l.href}
               className={cn(
-                "text-body-s uppercase-tracked transition-colors",
-                dark
-                  ? "text-crema-base hover:text-rosso-hover"
-                  : "text-nero-base hover:text-rosso-deep"
+                "header-link text-body-s uppercase-tracked transition-colors",
+                dark ? "text-crema-base" : "text-nero-base"
               )}
+              style={
+                {
+                  ["--header-hover" as string]: scrolled
+                    ? "#c01d56"
+                    : themeStyles[currentTheme].headerHoverColor,
+                } as React.CSSProperties
+              }
             >
               {l.label}
             </Link>

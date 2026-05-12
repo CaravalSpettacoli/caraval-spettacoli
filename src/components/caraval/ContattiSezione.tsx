@@ -49,7 +49,7 @@ export function ContattiSezione({
     area.emailOverride || area.referente?.emailPubblica || fallback?.email;
 
   return (
-    <article className="flex flex-col gap-3 p-6 md:p-8 bg-nero-soft border border-crema-faint/30 hover:border-rosso-base/60 transition-colors duration-base">
+    <article className="flex flex-col gap-3 p-6 md:p-8 min-h-[280px] bg-nero-soft border border-crema-faint/30 hover:border-rosso-base/60 transition-colors duration-base">
       <div className="text-rosso-hover">
         <Icon size={36} strokeWidth={1.5} />
       </div>

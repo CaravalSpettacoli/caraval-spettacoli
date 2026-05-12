@@ -9,6 +9,7 @@ import {
 } from "@/components/caraval/ArchivioSpettacoliGrid";
 import type { SpettacoloCardLargeData } from "@/components/caraval/SpettacoloCardLarge";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { Reveal } from "@/components/effects/Reveal";
 
 type PaginaCopy = {
   eyebrow?: string;
@@ -59,11 +60,13 @@ export default async function PaginaSpettacoli() {
         altezza="compatto"
       />
 
-      <Section theme="dark" bgVariant="soft">
-        <Container>
-          <SpettacoliGrid spettacoli={spettacoli} />
-        </Container>
-      </Section>
+      <Reveal>
+        <Section theme="dark" bgVariant="soft" glow="top-right">
+          <Container>
+            <SpettacoliGrid spettacoli={spettacoli} />
+          </Container>
+        </Section>
+      </Reveal>
 
       {archivio.length > 0 && (
         <Section theme="dark" bgVariant="base" id="archivio">

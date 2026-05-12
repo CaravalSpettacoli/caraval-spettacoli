@@ -26,6 +26,10 @@ import {
 import { CounterStrip, type CounterItem } from "@/components/caraval/CounterStrip";
 import { VideoYoutube } from "@/components/caraval/VideoYoutube";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import {
+  PatrociniStrip,
+  type PatrocinioItem,
+} from "@/components/caraval/PatrociniStrip";
 import { Reveal } from "@/components/effects/Reveal";
 
 export const revalidate = 60;
@@ -42,7 +46,7 @@ type PaginaImagCopy = {
 };
 
 async function getImaginariumData() {
-  const [edizioneCorrente, paginaCopy] = await Promise.all([
+  const [edizioneCorrente, paginaCopy, homepageCopy] = await Promise.all([
     client.fetch<EdizioneCorrenteFull | null>(
       `*[_type == "edizioneImaginarium"] | order(anno desc)[0]{
         anno, titoloEdizione, dataInizio, dataFine,
@@ -57,6 +61,9 @@ async function getImaginariumData() {
         videoEyebrow, videoHeading, videoYoutubeUrl,
         heroFotoSfondo
       }`
+    ),
+    client.fetch<{ patrociniHomepage?: PatrocinioItem[] } | null>(
+      `*[_type == "homepageCopy"][0]{ patrociniHomepage }`
     ),
   ]);
 
@@ -85,7 +92,13 @@ async function getImaginariumData() {
       : Promise.resolve([] as EdizionePassataItem[]),
   ]);
 
-  return { edizioneCorrente, spettacoliCorrente, edizioniPassate, paginaCopy };
+  return {
+    edizioneCorrente,
+    spettacoliCorrente,
+    edizioniPassate,
+    paginaCopy,
+    patrocini: homepageCopy?.patrociniHomepage ?? null,
+  };
 }
 
 export const metadata = {
@@ -118,8 +131,13 @@ function descrToText(blocks?: EdizioneHero["descrizione"]): string {
 }
 
 export default async function ImaginariumPage() {
-  const { edizioneCorrente, spettacoliCorrente, edizioniPassate, paginaCopy } =
-    await getImaginariumData();
+  const {
+    edizioneCorrente,
+    spettacoliCorrente,
+    edizioniPassate,
+    paginaCopy,
+    patrocini,
+  } = await getImaginariumData();
 
   const counterFallback: CounterItem[] = [
     { valore: "3", etichetta: "edizioni" },
@@ -152,6 +170,9 @@ export default async function ImaginariumPage() {
 
   return (
     <div>
+      {/* Hotfix 4: hero su sfondo nero (palette default) per dare un distacco
+          visivo netto con la sezione "Programma" successiva (palette light = rosso).
+          Il logo PNG è beige naturale, perfetto su nero. */}
       <HeroPagina
         eyebrow="Festival di Teatro Itinerante"
         heading={
@@ -161,7 +182,7 @@ export default async function ImaginariumPage() {
         }
         sottotitolo={sottotitoloHero || undefined}
         fotoSfondo={paginaCopy?.heroFotoSfondo ?? edizioneCorrente?.fotoSfondoHero}
-        palette="imaginarium"
+        palette="default"
         altezza="full"
         logoSrc="/imaginarium-logo.png"
         logoAlt="Imaginarium — Festival di Teatro Itinerante"
@@ -197,6 +218,14 @@ export default async function ImaginariumPage() {
       </Reveal>
       <Reveal>
         <SponsorPartnerStrip data={edizioneCorrente} />
+      </Reveal>
+      {/* Hotfix 4: patrocini spostati da homepage a /imaginarium */}
+      <Reveal>
+        <PatrociniStrip
+          patrocini={patrocini}
+          eyebrow="Con il sostegno di"
+          palette="light"
+        />
       </Reveal>
       <Reveal>
         <EdizioniPassate edizioni={edizioniPassate} />

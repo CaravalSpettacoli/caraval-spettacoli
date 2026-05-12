@@ -19,7 +19,7 @@ export function StripPremi({
 }) {
   if (!premi || premi.length === 0) return null;
   return (
-    <Section background="nero-soft" className="py-16 md:py-20">
+    <Section background="nero-soft" className="py-16 md:py-20" glow="bottom-left">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 lg:gap-12 items-start">
           <div>
@@ -32,7 +32,7 @@ export function StripPremi({
           </div>
           <ul
             role="list"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
+            className="reveal-stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
           >
             {premi.map((p) => (
               <li

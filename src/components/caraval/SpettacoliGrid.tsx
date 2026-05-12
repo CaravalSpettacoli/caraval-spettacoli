@@ -164,7 +164,7 @@ export function SpettacoliGrid({
           Nessuno spettacolo in questa categoria.
         </p>
       ) : (
-        <ul role="list" className="border-t border-crema-faint/20">
+        <ul role="list" className="reveal-stagger border-t border-crema-faint/20">
           {visibili.map((s, i) => (
             <li key={s._id}>
               <SpettacoloRow spettacolo={s} reverse={i % 2 === 1} />

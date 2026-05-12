@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, type KeyboardEvent } from "react";
-import { Phone, ArrowLeft } from "lucide-react";
+import { ArrowLeft, RotateCw } from "lucide-react";
 import { Stella5Punte } from "@/components/decorative/Stella5Punte";
 import { cn } from "@/lib/cn";
 
@@ -34,7 +34,7 @@ export function BigliettoSpettacolo({
 
   return (
     <div
-      className="biglietto-container mx-auto w-full max-w-[320px]"
+      className="biglietto-container mx-auto w-full max-w-[360px]"
       style={{ perspective: "1500px" }}
     >
       <div
@@ -62,64 +62,68 @@ export function BigliettoSpettacolo({
       >
         {/* FRONTE */}
         <Faccia color="fronte">
-          <p className="uppercase-tracked text-caption text-rosso-base">
-            Prenotazione
-          </p>
-          <h3
-            className="mt-4 font-display text-h3 text-nero-base leading-tight text-balance"
-            style={{ letterSpacing: "0.01em" }}
-          >
-            Vuoi vedere questo spettacolo?
-          </h3>
-          <p className="mt-3 text-body-s text-nero-base/75 leading-relaxed">
-            Le modalità di prenotazione cambiano in base al teatro ospitante.
-            Contattaci per info.
-          </p>
+          <div className="flex-1 flex flex-col">
+            <p className="uppercase-tracked text-caption text-rosso-base tracking-[0.18em]">
+              Prenotazione
+            </p>
+            <h3
+              className="mt-5 font-display text-h3 text-nero-base leading-[1.15] text-balance"
+              style={{ letterSpacing: "0.01em" }}
+            >
+              Vuoi vedere questo spettacolo?
+            </h3>
+            <p className="mt-4 text-body-s text-nero-base/75 leading-relaxed">
+              Le modalità di prenotazione cambiano in base al teatro ospitante.
+              Clicca il biglietto per vedere il numero o scrivici via email.
+            </p>
 
-          <Link
-            href={contattiHref}
-            onClick={(e) => e.stopPropagation()}
-            className="mt-6 inline-flex w-full items-center justify-center gap-2 h-11 px-4 bg-rosso-base text-crema-base font-semibold uppercase-tracked text-body-s rounded-md hover:bg-rosso-hover transition-colors"
-          >
-            Scopri come prenotare →
-          </Link>
+            <Link
+              href={contattiHref}
+              onClick={(e) => e.stopPropagation()}
+              className="mt-7 inline-flex w-full items-center justify-center gap-2 h-12 px-4 bg-rosso-base text-crema-base font-semibold uppercase-tracked text-body-s rounded-md hover:bg-rosso-hover hover:-translate-y-0.5 transition-all"
+            >
+              Scopri come prenotare →
+            </Link>
+          </div>
 
-          <div className="mt-4 flex items-center justify-center gap-2 text-caption text-nero-base/60">
-            <Phone className="h-3.5 w-3.5" aria-hidden />
-            <span>Clicca per vedere il numero</span>
+          <div className="mt-6 flex items-center justify-center gap-2 text-caption text-nero-base/55 italic">
+            <RotateCw className="h-3.5 w-3.5" aria-hidden />
+            <span>Clicca il biglietto per vedere il numero</span>
           </div>
         </Faccia>
 
         {/* RETRO */}
         <Faccia color="retro">
-          <p className="uppercase-tracked text-caption text-rosso-base">
-            Chiamaci
-          </p>
-          {telefono ? (
-            <>
-              <a
-                href={`tel:${pulisciTel(telefono)}`}
-                onClick={(e) => e.stopPropagation()}
-                className="mt-6 font-display text-nero-base leading-none hover:text-rosso-hover transition-colors"
-                style={{ fontSize: "clamp(1.75rem, 4.5vw, 2.5rem)" }}
-              >
-                {telefono}
-              </a>
-              <p className="mt-4 text-body-s text-nero-base/70">
-                Clicca sul numero per chiamare ora.
-              </p>
-            </>
-          ) : (
-            <p className="mt-6 text-body text-nero-base/75">
-              Numero di telefono non disponibile. Scrivici via email da{" "}
-              <Link href={contattiHref} className="underline">
-                contatti
-              </Link>
-              .
+          <div className="flex-1 flex flex-col items-center justify-center text-center">
+            <p className="uppercase-tracked text-caption text-rosso-base tracking-[0.18em]">
+              Chiamaci
             </p>
-          )}
+            {telefono ? (
+              <>
+                <a
+                  href={`tel:${pulisciTel(telefono)}`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="mt-6 font-display text-nero-base leading-none hover:text-rosso-hover transition-colors"
+                  style={{ fontSize: "clamp(1.75rem, 5vw, 2.75rem)" }}
+                >
+                  {telefono}
+                </a>
+                <p className="mt-5 text-body-s text-nero-base/70">
+                  Clicca sul numero per chiamare ora.
+                </p>
+              </>
+            ) : (
+              <p className="mt-6 text-body text-nero-base/75">
+                Numero non disponibile. Scrivici via{" "}
+                <Link href={contattiHref} className="underline">
+                  contatti
+                </Link>
+                .
+              </p>
+            )}
+          </div>
 
-          <div className="mt-auto pt-6 flex items-center justify-center gap-2 text-caption text-nero-base/60">
+          <div className="mt-6 flex items-center justify-center gap-2 text-caption text-nero-base/55 italic">
             <ArrowLeft className="h-3.5 w-3.5" aria-hidden />
             <span>Clicca per tornare al fronte</span>
           </div>

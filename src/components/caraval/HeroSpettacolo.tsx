@@ -36,7 +36,8 @@ export function HeroSpettacolo({ data }: { data: HeroSpettacoloData }) {
           fill
           priority
           sizes="100vw"
-          className="object-cover"
+          className="object-cover hero-foto-sfondo"
+          style={{ objectPosition: "center 35%" }}
         />
       ) : (
         <div aria-hidden className="absolute inset-0">

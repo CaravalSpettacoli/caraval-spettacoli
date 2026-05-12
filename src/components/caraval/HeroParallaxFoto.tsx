@@ -2,19 +2,25 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/cn";
 
-/** Foto sfondo hero con parallax leggero su scroll desktop.
+/** Foto sfondo hero con parallax leggero su scroll desktop + subtle-zoom CSS
+ *  20s infinite alternate per dinamicità (Hotfix 4).
  *  - speed 0.3 → traslazione sottile (300px su scroll 1000px)
  *  - Disabilitato su mobile (≤768px) e prefers-reduced-motion
- *  - Usa requestAnimationFrame + scroll listener passive throttled */
+ *  - Usa requestAnimationFrame + scroll listener passive throttled
+ *  - objectPosition prop opzionale (default "center") per gestire foto verticali
+ *    o ritratti che vanno tagliati sui volti (es. /chi-siamo: "center 30%"). */
 export function HeroParallaxFoto({
   src,
   alt,
   className,
+  objectPosition = "center",
 }: {
   src: string;
   alt: string;
   className?: string;
+  objectPosition?: string;
 }) {
   const ref = useRef<HTMLDivElement | null>(null);
   const rafRef = useRef<number | null>(null);
@@ -65,7 +71,8 @@ export function HeroParallaxFoto({
         fill
         priority
         sizes="100vw"
-        className="object-cover"
+        className={cn("object-cover hero-foto-sfondo")}
+        style={{ objectPosition }}
       />
     </div>
   );

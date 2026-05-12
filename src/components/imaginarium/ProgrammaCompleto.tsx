@@ -133,7 +133,7 @@ export function ProgrammaCompleto({
           </div>
         )}
 
-        <div className="space-y-20 md:space-y-28">
+        <div className="reveal-stagger space-y-20 md:space-y-28">
           {spettacoli.map((s, idx) => {
             const reverse = idx % 2 === 1;
             const fotoUrl =

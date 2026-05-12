@@ -76,7 +76,7 @@ export default async function OspitaPage() {
 
       {/* Valore proposto */}
       <Reveal as="section">
-      <Section background="nero-soft">
+      <Section background="nero-soft" glow="bottom-right">
         <Container>
           <div className="max-w-3xl">
             {copy.valorePropostoEyebrow && (

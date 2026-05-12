@@ -28,10 +28,6 @@ import { OfficinaTeaser } from "@/components/caraval/OfficinaTeaser";
 import { ContattiPrelude } from "@/components/caraval/ContattiPrelude";
 import { CounterStrip, type CounterItem } from "@/components/caraval/CounterStrip";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
-import {
-  PatrociniStrip,
-  type PatrocinioItem,
-} from "@/components/caraval/PatrociniStrip";
 import { Reveal } from "@/components/effects/Reveal";
 
 type HomepageCopy = {
@@ -57,7 +53,6 @@ type HomepageCopy = {
   contattiBody?: string;
   numeriEyebrow?: string;
   numeriElenco?: CounterItem[];
-  patrociniHomepage?: PatrocinioItem[];
 };
 
 type ImpostazioniContatti = {
@@ -178,9 +173,6 @@ export default async function HomePage() {
           body={data.copy?.imaginariumPreviewBody}
           ctaTesto={data.copy?.imaginariumPreviewCtaTesto}
         />
-      </Reveal>
-      <Reveal>
-        <PatrociniStrip patrocini={data.copy?.patrociniHomepage ?? null} />
       </Reveal>
       <Reveal>
         <SpettacoliAccordionHomepage

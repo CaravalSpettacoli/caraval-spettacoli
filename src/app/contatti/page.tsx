@@ -199,7 +199,7 @@ export default async function ContattiPage() {
             <Container>
               <ul
                 role="list"
-                className="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
+                className="reveal-stagger grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
               >
                 {aree.map((a, i) => (
                   <li key={`${a.icona}-${i}`}>
