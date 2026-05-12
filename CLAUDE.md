@@ -870,6 +870,27 @@ Continuation di `feat/hotfix-2-completo` (PR #10), commit aggiuntivo. **18 task 
 5. **Foto Scuola di Magia**: da caricare in `paginaChiSiamoCopy.scuolaMagiaFoto`.
 6. **Foto hero /contatti**: caricare in `paginaContattiCopy.heroFotoSfondo` (campo già pronto).
 
+### ✅ Hotfix 5 — Stabilizzazione regressioni Hotfix 4 (FATTO)
+Continuation di `feat/hotfix-2-completo` (PR #10), commit aggiuntivo.
+
+**Bug regressioni Hotfix 4 identificate via diagnosi neutra + fix:**
+
+1. **Hero homepage foto sparita** — ROOT CAUSE: il seed `createOrReplace(homepageHero)` aveva payload SENZA `fotoSfondo` → sovrascrivendo il documento cancellava il campo image caricato dall'import script. Fix in `sanity/scripts/seed-demo-content.ts`: nuovo helper `createOrReplacePreservingImages(doc)` che fa fetch del documento esistente, e per i campi nella whitelist `PRESERVED_IMAGE_FIELDS` (`fotoSfondo`, `heroFotoSfondo`, `storiaFotoSezione`, `scuolaMagiaFoto`, `formazione+calendarioHeroFotoSfondo`, `patrociniHomepage`) preserva i valori esistenti se il seed non li specifica. Applicato a 7 singleton createOrReplace nel runner. Re-eseguito `npx tsx scripts/import-images-to-sanity.ts` → 25/31 file importati, `homepageHero.fotoSfondo` ora popolato (verificato live).
+2. **fotoHero scheda dettaglio spettacolo** — Query GROQ in `/spettacoli/[slug]/page.tsx` non pescava `fotoHero` (schema ha 2 campi distinti: `immagineCover` verticale 4:5 + `fotoHero` orizzontale 16:9). Fix: aggiunto `fotoHero` alla query + HeroSpettacolo type esteso + logica `fotoSrc = data.fotoHero ?? data.immagineCover`.
+3. **Reveal di sezione + stagger doppio** — Refactor CSS stagger: selettore da `.reveal.revealed .reveal-stagger > *` (nested) a `.reveal-stagger.revealed > *` (self-applicato). Reveal componente esteso con `as: "ul" | "ol"` (oltre a div/section/article). 4 container stagger ora self-observed via `<Reveal as="ul/div" className="reveal-stagger">` invece di nested. Rimossi ~22 `<Reveal>` wrap di sezione da homepage, chi-siamo, imaginarium, imaginarium/[anno], calendario, ospita, formazione, spettacoli, contatti. Pattern finale uniforme: animazione SOLO su elementi card list, niente più macro-sezione.
+4. **Patrocini Imaginarium invisibili** — RISOLTO parallelamente a #1: l'import re-run ha popolato 9 entries con logo in `patrociniHomepage` (verificato live via GROQ count). PatrociniStrip in /imaginarium ora mostra i 9 loghi.
+5. **Foto Imaginarium 2026 non visibili (diagnosi)** — Verifica live GROQ: 0/6 doc `imag-2026-*` hanno `immagineCover` popolato. 3/8 doc `imag-2025-*` hanno cover (Buffoni/Ciccio/Elena dall'import). Schema/query/render corretti. Causa: Edo non ha caricato le foto 2026 in Studio. Annotato per Edo.
+
+**TypeScript fix**: tipo `useRef` in Reveal da `HTMLDivElement` a `HTMLElement` + cast through unknown per il polymorphic `as` che ora include ul/ol con tipi Ref incompatibili.
+
+**Verifica:**
+- `npx tsc --noEmit` pulito · `npm run lint` pulito · `npm run build` pulito (24 rotte).
+- Live GROQ verifica: `homepageHero.fotoSfondo` popolato, `patrociniHomepage` 9 entries con logo, `spettacolo-romeo-giulietta.fotoHero` popolato (import script).
+
+**Cosa Edo deve fare per la call:**
+1. Caricare le 6 foto Imaginarium 2026 in Studio sul campo `immagineCover` di ciascun doc `imag-2026-*`.
+2. Cleanup duplicati `patrociniHomepage` (se necessario — il PatrociniStrip filtra già entries senza logo).
+
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 6** — Chi siamo + ospita + contatti + privacy/cookie
 - [ ] **Sessione 7** — Iubenda + Umami analytics + accessibilità WCAG AA

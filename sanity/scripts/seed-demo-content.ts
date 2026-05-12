@@ -37,6 +37,48 @@ async function upsert(doc: AnyDoc) {
   await client.createIfNotExists(doc);
 }
 
+/** Lista campi immagine/file da preservare quando si fa createOrReplace
+ *  su un singleton. Fix Hotfix 5: senza questo, il re-seed cancellava
+ *  le foto caricate via Studio o import script. */
+const PRESERVED_IMAGE_FIELDS = [
+  "fotoSfondo",
+  "heroFotoSfondo",
+  "storiaFotoSezione",
+  "scuolaMagiaFoto",
+  "formazioneHeroFotoSfondo",
+  "calendarioHeroFotoSfondo",
+  "patrociniHomepage", // array di object con logo (preserva tutto l'array)
+];
+
+/** createOrReplace che PRESERVA i campi image esistenti del documento.
+ *  Senza questo, ogni `npm run sanity:seed` cancella le foto caricate
+ *  da Edo in Studio o dallo script import-images-to-sanity. */
+async function createOrReplacePreservingImages(doc: AnyDoc): Promise<void> {
+  const existing = await client.fetch<Record<string, unknown> | null>(
+    `*[_id == $id][0]`,
+    { id: doc._id }
+  );
+  if (existing) {
+    const merged: AnyDoc = { ...doc };
+    for (const field of PRESERVED_IMAGE_FIELDS) {
+      // Preserva il campo esistente solo se il seed non lo specifica esplicitamente.
+      // (es. patrociniHomepage del seed sarebbe `undefined` o array vuoto → preserva esistente)
+      const seedHasField = field in doc && doc[field] != null;
+      const existingHasField =
+        existing[field] != null &&
+        (Array.isArray(existing[field])
+          ? (existing[field] as unknown[]).length > 0
+          : true);
+      if (!seedHasField && existingHasField) {
+        merged[field] = existing[field];
+      }
+    }
+    await client.createOrReplace(merged);
+  } else {
+    await client.createOrReplace(doc);
+  }
+}
+
 function ref(_ref: string) {
   return { _type: "reference" as const, _ref };
 }
@@ -883,9 +925,11 @@ async function main() {
   console.log(`Seeding demo content → project ${projectId}/${dataset}`);
 
   // 1. Singletons (createOrReplace per garantire stato fresco dei copy)
-  await client.createOrReplace(homepageHero);
+  //    Hotfix 5: preserva campi image (fotoSfondo, heroFotoSfondo, ...) per
+  //    non cancellare foto caricate via Studio o import script.
+  await createOrReplacePreservingImages(homepageHero);
   console.log("✓ homepageHero");
-  await client.createOrReplace(homepageCopy);
+  await createOrReplacePreservingImages(homepageCopy);
   console.log("✓ homepageCopy");
 
   // 2. Membri
@@ -955,19 +999,19 @@ async function main() {
   // ===== Sessione 4 — additions =====
 
   // 9. Singleton paginaSpettacoliCopy
-  await client.createOrReplace(paginaSpettacoliCopy);
+  await createOrReplacePreservingImages(paginaSpettacoliCopy);
   console.log("✓ paginaSpettacoliCopy");
 
   // 9b. Singleton paginaImaginariumCopy (Blocco 1)
-  await client.createOrReplace(paginaImaginariumCopy);
+  await createOrReplacePreservingImages(paginaImaginariumCopy);
   console.log("✓ paginaImaginariumCopy");
 
   // 9c. Singleton chi-siamo / contatti / ospita (Blocco 2)
-  await client.createOrReplace(paginaChiSiamoCopy);
+  await createOrReplacePreservingImages(paginaChiSiamoCopy);
   console.log("✓ paginaChiSiamoCopy");
-  await client.createOrReplace(paginaContattiCopy);
+  await createOrReplacePreservingImages(paginaContattiCopy);
   console.log("✓ paginaContattiCopy");
-  await client.createOrReplace(paginaOspitaCopy);
+  await createOrReplacePreservingImages(paginaOspitaCopy);
   console.log("✓ paginaOspitaCopy");
 
   // 10. Archivio: 7 nuovi document spettacolo (idempotenti)

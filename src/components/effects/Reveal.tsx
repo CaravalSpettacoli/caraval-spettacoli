@@ -29,9 +29,9 @@ export function Reveal({
    *  "left" (translateX -40 → 0), "right" (translateX +40 → 0). */
   direction?: RevealDirection;
   className?: string;
-  as?: "div" | "section" | "article";
+  as?: "div" | "section" | "article" | "ul" | "ol";
 }) {
-  const ref = useRef<HTMLDivElement | null>(null);
+  const ref = useRef<HTMLElement | null>(null);
   const [revealed, setRevealed] = useState(false);
 
   useEffect(() => {
@@ -85,9 +85,14 @@ export function Reveal({
         ? "reveal-right"
         : "";
 
+  // Ref forzato: il Tag è un union (div/section/article/ul/ol) → TS non riesce
+  // a derivare un singolo tipo Ref. Usiamo cast through unknown per evitare
+  // l'errore TS2322 senza disabilitare strict mode.
+  const refForTag = ref as unknown as React.LegacyRef<HTMLElement>;
+
   return (
     <Tag
-      ref={ref as React.Ref<HTMLDivElement>}
+      ref={refForTag as never}
       className={cn("reveal", directionClass, revealed && "revealed", className)}
     >
       {children}

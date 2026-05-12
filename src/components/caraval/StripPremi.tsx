@@ -1,5 +1,6 @@
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
+import { Reveal } from "@/components/effects/Reveal";
 
 export type PremioItem = {
   _id: string;
@@ -30,8 +31,8 @@ export function StripPremi({
               {heading ?? "Tre premi in quattro anni."}
             </h2>
           </div>
-          <ul
-            role="list"
+          <Reveal
+            as="ul"
             className="reveal-stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
           >
             {premi.map((p) => (
@@ -63,7 +64,7 @@ export function StripPremi({
                 )}
               </li>
             ))}
-          </ul>
+          </Reveal>
         </div>
       </Container>
     </Section>

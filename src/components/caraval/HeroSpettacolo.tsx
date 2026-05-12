@@ -9,14 +9,20 @@ export type HeroSpettacoloData = {
   sottotitolo?: string;
   categoria?: Categoria;
   annoCreazione?: number;
+  /** Foto orizzontale 16:9 dedicata alla hero scheda dettaglio. */
+  fotoHero?: { asset?: { _ref?: string }; alt?: string };
+  /** Cover verticale 4:5 usata in card anteprima. Fallback se fotoHero manca. */
   immagineCover?: { asset?: { _ref?: string }; alt?: string };
   premiAssociati?: Array<{ _id: string; anno?: number; nomePremio?: string }>;
 };
 
 export function HeroSpettacolo({ data }: { data: HeroSpettacoloData }) {
+  // Hotfix 5: priorità fotoHero (orizzontale 16:9) → fallback immagineCover.
+  // Prima la hero usava SOLO immagineCover stiracchiata in orizzontale.
+  const fotoSrc = data.fotoHero ?? data.immagineCover;
   const fotoUrl =
-    data.immagineCover?.asset?._ref &&
-    urlFor(data.immagineCover as Parameters<typeof urlFor>[0])
+    fotoSrc?.asset?._ref &&
+    urlFor(fotoSrc as Parameters<typeof urlFor>[0])
       .width(2400)
       .height(1400)
       .fit("crop")
@@ -32,7 +38,7 @@ export function HeroSpettacolo({ data }: { data: HeroSpettacoloData }) {
       {fotoUrl ? (
         <Image
           src={fotoUrl}
-          alt={data.immagineCover?.alt ?? data.titolo ?? ""}
+          alt={fotoSrc?.alt ?? data.titolo ?? ""}
           fill
           priority
           sizes="100vw"

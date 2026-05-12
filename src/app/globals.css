@@ -214,9 +214,11 @@ body {
   transform: translate(0, 0);
 }
 
-/* Stagger CSS-only: applica a un container (es. <ul>) la classe
-   `.reveal-stagger`. I figli ricevono fade-in con delay incrementale,
-   triggerato dal Reveal parent che diventa .revealed. */
+/* Stagger CSS-only: applica a un container con `<Reveal as="ul" className="reveal-stagger">`.
+   Il container è osservato da IntersectionObserver (via Reveal): quando entra in
+   viewport riceve `.revealed`. I figli si animano in stagger via :nth-child delay.
+   Hotfix 5: selettore self-applicato (.reveal-stagger.revealed >) invece di nested,
+   così funziona anche senza un Reveal parent di sezione. */
 .reveal-stagger > * {
   opacity: 0;
   transform: translateY(20px);
@@ -225,7 +227,7 @@ body {
     transform 700ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: opacity, transform;
 }
-.reveal.revealed .reveal-stagger > * {
+.reveal-stagger.revealed > * {
   opacity: 1;
   transform: translateY(0);
 }

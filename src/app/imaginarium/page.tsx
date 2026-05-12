@@ -30,7 +30,6 @@ import {
   PatrociniStrip,
   type PatrocinioItem,
 } from "@/components/caraval/PatrociniStrip";
-import { Reveal } from "@/components/effects/Reveal";
 
 export const revalidate = 60;
 
@@ -187,49 +186,37 @@ export default async function ImaginariumPage() {
         logoSrc="/imaginarium-logo.png"
         logoAlt="Imaginarium — Festival di Teatro Itinerante"
       />
-      <Reveal>
-        <CounterStrip
-          eyebrow={paginaCopy?.counterEyebrow ?? "IMAGINARIUM IN NUMERI"}
-          numeri={counterNumeri}
-          palette="imaginarium"
-        />
-      </Reveal>
-      <Reveal>
-        <VideoYoutube
-          url={
-            paginaCopy?.videoYoutubeUrl ??
-            "https://www.youtube.com/watch?v=KNRC35KjVeA"
-          }
-          eyebrow={paginaCopy?.videoEyebrow ?? "GUARDA"}
-          heading={paginaCopy?.videoHeading ?? "Imaginarium in due minuti"}
-          palette="imaginarium"
-        />
-      </Reveal>
-      <Reveal>
-        <ProgrammaCompleto
-          spettacoli={spettacoliCorrente}
-          heading={
-            edizioneCorrente?.anno
-              ? `Programma ${edizioneCorrente.anno}`
-              : "Programma"
-          }
-          palette="imaginarium"
-        />
-      </Reveal>
-      <Reveal>
-        <SponsorPartnerStrip data={edizioneCorrente} />
-      </Reveal>
+      <CounterStrip
+        eyebrow={paginaCopy?.counterEyebrow ?? "IMAGINARIUM IN NUMERI"}
+        numeri={counterNumeri}
+        palette="imaginarium"
+      />
+      <VideoYoutube
+        url={
+          paginaCopy?.videoYoutubeUrl ??
+          "https://www.youtube.com/watch?v=KNRC35KjVeA"
+        }
+        eyebrow={paginaCopy?.videoEyebrow ?? "GUARDA"}
+        heading={paginaCopy?.videoHeading ?? "Imaginarium in due minuti"}
+        palette="imaginarium"
+      />
+      <ProgrammaCompleto
+        spettacoli={spettacoliCorrente}
+        heading={
+          edizioneCorrente?.anno
+            ? `Programma ${edizioneCorrente.anno}`
+            : "Programma"
+        }
+        palette="imaginarium"
+      />
+      <SponsorPartnerStrip data={edizioneCorrente} />
       {/* Hotfix 4: patrocini spostati da homepage a /imaginarium */}
-      <Reveal>
-        <PatrociniStrip
-          patrocini={patrocini}
-          eyebrow="Con il sostegno di"
-          palette="light"
-        />
-      </Reveal>
-      <Reveal>
-        <EdizioniPassate edizioni={edizioniPassate} />
-      </Reveal>
+      <PatrociniStrip
+        patrocini={patrocini}
+        eyebrow="Con il sostegno di"
+        palette="light"
+      />
+      <EdizioniPassate edizioni={edizioniPassate} />
       <CtaFinale
         variant="dark"
         heading="Imaginarium è un progetto della comunità."

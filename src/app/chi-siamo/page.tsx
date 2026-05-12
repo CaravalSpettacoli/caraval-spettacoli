@@ -7,7 +7,6 @@ import { PremiSezione } from "@/components/caraval/PremiSezione";
 import { ScuolaMagiaBox } from "@/components/caraval/ScuolaMagiaBox";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
 import type { PremioItem } from "@/components/caraval/StripPremi";
-import { Reveal } from "@/components/effects/Reveal";
 
 type ChiSiamoCopy = {
   heroEyebrow?: string;
@@ -75,41 +74,33 @@ export default async function ChiSiamoPage() {
         altezza="compatto"
       />
 
-      <Reveal>
-        <SezioneStoria
-          eyebrow={copy.storiaEyebrow}
-          heading={copy.storiaHeading}
-          body={copy.storiaBody}
-          foto={copy.storiaFotoSezione}
-        />
-      </Reveal>
+      <SezioneStoria
+        eyebrow={copy.storiaEyebrow}
+        heading={copy.storiaHeading}
+        body={copy.storiaBody}
+        foto={copy.storiaFotoSezione}
+      />
 
-      <Reveal>
-        <MembriCarosello
-          eyebrow={copy.membriEyebrow ?? "LA COMPAGNIA"}
-          heading={copy.membriHeading ?? "Le persone di Caraval"}
-          intro={copy.membriIntro}
-          membri={membri}
-        />
-      </Reveal>
+      <MembriCarosello
+        eyebrow={copy.membriEyebrow ?? "LA COMPAGNIA"}
+        heading={copy.membriHeading ?? "Le persone di Caraval"}
+        intro={copy.membriIntro}
+        membri={membri}
+      />
 
-      <Reveal>
-        <PremiSezione
-          eyebrow={copy.premiEyebrow ?? "RICONOSCIMENTI"}
-          heading={copy.premiHeading ?? "I premi che abbiamo ricevuto"}
-          premi={premi}
-        />
-      </Reveal>
+      <PremiSezione
+        eyebrow={copy.premiEyebrow ?? "RICONOSCIMENTI"}
+        heading={copy.premiHeading ?? "I premi che abbiamo ricevuto"}
+        premi={premi}
+      />
 
-      <Reveal>
-        <ScuolaMagiaBox
-          eyebrow={copy.scuolaMagiaEyebrow}
-          heading={copy.scuolaMagiaHeading}
-          body={copy.scuolaMagiaBody}
-          url={copy.scuolaMagiaUrl}
-          foto={copy.scuolaMagiaFoto}
-        />
-      </Reveal>
+      <ScuolaMagiaBox
+        eyebrow={copy.scuolaMagiaEyebrow}
+        heading={copy.scuolaMagiaHeading}
+        body={copy.scuolaMagiaBody}
+        url={copy.scuolaMagiaUrl}
+        foto={copy.scuolaMagiaFoto}
+      />
 
       <CtaFinale
         variant="accent"

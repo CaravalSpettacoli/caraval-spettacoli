@@ -8,7 +8,6 @@ import { LaboratoriScuoleSection } from "@/components/caraval/LaboratoriScuoleSe
 import { HeroPagina } from "@/components/caraval/HeroPagina";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
 import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
-import { Reveal } from "@/components/effects/Reveal";
 
 export const revalidate = 60;
 
@@ -113,7 +112,6 @@ export default async function FormazionePage() {
       />
 
       {/* Sezione corsi */}
-      <Reveal as="section">
       <Section theme="dark" bgVariant="soft" glow="top-left">
         <Container>
           <div className="mb-10 flex flex-col items-start gap-4">
@@ -156,18 +154,15 @@ export default async function FormazionePage() {
           )}
         </Container>
       </Section>
-      </Reveal>
 
       {/* Sezione laboratori */}
-      <Reveal>
-        <LaboratoriScuoleSection
-          eyebrow={labEyebrow}
-          heading={labHeading}
-          body={labBody}
-          ctaTesto={labCtaTesto}
-          ctaHref={labCtaHref}
-        />
-      </Reveal>
+      <LaboratoriScuoleSection
+        eyebrow={labEyebrow}
+        heading={labHeading}
+        body={labBody}
+        ctaTesto={labCtaTesto}
+        ctaHref={labCtaHref}
+      />
 
       <CtaFinale
         variant="accent"

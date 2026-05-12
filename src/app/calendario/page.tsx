@@ -11,7 +11,6 @@ import {
 import { CalendarioFilter } from "@/components/caraval/CalendarioFilter";
 import { HeroPagina } from "@/components/caraval/HeroPagina";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
-import { Reveal } from "@/components/effects/Reveal";
 
 export const revalidate = 60;
 
@@ -100,7 +99,6 @@ export default async function CalendarioPage() {
       />
 
       {/* Lista eventi + filtri */}
-      <Reveal as="section">
       <Section theme="dark" bgVariant="soft">
         <Container>
           <CalendarioFilter
@@ -119,7 +117,6 @@ export default async function CalendarioPage() {
           )}
         </Container>
       </Section>
-      </Reveal>
 
       <CtaFinale
         variant="accent"

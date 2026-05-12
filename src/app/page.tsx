@@ -28,7 +28,6 @@ import { OfficinaTeaser } from "@/components/caraval/OfficinaTeaser";
 import { ContattiPrelude } from "@/components/caraval/ContattiPrelude";
 import { CounterStrip, type CounterItem } from "@/components/caraval/CounterStrip";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
-import { Reveal } from "@/components/effects/Reveal";
 
 type HomepageCopy = {
   premiHeading?: string;
@@ -147,46 +146,36 @@ export default async function HomePage() {
           altezza="full"
         />
       )}
-      <Reveal>
-        <StripPremi premi={data.premi} heading={data.copy?.premiHeading} />
-      </Reveal>
-      <Reveal>
-        <CounterStrip
-          eyebrow={data.copy?.numeriEyebrow ?? "I NUMERI"}
-          numeri={
-            data.copy?.numeriElenco && data.copy.numeriElenco.length > 0
-              ? data.copy.numeriElenco
-              : [
-                  { valore: "9", etichetta: "spettacoli" },
-                  { valore: "3", etichetta: "anime" },
-                  { valore: "6", etichetta: "anni" },
-                  { valore: "1", etichetta: "festival" },
-                ]
-          }
-          palette="default"
-        />
-      </Reveal>
-      <Reveal>
-        <ImaginariumPreview
-          edizione={data.edizioneCorrente}
-          spettacoli={data.spettacoliCorrente}
-          body={data.copy?.imaginariumPreviewBody}
-          ctaTesto={data.copy?.imaginariumPreviewCtaTesto}
-        />
-      </Reveal>
-      <Reveal>
-        <SpettacoliAccordionHomepage
-          spettacoli={data.repertorio}
-          eyebrow={data.copy?.repertorioEyebrow}
-          heading={data.copy?.repertorioHeading}
-          intro={data.copy?.repertorioIntro}
-          ctaTesto={data.copy?.repertorioCtaTesto}
-          ctaLink={data.copy?.repertorioCtaLink}
-        />
-      </Reveal>
-      <Reveal>
-        <OfficinaTeaser copy={data.copy} />
-      </Reveal>
+      <StripPremi premi={data.premi} heading={data.copy?.premiHeading} />
+      <CounterStrip
+        eyebrow={data.copy?.numeriEyebrow ?? "I NUMERI"}
+        numeri={
+          data.copy?.numeriElenco && data.copy.numeriElenco.length > 0
+            ? data.copy.numeriElenco
+            : [
+                { valore: "9", etichetta: "spettacoli" },
+                { valore: "3", etichetta: "anime" },
+                { valore: "6", etichetta: "anni" },
+                { valore: "1", etichetta: "festival" },
+              ]
+        }
+        palette="default"
+      />
+      <ImaginariumPreview
+        edizione={data.edizioneCorrente}
+        spettacoli={data.spettacoliCorrente}
+        body={data.copy?.imaginariumPreviewBody}
+        ctaTesto={data.copy?.imaginariumPreviewCtaTesto}
+      />
+      <SpettacoliAccordionHomepage
+        spettacoli={data.repertorio}
+        eyebrow={data.copy?.repertorioEyebrow}
+        heading={data.copy?.repertorioHeading}
+        intro={data.copy?.repertorioIntro}
+        ctaTesto={data.copy?.repertorioCtaTesto}
+        ctaLink={data.copy?.repertorioCtaLink}
+      />
+      <OfficinaTeaser copy={data.copy} />
       <CtaFinale
         variant="accent"
         heading={

@@ -139,7 +139,6 @@ export default async function ContattiPage() {
       />
 
       {/* Dove siamo + Contatti diretti — 2 colonne paritarie desktop, stack mobile */}
-      <Reveal as="section">
       <Section background="nero">
         <Container>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
@@ -190,31 +189,26 @@ export default async function ContattiPage() {
         </Container>
       </Section>
 
-      </Reveal>
-
       {/* Aree contatto */}
       {aree.length > 0 && (
-        <Reveal as="section">
-          <Section background="nero-soft">
-            <Container>
-              <ul
-                role="list"
-                className="reveal-stagger grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
-              >
-                {aree.map((a, i) => (
-                  <li key={`${a.icona}-${i}`}>
-                    <ContattiSezione area={a} fallback={fallbackContatti} />
-                  </li>
-                ))}
-              </ul>
-            </Container>
-          </Section>
-        </Reveal>
+        <Section background="nero-soft">
+          <Container>
+            <Reveal
+              as="ul"
+              className="reveal-stagger grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
+            >
+              {aree.map((a, i) => (
+                <li key={`${a.icona}-${i}`}>
+                  <ContattiSezione area={a} fallback={fallbackContatti} />
+                </li>
+              ))}
+            </Reveal>
+          </Container>
+        </Section>
       )}
 
       {/* Social */}
       {social.length > 0 && (
-        <Reveal as="section">
         <Section background="nero">
           <Container>
             <div className="text-center max-w-xl mx-auto">
@@ -249,7 +243,6 @@ export default async function ContattiPage() {
             </div>
           </Container>
         </Section>
-        </Reveal>
       )}
 
       <CtaFinale

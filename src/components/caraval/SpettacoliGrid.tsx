@@ -8,6 +8,7 @@ import { urlFor } from "@/../sanity/lib/image";
 import { CategoriaBadge } from "@/components/caraval/CategoriaBadge";
 import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
 import type { SpettacoloCardLargeData } from "@/components/caraval/SpettacoloCardLarge";
+import { Reveal } from "@/components/effects/Reveal";
 
 type Filtro = "tutti" | "prosa" | "fuoco" | "strada";
 
@@ -164,13 +165,13 @@ export function SpettacoliGrid({
           Nessuno spettacolo in questa categoria.
         </p>
       ) : (
-        <ul role="list" className="reveal-stagger border-t border-crema-faint/20">
+        <Reveal as="ul" className="reveal-stagger border-t border-crema-faint/20">
           {visibili.map((s, i) => (
             <li key={s._id}>
               <SpettacoloRow spettacolo={s} reverse={i % 2 === 1} />
             </li>
           ))}
-        </ul>
+        </Reveal>
       )}
     </>
   );

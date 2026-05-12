@@ -93,7 +93,7 @@ async function getData(slug: string) {
       `*[_type == "spettacolo" && slug.current == $slug][0]{
         _id, titolo, sottotitolo, slug, categoria, annoCreazione, regia,
         descrizioneNarrativa, gallery, trailerYoutube,
-        schedaTecnica, cast, citazioniStampa, immagineCover,
+        schedaTecnica, cast, citazioniStampa, immagineCover, fotoHero,
         prenotazione,
         "premiAssociati": premiAssociati[]->{ _id, anno, nomePremio },
         "referenteContatto": referenteContatto->{

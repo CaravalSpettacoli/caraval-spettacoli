@@ -4,6 +4,7 @@ import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
 import { urlFor } from "@/../sanity/lib/image";
 import { paletteToTheme } from "@/lib/theme-system";
 import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
+import { Reveal } from "@/components/effects/Reveal";
 
 export type SpettacoloImagItem = {
   _id: string;
@@ -133,7 +134,7 @@ export function ProgrammaCompleto({
           </div>
         )}
 
-        <div className="reveal-stagger space-y-20 md:space-y-28">
+        <Reveal className="reveal-stagger space-y-20 md:space-y-28">
           {spettacoli.map((s, idx) => {
             const reverse = idx % 2 === 1;
             const fotoUrl =
@@ -259,7 +260,7 @@ export function ProgrammaCompleto({
               </article>
             );
           })}
-        </div>
+        </Reveal>
       </Container>
     </section>
   );
