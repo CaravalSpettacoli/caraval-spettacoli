@@ -47,7 +47,7 @@ async function getEdizione(anno: string): Promise<{
     `*[_type == "spettacoloImaginarium" && edizioneRif->anno == $anno] | order(dataInizio asc){
       _id, titolo, dataInizio, linkCompagniaEsterna,
       compagnia { nome, urlSitoCompagnia, descrizioneCompagniaBreve },
-      descrizione, cast, locationSpecifica,
+      descrizione, descrizioneBreve, cast, locationSpecifica,
       "luogo": { "nome": luogo.nomeStruttura, "citta": luogo.citta },
       immagineCover
     }`,
@@ -72,7 +72,7 @@ export default async function EdizionePassataPage({
     .join("\n\n") || edizione.descrizioneBreve;
 
   return (
-    <div className="theme-imaginarium">
+    <div>
       <HeroPagina
         eyebrow={`Edizione ${edizione.anno}`}
         heading={`Imaginarium ${edizione.anno}`}

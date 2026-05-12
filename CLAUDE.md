@@ -589,6 +589,155 @@ Branch `feat/2-5a-sistemi-adattivi` da `main` post-merge Blocco 2.
   - `/contatti` `/calendario` `/formazione` `/spettacoli` → tutti dark ✓
 - Chrome MCP non disponibile in questa sessione → niente screenshot, verifica solo via curl.
 
+### ✅ Polish Definitivo (FATTO)
+Branch `feat/polish-definitivo` da `main` post-merge PR #8.
+
+**Mega-blocco che sostituisce i mini-blocchi 2.5a/b/c, risolve 14 feedback Edo.**
+
+**Task 1 — Fix sistemi adattivi (cursore + header):**
+- Chrome MCP non disponibile in sessione → niente diagnosi runtime con log. Procedo con fix robusti basati su analisi statica.
+- `CustomCursor`: aggiunto `recomputeNow()` sincrono basato su `getBoundingClientRect` (cerca sezione che contiene il centro del viewport), chiamato sia subito dopo setTimeout 50ms sia su scroll throttled via rAF. `lastThemeRef` previene setState ridondanti.
+- `Header`: stesso pattern. `recomputeTheme()` ora chiamato sincronamente all'inizio del useEffect (primo paint deterministico) + dentro setTimeout 50ms + su scroll. `lastThemeRef` guard.
+- IntersectionObserver mantenuto come trigger di aggiornamento ma rimosso il `rootMargin -40%` problematico: ora threshold normali + recompute via rect.
+
+**Task 2 — Palette uniformata + Section refactor:**
+- `theme-system.ts`: mappe invariate.
+- `Section.tsx`: aggiunte 2 prop opzionali:
+  - `theme?: SectionTheme` — override esplicito, ha priorità su `background` legacy.
+  - `bgVariant?: "base" | "soft"` — alternanza intra-pagina (`#0a0a0a` vs `#161616` su dark, `#f5e6d3` vs `#ebd9c0` su light).
+- Backward compat: `background` prop continua a funzionare come prima. Le pagine nuove usano `theme` + `bgVariant`.
+- Applicato `theme="dark" bgVariant="soft"` a: `/spettacoli` grid attiva, `/calendario` lista eventi, `/formazione` corsi.
+
+**Task 3 — `CtaFinale` uniforme:**
+- Refactor props: `variant: "dark" | "accent"` (era `"default" | "rosso"`), prop `sottotitolo` (era `body`), nuova prop `fotoSfondo` opzionale per variant dark con foto.
+- Default `variant="accent"`: tutte le CTA finali del sito sono rosso pieno (Edo confermato in tabella prompt §3.3).
+- **9 pagine** ora terminano con `<CtaFinale variant="accent">` uniforme:
+  - `/` — heading "Sei un Comune…" → /ospita (sostituisce OspitaTeaser)
+  - `/spettacoli` — "Ti interessa uno dei nostri spettacoli?" → /contatti
+  - `/spettacoli/[slug]` — "Vuoi portare questo spettacolo da te?" → mailto ingaggio
+  - `/imaginarium` — "Imaginarium è un progetto della comunità." → /
+  - `/calendario` — "Sei un Comune…" → /ospita (riuso copy Sanity)
+  - `/formazione` — "Vuoi iscriverti?" → mailto + tel
+  - `/chi-siamo` — "Vuoi conoscerci meglio?" → /spettacoli + /contatti
+  - `/contatti` — "Pronto a iniziare?" → mailto + tel
+  - `/ospita` — "Pronto a portare Caraval da te?" → mailto ingaggio
+- `OspitaTeaser` rimosso come usage in homepage (componente resta nel codebase, può essere riusato altrove).
+
+**Task 4 — Accordion homepage allineato:**
+- `SpettacoliAccordionHomepage.tsx`: `min-h-[4rem] md:min-h-[5rem]` sulle voci button → tutte allineate orizzontalmente tra colonne.
+
+**Task 5 — `CorsoCard` con CTA Contattaci:**
+- Aggiunto CTA testuale "Contattaci per informazioni →" che linka a `/contatti`. Stile = link uppercase tracked con freccia.
+- Prop `ctaLabel?: string` su `CorsoCardData` per override.
+- Campo Sanity `homepageCopy.corsoCardCtaLabel` (default "Contattaci per informazioni").
+- `/formazione` passa la label dal copy a tutti i CorsoCard.
+
+**Task 6 — `/chi-siamo` arricchita:**
+- Storia importata da caraval.it: 5 paragrafi corposi che raccontano la compagnia. Sostituiscono testo precedente più breve.
+- **Decisione mia**: "Dal 2016" come da sito attuale (la versione precedente diceva "dal 2020"). Edo verificherà con Vera.
+- `heroHeading="Una compagnia, tre anime, un festival"` (era "Da una piazza vuota a un festival").
+- `MembriGrid`: placeholder iniziali ("VR", "AR", "NP", "LS", "MR", "IC") con `font-display` size clamp 3-5rem invece di icona `User`. Sfondo `bg-rosso-base/15`. Coerente con il prompt §6.2.
+- Schema `paginaChiSiamoCopy` esteso con i nuovi defaults (storiaBody rows 12).
+- Seed aggiornato con storia importata.
+- Tutti i 6 membri restano popolati dal Blocco 2 (Vera, Alessio, Nicola, Lorenzo, Marco, Ilaria). Query GROQ `*[_type == "membro"]` fa fetch di tutti.
+
+**Task 7 — `/contatti` arricchita:**
+- Sezione "Sui social → Seguici" già esistente. Aggiunto `SOCIAL_FALLBACK` hardcoded con URL ufficiali (FB/IG/YT) come fallback se Sanity non ha socialLinks valorizzati. Stesso pattern del Footer.
+- URL aggiornati ai canali ufficiali completi (Facebook/Caraval-Spettacoli-101656231430635, Instagram/caravalspettacoli, YouTube/channel/UC-9aDMm5MfweZP7Weq881EA).
+- Telefono associativo `+39 379 1497805` + email `caravalspettacoli@gmail.com` già nelle 4 aree contatto (config seed Blocco 2). Verificati cliccabili.
+- Indirizzo "Via Borgo San Martino 8, 26029 Soncino (CR)" + P.IVA "01720800190" già dal singleton `impostazioniSito`.
+
+**Task 8 — Footer ristrutturato finale:**
+- Footer era già 4 colonne (Blocco 2). Aggiornato:
+  - URL social fallback completi (FB/IG/YT)
+  - `bg-nero-soft` (era `bg-nero-deep`) → coerente con palette §2.2
+  - `data-theme="dark"` esplicito per sistema adattivo
+
+**Task 9 — Schede spettacoli da caraval.it:**
+- WebFetch su 6 URL specifici (Romeo, Sogno, Servitore, Christmas Carol, Inferno, Miseria) → estrazione descrizione plain text.
+- **Romeo escluso**: già popolato dal PDF brochure in Sessione 4 (versione più ricca).
+- Patch idempotente con `setIfMissing` su `descrizioneNarrativa` dei 5 spettacoli rimanenti (Sogno, Servitore, Christmas Carol, Inferno, Miseria). Step 14 del seed.
+- Se Vera ha già editato in Studio, il seed NON sovrascrive (setIfMissing).
+
+**Decisioni autonome documentate:**
+1. **Chrome MCP non funzionante in sessione** → fix Task 1 basato su analisi statica + ridondanza (sincrono + IntersectionObserver + scroll). Annotato in PR.
+2. **Romeo storia da brochure mantenuta** invece di sovrascrivere con versione caraval.it più breve.
+3. **"Dal 2016" da sito attuale**, contraria al "dal 2020" precedente (decisione di Edo da verificare con Vera).
+4. **`setIfMissing` per descrizioni**: zero rischio di sovrascrivere edit Vera.
+5. **`CtaFinale.variant` default = "accent"**: tutte le CTA finali rosso pieno come da tabella prompt §3.3.
+6. **OspitaTeaser non eliminato**: resta nel codebase ma non più usato in homepage. Sostituito da CtaFinale.
+7. **Placeholder membri = iniziali Cinzel** invece di icona generica (prompt §6.2 esplicito).
+8. **bgVariant alternato a `/imaginarium`**: rispetto del prompt §2.2 (counter+programma+edizioni passate ora `light` con bgVariant alternato, NON più `accent`). Solo CTA finale resta accent.
+
+**Verifica:**
+- `npx tsc --noEmit` pulito · `npm run lint` pulito · `npm run build` pulito (24 rotte invariate).
+- HTML server-rendered verificato via curl: tutte le pagine principali hanno conteggi `data-theme` coerenti.
+- Chrome MCP non disponibile → niente screenshot allegati alla PR. Da verificare manualmente in preview Vercel.
+
+**Note bug residui:**
+- Task 1 fix è basato su analisi statica + ridondanza. Se Edo riscontra ancora "ogni tanto non coerente", servirà diagnosi runtime live (cosa impossibile in questa sessione per Chrome MCP down).
+- Programma Imaginarium con palette `imaginarium` (light) anziché `rosso` come prima: visivamente più chiaro, da validare con Edo nel preview.
+
+### ✅ Hotfix 1 — Palette Imaginarium + fix UX (FATTO)
+Continuation di `feat/polish-definitivo` (PR #9), commit aggiuntivo.
+
+**Problemi risolti (feedback Edo da preview PR #9):**
+
+**Task 1 — Theme palette rossa (revisione strutturale):**
+- `themeStyles.light.bg`: da `#f5e6d3` (crema) a `#a8174a` (rosso pieno). Palette inversa: sfondo rosso saturo, testi crema, accenti nero.
+- `themeStyles.accent.bg`: da `#a8174a` a `#8b0e3a` (rosso scuro) per dare distacco visivo da `light` quando una pagina rossa ha la sua CTA finale.
+- Nuova prop `cursorGlow` su tutti i temi: sincronizzata con `cursorColor`, contrasta con lo sfondo. `dark.cursorGlow = #a8174a`, `light.cursorGlow = #0a0a0a`, `accent.cursorGlow = #0a0a0a`.
+- `themeStyles.light.headerVariant`: da `light` a `dark` (su rosso saturo il testo crema legge meglio del nero).
+- `Section.tsx` aggiornato per usare style inline da `themeStyles` (single-source-of-truth) invece di classi Tailwind ad hoc — i nuovi colori non sono in tailwind.config.
+
+**Task 2 — Cursore sincronizzato + MutationObserver:**
+- `CustomCursor`: glow color ora derivato da `cursorGlow` (non più `trailColor`). Transition 250ms (era 220ms).
+- `MutationObserver` aggiunto: ri-applica `cursor: none` programmaticamente su tutti gli elementi interattivi (`a, button, [role="button"], [onclick], input, textarea, select, iframe, video, [draggable]`) quando il DOM cambia. Eccezioni per text input (caret style desiderato). Throttled via rAF.
+- `lastThemeRef` ref guard già presente da PR #8 (Polish Definitivo) — confermato.
+
+**Task 3 — Header scrim adattivo + fix glitch logo:**
+- Scrim adattivo: gradient nero `rgba(0,0,0,0.55)` su tema dark/accent, `rgba(0,0,0,0.35)` su tema light (rosso saturo, contrasta con testo crema senza serve scrim rosso).
+- Logo `<img>`: aggiunti `width={180}`, `height={48}` fissi + `loading="eager"` + `decoding="sync"` + `fetchPriority="high"` per evitare layout shift.
+- `<link rel="preload" as="image">` per entrambi i loghi (white + black) in `<head>` di `layout.tsx`. Risolve FOUC al refresh dove il logo nero veniva mostrato per qualche frame prima del bianco.
+
+**Task 4 — Counter Imaginarium animato:**
+- `CounterStrip` diventato Client Component (`"use client"`).
+- Nuovo `CounterNumber` interno: `IntersectionObserver` con threshold 0.4, rAF easing-out-cubic 1500ms, one-shot (`animatedRef` guard).
+- Gestisce stringhe complete: estrae numero (`2.500+` → 2500) + suffisso (`+`). Format `value.toLocaleString("it-IT")` per separatore punto migliaia.
+- Skip animazione se `prefers-reduced-motion: reduce`.
+- Palette `imaginarium` aggiornata a bg rosso `#a8174a` (era crema).
+
+**Task 5 — Card programma Imaginarium con descrizioni:**
+- Schema `spettacoloImaginarium` esteso con `descrizioneBreve` (text max 200 char).
+- Seed esteso: 6 spettacoli Imag 2026 con `descrizioneBreve` plausibile (Letizia, Romeo, James Brown, Mandragola, Matti, Modì).
+- Step 15 nuovo nel seed: patch idempotente `setIfMissing` su `descrizioneBreve` per i 6 doc esistenti.
+- `ProgrammaCompleto`: type esteso, query GROQ aggiornata, render fallback `descrizione lunga > descrizioneBreve > descrizioneCompagniaBreve > vuoto`.
+
+**Task 6 — CtaFinale variant="dark" per /imaginarium:**
+- Variant `dark` esistente, ma rinforzato per essere coerente con palette Hotfix 1.
+- `variant="accent"` ora usa `themeStyles.accent.bg = #8b0e3a` (era `bg-rosso-base` Tailwind = #a8174a).
+- `/imaginarium`: CTA finale cambiata da `variant="accent"` a `variant="dark"` per dare distacco visivo dal resto della pagina (rosso saturo). Ora la CTA è nero pieno.
+
+**Task 7 — Refactor componenti palette imaginarium:**
+- `HeroPagina` palette="imaginarium": bg rosso `#a8174a` inline, testi crema, CTA primaria nera (override `!bg-nero-base`). Filter sul logo PNG rimosso (il logo è già beige naturale, non serve trasformazione cromatica).
+- `VideoYoutube` palette="imaginarium": bg rosso inline, frame video bg nero (era bg-rosso-deep/10).
+- `ProgrammaCompleto`: entrambe le palette (imaginarium + rosso) ora convergono a bg `#a8174a` + testi crema. Variabile `isRosso` rimossa, codice semplificato.
+- `SponsorPartnerStrip`: bg `#8a1340` (light bgSoft per alternanza), testi crema, label uppercase crema/85.
+- `EdizioniPassate`: bg `#a8174a`, testi crema, card con border crema + bg `rosso-deep/30`. Prop `palette` ignorata ma mantenuta per back-compat.
+
+**Decisioni autonome documentate:**
+1. **Header variant `dark` su `/imaginarium`**: rosso saturo + testo crema = leggibile. Logo white usato (non black).
+2. **MutationObserver throttled via rAF**: evita overhead su DOM grandi.
+3. **CtaFinale variant="accent" cambiato colore** (`#a8174a → #8b0e3a`): non solo per `/imaginarium`. Tutte le altre pagine ora hanno CTA finale con rosso scuro distinguibile.
+4. **Filter su logo Imaginarium rimosso**: prima il filter trasformava il logo beige in rosso scuro per leggibilità su crema. Ora il bg è rosso saturo e il logo beige sta perfetto.
+5. **Counter `prefers-reduced-motion`**: salta direttamente al valore finale invece di animare. UX accessibile.
+6. **`ProgrammaCompleto` palette convergono**: entrambe ora producono rosso pieno con testi crema. La distinzione tra `imaginarium`/`rosso` non ha più senso semantico ma le 2 prop sono lasciate per back-compat dei call-site.
+7. **Sponsor strip bg `#8a1340` (bgSoft)** invece di `#a8174a` per alternanza visiva tra ProgrammaCompleto (rosso saturo) e Edizioni Passate (rosso saturo).
+
+**Limitazioni di sessione:**
+- Chrome MCP non disponibile → niente screenshot allegati al commit. Verifica HTML server-rendered via curl OK.
+- Hotfix sarà visibile sulla preview Vercel della PR #9 dopo push.
+
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 6** — Chi siamo + ospita + contatti + privacy/cookie
 - [ ] **Sessione 7** — Iubenda + Umami analytics + accessibilità WCAG AA

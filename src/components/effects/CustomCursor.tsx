@@ -5,24 +5,24 @@ import { usePathname } from "next/navigation";
 import { themeStyles, type SectionTheme } from "@/lib/theme-system";
 
 /**
- * Cursore decorativo adattivo (Mini-blocco 2.5a):
+ * Cursore decorativo adattivo:
  *  - Punto + trail che inseguono il mouse via rAF.
- *  - Colore di entrambi è derivato dal tema della sezione "centrale" del
- *    viewport, osservata via IntersectionObserver su `section[data-theme]`.
+ *  - Colore derivato dal tema della sezione che contiene il centro del viewport.
  *  - Si disattiva su touch / prefers-reduced-motion.
  *  - Nasconde il cursore di sistema via CSS in globals.css.
+ *  - Re-init a ogni cambio pathname (App Router client-side nav).
+ *  - Nasconde dot/trail su hover iframe (YouTube embed).
  *
- *  Anti-regressione:
- *  - Niente React state per il click → no re-render → React non sovrascrive
- *    mai la `transform` applicata da rAF.
- *  - Posizione + scale combinate in UN'UNICA stringa `transform`.
- *  - Il `data-custom-cursor` non viene rimosso al cleanup: stabilità durante
- *    HMR / React Strict Mode in dev.
- *  - Transition CSS solo su `background-color` (no transform).
+ *  Strategia anti-race:
+ *  - `recomputeNow()` sincrono basato su getBoundingClientRect → primo paint
+ *    sempre corretto, non dipende dal primo callback IntersectionObserver.
+ *  - Observer + scroll listener entrambi attivi: ridondanza intenzionale.
+ *  - `lastThemeRef` previene setState ridondanti che causano re-render inutili.
  */
 export function CustomCursor() {
   const dotRef = useRef<HTMLDivElement | null>(null);
   const trailRef = useRef<HTMLDivElement | null>(null);
+  const lastThemeRef = useRef<SectionTheme>("dark");
   const [enabled, setEnabled] = useState(false);
   const [currentTheme, setCurrentTheme] = useState<SectionTheme>("dark");
   const pathname = usePathname();
@@ -74,48 +74,81 @@ export function CustomCursor() {
     window.addEventListener("mouseup", onUp);
     frame = requestAnimationFrame(tick);
 
-    // Setup observer + iframe listeners dopo un piccolo delay: al cambio di
-    // pathname (App Router client-side nav), il DOM della nuova pagina può
-    // non essere ancora montato quando il useEffect ri-gira.
+    /** Recompute sincrono: cerca la sezione che contiene il centro del viewport. */
+    const recomputeNow = () => {
+      const sections = document.querySelectorAll<HTMLElement>(
+        "section[data-theme]"
+      );
+      const center = window.innerHeight / 2;
+      let active: SectionTheme = "dark";
+      for (let i = 0; i < sections.length; i++) {
+        const r = sections[i].getBoundingClientRect();
+        if (r.top <= center && r.bottom >= center) {
+          const t = sections[i].getAttribute("data-theme") as SectionTheme | null;
+          if (t === "dark" || t === "light" || t === "accent") {
+            active = t;
+          }
+          break;
+        }
+      }
+      if (active !== lastThemeRef.current) {
+        lastThemeRef.current = active;
+        setCurrentTheme(active);
+      }
+    };
+
     let observer: IntersectionObserver | null = null;
+    let mutationObserver: MutationObserver | null = null;
     const iframeBindings: Array<{
       el: HTMLIFrameElement;
       enter: () => void;
       leave: () => void;
     }> = [];
 
-    const setupTimer = window.setTimeout(() => {
-      observer = new IntersectionObserver(
-        (entries) => {
-          const visible = entries.filter((e) => e.isIntersecting);
-          if (visible.length === 0) return;
-          const mostVisible = visible.reduce((max, cur) =>
-            cur.intersectionRatio > max.intersectionRatio ? cur : max
-          );
-          const theme = mostVisible.target.getAttribute(
-            "data-theme"
-          ) as SectionTheme | null;
-          if (
-            theme &&
-            (theme === "dark" || theme === "light" || theme === "accent")
-          ) {
-            setCurrentTheme(theme);
-          }
-        },
-        {
-          rootMargin: "-40% 0px -40% 0px",
-          threshold: [0, 0.25, 0.5, 0.75, 1],
-        }
+    /** Forza cursor:none su tutti gli elementi interattivi.
+     *  Necessario perché user-agent styles + utility-classes Tailwind possono
+     *  vincere sul `cursor: none !important` in globals.css per alcuni elementi. */
+    const TEXT_INPUT_SELECTOR =
+      'input[type="text"], input[type="email"], input[type="tel"], input[type="search"], input[type="url"], input[type="password"], textarea, [contenteditable="true"]';
+    const applyNoCursor = () => {
+      const interactives = document.querySelectorAll<HTMLElement>(
+        'a, button, [role="button"], [onclick], input, textarea, select, iframe, video, [draggable]'
       );
+      for (let i = 0; i < interactives.length; i++) {
+        const el = interactives[i];
+        if (el.matches(TEXT_INPUT_SELECTOR)) continue;
+        if (el.style.cursor !== "none") el.style.cursor = "none";
+      }
+    };
+
+    // MutationObserver: ri-applica `cursor: none` quando il DOM cambia
+    // (nuovi link/button aggiunti, route change, ecc.). Throttled via rAF.
+    let mutationRaf = 0;
+    const scheduleApply = () => {
+      if (mutationRaf) return;
+      mutationRaf = requestAnimationFrame(() => {
+        applyNoCursor();
+        mutationRaf = 0;
+      });
+    };
+
+    // Setup dopo un piccolo delay: al cambio pathname il DOM può non essere
+    // ancora montato quando l'useEffect ri-runna.
+    const setupTimer = window.setTimeout(() => {
+      // Recompute sincrono immediato come primo paint deterministico.
+      recomputeNow();
+
+      observer = new IntersectionObserver(() => recomputeNow(), {
+        rootMargin: "0px",
+        threshold: [0, 0.25, 0.5, 0.75, 1],
+      });
 
       const sections = document.querySelectorAll<HTMLElement>(
         "section[data-theme]"
       );
       sections.forEach((s) => observer!.observe(s));
 
-      // Iframe leak fix: nasconde il dot/trail quando il mouse entra in un
-      // iframe (es. YouTube embed). Il cursor:none del parent non si propaga
-      // al documento dell'iframe.
+      // Iframe leak fix: cursor:none non si propaga ai documenti iframe.
       const iframes = document.querySelectorAll<HTMLIFrameElement>("iframe");
       iframes.forEach((iframe) => {
         const enter = () => {
@@ -130,15 +163,38 @@ export function CustomCursor() {
         iframe.addEventListener("mouseleave", leave);
         iframeBindings.push({ el: iframe, enter, leave });
       });
+
+      // Applica subito + osserva DOM per future aggiunte di elementi interattivi.
+      applyNoCursor();
+      mutationObserver = new MutationObserver(scheduleApply);
+      mutationObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
     }, 50);
+
+    // Scroll fallback: recompute sincrono su ogni scroll. Throttled via rAF.
+    let scrollRaf = 0;
+    const onScroll = () => {
+      if (scrollRaf) return;
+      scrollRaf = requestAnimationFrame(() => {
+        recomputeNow();
+        scrollRaf = 0;
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
 
     return () => {
       window.clearTimeout(setupTimer);
       window.removeEventListener("mousemove", onMove);
       window.removeEventListener("mousedown", onDown);
       window.removeEventListener("mouseup", onUp);
+      window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(frame);
+      if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      if (mutationRaf) cancelAnimationFrame(mutationRaf);
       if (observer) observer.disconnect();
+      if (mutationObserver) mutationObserver.disconnect();
       iframeBindings.forEach(({ el, enter, leave }) => {
         el.removeEventListener("mouseenter", enter);
         el.removeEventListener("mouseleave", leave);
@@ -148,11 +204,10 @@ export function CustomCursor() {
 
   if (!enabled) return null;
 
-  const { cursorColor, trailColor } = themeStyles[currentTheme];
+  const { cursorColor, cursorGlow } = themeStyles[currentTheme];
 
   return (
     <>
-      {/* Trail morbido: glow sfocato che segue il dot con lerp 0.18 */}
       <div
         ref={trailRef}
         aria-hidden="true"
@@ -164,11 +219,10 @@ export function CustomCursor() {
           filter: "blur(5px)",
           transform: "translate3d(-9999px, -9999px, 0)",
           willChange: "transform",
-          backgroundColor: trailColor,
-          transition: "background-color 220ms ease-out",
+          backgroundColor: cursorGlow,
+          transition: "background-color 250ms ease-out",
         }}
       />
-      {/* Dot principale: transform via rAF; backgroundColor da stato. */}
       <div
         ref={dotRef}
         aria-hidden="true"
@@ -179,7 +233,7 @@ export function CustomCursor() {
           transform: "translate3d(-9999px, -9999px, 0) scale(1)",
           willChange: "transform",
           backgroundColor: cursorColor,
-          transition: "background-color 220ms ease-out",
+          transition: "background-color 250ms ease-out",
         }}
       />
     </>

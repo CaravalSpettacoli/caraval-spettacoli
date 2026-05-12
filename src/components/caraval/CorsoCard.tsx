@@ -54,6 +54,8 @@ export type CorsoCardData = {
     telefonoPubblico?: string;
     emailPubblica?: string;
   };
+  /** Override label CTA "Contattaci per informazioni" → /contatti. */
+  ctaLabel?: string;
 };
 
 export function CorsoCard({
@@ -157,6 +159,13 @@ export function CorsoCard({
           </div>
         </div>
       )}
+
+      <Link
+        href="/contatti"
+        className="mt-2 inline-flex items-center gap-2 text-body-s text-crema-base underline underline-offset-4 decoration-rosso-base hover:text-rosso-hover transition-colors uppercase-tracked"
+      >
+        {corso.ctaLabel ?? "Contattaci per informazioni"} →
+      </Link>
     </article>
   );
 }

@@ -11,28 +11,58 @@ export type SectionTheme = "dark" | "light" | "accent";
 export type HeaderVariant = "dark" | "light";
 
 export type ThemeStyle = {
-  /** Colore del dot del cursore (deve CONTRASTARE con lo sfondo della sezione). */
+  /** Colore di sfondo principale della sezione. */
+  bg: string;
+  /** Variante più scura/morbida per alternanza intra-pagina. */
+  bgSoft: string;
+  /** Colore testo principale. */
+  text: string;
+  /** Colore accent (link, eyebrow, hover). */
+  accent: string;
+  /** Colore del dot del cursore (CONTRASTA con lo sfondo). */
   cursorColor: string;
-  /** Colore del trail/glow del cursore. */
-  trailColor: string;
-  /** Variante grafica dell'header (testo + logo bianchi vs neri). */
+  /** Colore del glow/trail del cursore (sincronizzato col dot, contrasta anche lui). */
+  cursorGlow: string;
+  /** Variante grafica dell'header (testo + logo chiaro/scuro). */
   headerVariant: HeaderVariant;
 };
 
+/**
+ * Palette (Hotfix 1 — Polish Definitivo):
+ * - dark: sito principale (nero pieno, accenti cremisi)
+ * - light: SOLO /imaginarium (rosso pieno cremisi, accenti nero, palette inversa)
+ *          NB: il nome "light" è semantico (palette inversa) non descrittivo del colore.
+ * - accent: CTA finale rosso scuro (#8b0e3a, più scuro del light per dare distacco
+ *           visivo quando una pagina light ha la sua CTA finale)
+ */
 export const themeStyles: Record<SectionTheme, ThemeStyle> = {
   dark: {
+    bg: "#0a0a0a",
+    bgSoft: "#161616",
+    text: "#f5e6d3",
+    accent: "#a8174a",
     cursorColor: "#f5e6d3", // crema, visibile su nero
-    trailColor: "#a8174a", // rosso brand
+    cursorGlow: "#a8174a", // cremisi, visibile su nero
     headerVariant: "dark",
   },
   light: {
-    cursorColor: "#5c0d2a", // rosso scuro, visibile su crema
-    trailColor: "#a8174a", // rosso brand
-    headerVariant: "light",
+    // ROSSO PIENO (era crema). Palette inversa: rosso saturo, testi crema, accenti nero.
+    bg: "#a8174a",
+    bgSoft: "#8a1340",
+    text: "#f5e6d3",
+    accent: "#0a0a0a",
+    cursorColor: "#f5e6d3", // crema, visibile su rosso
+    cursorGlow: "#0a0a0a", // nero, visibile su rosso (il rosso si fonderebbe)
+    headerVariant: "dark", // header dark anche su rosso: testo crema contrasta bene
   },
   accent: {
-    cursorColor: "#f5e6d3", // crema, visibile su rosso pieno
-    trailColor: "#0a0a0a", // nero (il rosso si fonderebbe con lo sfondo rosso)
+    // Rosso più scuro del light per dare distacco visivo su pagina rossa.
+    bg: "#8b0e3a",
+    bgSoft: "#7a0a32",
+    text: "#f5e6d3",
+    accent: "#f5e6d3",
+    cursorColor: "#f5e6d3",
+    cursorGlow: "#0a0a0a",
     headerVariant: "dark",
   },
 };
@@ -59,6 +89,6 @@ export const sectionBgToTheme: Record<
 
 /** Map dalla prop `variant` di CtaFinale al tema sezione. */
 export const ctaVariantToTheme = {
-  default: "dark",
-  rosso: "accent",
+  dark: "dark",
+  accent: "accent",
 } as const satisfies Record<string, SectionTheme>;

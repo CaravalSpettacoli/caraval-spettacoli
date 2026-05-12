@@ -111,9 +111,9 @@ export default async function OspitaPage() {
 
       <CtaFinale
         heading={copy.ctaFinaleHeading ?? "Pronto a portare Caraval da te?"}
-        body={copy.ctaFinaleBody}
+        sottotitolo={copy.ctaFinaleBody}
         ctaPrimaria={{ label: "Scrivici", href: ctaHref }}
-        variant="rosso"
+        variant="accent"
       />
     </>
   );

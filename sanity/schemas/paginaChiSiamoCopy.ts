@@ -21,20 +21,20 @@ export default defineType({
       type: "text",
       rows: 2,
       group: "hero",
-      initialValue: "Compagnia teatrale di Soncino, dal 2020.",
+      initialValue: "Compagnia teatrale di Soncino, dal 2016.",
     }),
 
     // Storia
     defineField({ name: "storiaEyebrow", title: "Storia — Eyebrow", type: "string", group: "storia", initialValue: "LA NOSTRA STORIA" }),
-    defineField({ name: "storiaHeading", title: "Storia — Heading", type: "string", group: "storia", initialValue: "Da una piazza vuota a un festival" }),
+    defineField({ name: "storiaHeading", title: "Storia — Heading", type: "string", group: "storia", initialValue: "Una compagnia, tre anime, un festival" }),
     defineField({
       name: "storiaBody",
       title: "Storia — Body",
       type: "text",
-      rows: 8,
+      rows: 12,
       group: "storia",
       initialValue:
-        "Caraval nasce nel 2020 a Soncino, da un gruppo di amici che voleva fare teatro nei luoghi della propria infanzia. Le prime prove in un cortile, i primi spettacoli in piazza. Poi la prosa, il fuoco, la strada — tre lingue diverse per parlare allo stesso pubblico, fatto di vicini di casa e turisti, bambini e nonni.\n\nIn sei anni siamo passati da una piazza vuota a un festival che ogni estate trasforma i borghi della media pianura in palcoscenico: Imaginarium. Cinque edizioni, decine di compagnie ospitate, migliaia di spettatori. Un'idea semplice — fare teatro dove la comunità vive — che ogni anno trova nuove forme.",
+        "Caraval Spettacoli è una compagnia teatrale che vanta tra le sue fila attori esperti, giocolieri e scenografi in grado di realizzare spettacoli di successo. Dal 2016 portiamo sul palco diverse storie e personaggi, passando dalla commedia dell'arte al teatro di prosa fino a quello più sperimentale, senza mai dimenticare l'arte di strada che è dove affondano le nostre radici.\n\nMettiamo in scena sia i testi di grandi autori teatrali che copioni nuovi scritti da noi, per il teatro ma non solo. Infatti, abbiamo partecipato a festival e feste locali in cui i committenti ci hanno chiesto di scrivere uno spettacolo ad hoc, che parlasse di una tematica particolare o rappresentasse un evento storico importante per il luogo.\n\nIl teatro non è quindi l'unico spazio in cui operiamo: piazze, dimore storiche e castelli sono spesso cornici delle nostre performance. Curiamo ogni dettaglio occupandoci anche della scenografia e dei costumi, creati su misura per ogni spettacolo, così da rendere qualsiasi location il palcoscenico perfetto.\n\nDa diversi anni partecipiamo al Carnevale di Venezia, portando per le calle della città costumi realizzati interamente da noi e figure fantastiche frutto della nostra creatività.\n\n#inviaggioconcaraval è il nostro hashtag ufficiale, perché amiamo viaggiare sia sulla strada che sulle ali della fantasia.",
     }),
     defineField({
       name: "storiaFotoSezione",

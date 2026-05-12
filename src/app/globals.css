@@ -164,15 +164,11 @@ body {
   }
 }
 
-/* === Tema Imaginarium (palette inversa) === */
-.theme-imaginarium {
-  background: var(--color-crema-base);
-  color: var(--color-nero-base);
-}
-.theme-imaginarium ::selection {
-  background: var(--color-rosso-deep);
-  color: var(--color-crema-base);
-}
+/* === Tema Imaginarium ===
+   (Hotfix 1: wrapper rimosso. La palette Imaginarium ora è rosso saturo
+   #a8174a applicato direttamente sulle sezioni via tema `light`. Le regole
+   cascade su `color: nero` sovrascrivevano `text-crema-base` dei figli e
+   causavano testi neri su hero Imaginarium.) */
 
 /* Pulse rosso: 3 cicli con delay iniziale, hover riavvia 1 ciclo.
    Sostituisce il vecchio "infinite" che faceva sembrare i CTA un errore. */

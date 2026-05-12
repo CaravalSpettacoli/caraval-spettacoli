@@ -9,32 +9,32 @@ export type EdizionePassataItem = {
 
 export function EdizioniPassate({
   edizioni,
-  palette = "default",
 }: {
   edizioni: EdizionePassataItem[] | null;
+  /** Prop legacy mantenuta solo per back-compat call-site; ignorata (Hotfix 1). */
   palette?: "default" | "rosso";
 }) {
   if (!edizioni || edizioni.length === 0) return null;
-  const isRosso = palette === "rosso";
-  const sectionBg = isRosso
-    ? "bg-rosso-base text-crema-base"
-    : "bg-crema-bright text-nero-base border-t border-rosso-deep/20";
-  const headingCol = isRosso ? "text-crema-bright" : "text-rosso-deep";
-  const cardCls = isRosso
-    ? "border border-crema-base/30 hover:border-crema-base bg-rosso-deep/30"
-    : "border border-rosso-deep/30 hover:border-rosso-deep bg-crema-base";
-  const annoCol = isRosso ? "text-crema-bright" : "text-rosso-deep";
-  const titoloCol = isRosso ? "text-crema-bright" : "text-nero-base";
-  const bodyCol = isRosso ? "text-crema-base/85" : "text-nero-base/75";
-  const linkCol = isRosso
-    ? "text-crema-base hover:text-crema-bright"
-    : "text-rosso-deep hover:text-rosso-base";
+  // Hotfix 1: palette light = rosso pieno con bgSoft per alternanza.
+  // Entrambe le palette (default e rosso) ora convergono al rosso su Imaginarium.
+  const inlineBg = "#a8174a"; // bg rosso saturo
+  const sectionBg = "text-crema-base border-t border-crema-base/20";
+  const headingCol = "text-crema-bright";
+  const cardCls =
+    "border border-crema-base/30 hover:border-crema-base bg-rosso-deep/30";
+  const annoCol = "text-crema-bright";
+  const titoloCol = "text-crema-bright";
+  const bodyCol = "text-crema-base/85";
+  const linkCol = "text-crema-base hover:text-crema-bright";
 
   return (
     <section
-      data-theme={isRosso ? "accent" : "light"}
+      data-theme="light"
       className={sectionBg}
-      style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
+      style={{
+        backgroundColor: inlineBg,
+        paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
+      }}
     >
       <Container>
         <h2 className={`text-center font-display text-display-m ${headingCol}`}>

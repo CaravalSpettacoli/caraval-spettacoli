@@ -29,6 +29,7 @@ import {
 } from "@/components/caraval/SezionePrenotazione";
 import { SpettacoliCorrelati } from "@/components/caraval/SpettacoliCorrelati";
 import type { SpettacoloCardLargeData } from "@/components/caraval/SpettacoloCardLarge";
+import { CtaFinale } from "@/components/caraval/CtaFinale";
 
 export const revalidate = 60;
 
@@ -138,6 +139,20 @@ export default async function SchedaSpettacolo({
         fallbackContatti={fallbackContatti}
       />
       <SpettacoliCorrelati correlati={spettacolo.correlati ?? null} />
+      <CtaFinale
+        variant="accent"
+        heading="Vuoi portare questo spettacolo da te?"
+        sottotitolo="Caraval può venire ovunque."
+        ctaPrimaria={{
+          label: "Scrivici",
+          href: `mailto:${
+            fallbackContatti?.email ?? "caravalspettacoli@gmail.com"
+          }?subject=${encodeURIComponent(
+            `Ingaggio ${spettacolo.titolo ?? "spettacolo"}`
+          )}`,
+        }}
+        ctaSecondaria={{ label: "Vedi altri spettacoli", href: "/spettacoli" }}
+      />
     </>
   );
 }

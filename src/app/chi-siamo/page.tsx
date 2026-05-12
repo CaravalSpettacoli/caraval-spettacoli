@@ -64,7 +64,7 @@ export default async function ChiSiamoPage() {
         eyebrow={copy.heroEyebrow ?? "CHI SIAMO"}
         heading={copy.heroHeading ?? "Caraval Spettacoli"}
         sottotitolo={
-          copy.heroSottotitolo ?? "Compagnia teatrale di Soncino, dal 2020."
+          copy.heroSottotitolo ?? "Compagnia teatrale di Soncino, dal 2016."
         }
         palette="default"
         altezza="compatto"
@@ -99,7 +99,9 @@ export default async function ChiSiamoPage() {
       />
 
       <CtaFinale
+        variant="accent"
         heading="Vuoi conoscerci meglio?"
+        sottotitolo="Spettacoli, formazione, eventi: parliamoci."
         ctaPrimaria={{ label: "Vedi i nostri spettacoli", href: "/spettacoli" }}
         ctaSecondaria={{ label: "Contattaci", href: "/contatti" }}
       />

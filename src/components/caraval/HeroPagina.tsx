@@ -48,27 +48,27 @@ export function HeroPagina({
       .fit("crop")
       .url();
 
-  const bgClass = isImag
-    ? "bg-crema-base"
-    : "bg-nero-deep";
+  // Hotfix 1: palette imaginarium = rosso pieno #a8174a (era crema invertita).
+  const bgInlineStyle = isImag
+    ? { backgroundColor: "#a8174a" }
+    : {};
+  const bgClass = isImag ? "" : "bg-nero-deep";
   const eyebrowClass = isImag
-    ? "text-rosso-deep/80"
+    ? "text-crema-base/80"
     : "text-rosso-base/90";
-  const headingClass = isImag
-    ? "text-rosso-deep"
-    : "text-crema-base";
+  const headingClass = "text-crema-base";
   const sottotitoloClass = isImag
-    ? "text-nero-base/85"
+    ? "text-crema-base/85"
     : "text-crema-base/85";
   const ctaSecLinkClass = isImag
-    ? "text-rosso-deep hover:text-rosso-base decoration-rosso-deep"
+    ? "text-crema-base hover:text-crema-bright decoration-crema-base"
     : "text-crema-base hover:text-crema-bright decoration-rosso-base";
 
   return (
     <section
       data-theme={paletteToTheme[palette]}
       className={`relative w-full overflow-hidden flex items-center ${bgClass}`}
-      style={{ minHeight: isFull ? "100vh" : "60vh" }}
+      style={{ minHeight: isFull ? "100vh" : "60vh", ...bgInlineStyle }}
     >
       {fotoUrl && (
         <>
@@ -80,13 +80,11 @@ export function HeroPagina({
             sizes="100vw"
             className="object-cover"
           />
+          {/* Overlay scuro su entrambe le palette: il testo crema sopra foto
+              ha bisogno di overlay scuro per leggibilità. */}
           <div
             aria-hidden
-            className={
-              isImag
-                ? "absolute inset-0 bg-gradient-to-t from-crema-base/80 via-crema-base/40 to-crema-base/10"
-                : "absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20"
-            }
+            className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20"
           />
         </>
       )}
@@ -112,10 +110,8 @@ export function HeroPagina({
                     maxWidth: isFull
                       ? "min(720px, 90vw)"
                       : "min(520px, 80vw)",
-                    filter:
-                      isImag && !fotoUrl
-                        ? "brightness(0.18) sepia(1) hue-rotate(-25deg) saturate(6)"
-                        : undefined,
+                    // Hotfix 1: niente filter per palette imaginarium. Il logo
+                    // PNG è già crema/beige, perfetto su rosso saturo.
                   }}
                 />
                 <span className="sr-only">{heading}</span>
@@ -153,7 +149,7 @@ export function HeroPagina({
                     rel={ctaPrimaria.esterno ? "noopener noreferrer" : undefined}
                     className={
                       isImag
-                        ? "!bg-rosso-deep hover:!bg-rosso-base"
+                        ? "!bg-nero-base !text-crema-base hover:!bg-nero-soft"
                         : ""
                     }
                   >

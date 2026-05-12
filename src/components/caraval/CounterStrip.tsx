@@ -1,3 +1,6 @@
+"use client";
+
+import { useEffect, useRef, useState } from "react";
 import { Container } from "@/components/ui/Container";
 import { paletteToTheme } from "@/lib/theme-system";
 
@@ -7,6 +10,81 @@ export interface CounterStripProps {
   eyebrow?: string;
   numeri: CounterItem[];
   palette?: "default" | "imaginarium" | "rosso";
+}
+
+/**
+ * Anima un numero da 0 al valore target quando entra in viewport.
+ * Gestisce stringhe come "2.500+", "100", "3" preservando suffisso (+/-).
+ * One-shot: si attiva solo la prima volta che entra in vista.
+ */
+function CounterNumber({
+  target,
+  duration = 1500,
+  className,
+  style,
+}: {
+  target: string;
+  duration?: number;
+  className?: string;
+  style?: React.CSSProperties;
+}) {
+  // Estrai numero e suffisso dal target (es. "2.500+" → 2500 + "+")
+  const targetNum = parseInt(String(target).replace(/[^0-9]/g, ""), 10) || 0;
+  const suffix = String(target).match(/[^0-9.\s]+$/)?.[0] ?? "";
+
+  const ref = useRef<HTMLSpanElement | null>(null);
+  const animatedRef = useRef(false);
+  const [value, setValue] = useState(0);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    const reduced = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
+    if (reduced) {
+      // Niente animazione: salta direttamente al valore finale.
+      setValue(targetNum);
+      animatedRef.current = true;
+      return;
+    }
+
+    const el = ref.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && !animatedRef.current) {
+          animatedRef.current = true;
+          const startTime = performance.now();
+          const tick = (now: number) => {
+            const elapsed = now - startTime;
+            const progress = Math.min(elapsed / duration, 1);
+            // Easing: ease-out cubic
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setValue(Math.floor(targetNum * eased));
+            if (progress < 1) {
+              requestAnimationFrame(tick);
+            } else {
+              setValue(targetNum);
+            }
+          };
+          requestAnimationFrame(tick);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.4 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [targetNum, duration]);
+
+  return (
+    <span ref={ref} className={className} style={style}>
+      {value.toLocaleString("it-IT")}
+      {suffix}
+    </span>
+  );
 }
 
 export function CounterStrip({
@@ -19,16 +97,19 @@ export function CounterStrip({
   const config = (() => {
     switch (palette) {
       case "imaginarium":
+        // Hotfix 1: palette light = rosso pieno (era crema invertita).
         return {
-          bg: "bg-crema-base text-nero-base",
-          eyebrowCol: "text-rosso-deep/80",
-          valoreCol: "text-rosso-deep",
-          etichettaCol: "text-nero-base/65",
-          sepCol: "bg-rosso-deep/15",
+          bg: "text-crema-base",
+          inlineBg: "#a8174a",
+          eyebrowCol: "text-crema-base/80",
+          valoreCol: "text-crema-bright",
+          etichettaCol: "text-crema-base/85",
+          sepCol: "bg-crema-base/30",
         };
       case "rosso":
         return {
           bg: "bg-rosso-base text-crema-base",
+          inlineBg: undefined,
           eyebrowCol: "text-crema-base/80",
           valoreCol: "text-crema-bright",
           etichettaCol: "text-crema-base/85",
@@ -37,6 +118,7 @@ export function CounterStrip({
       default:
         return {
           bg: "bg-nero-base text-crema-base",
+          inlineBg: undefined,
           eyebrowCol: "text-rosso-base/90",
           valoreCol: "text-rosso-hover",
           etichettaCol: "text-crema-base/80",
@@ -44,13 +126,16 @@ export function CounterStrip({
         };
     }
   })();
-  const { bg, eyebrowCol, valoreCol, etichettaCol, sepCol } = config;
+  const { bg, inlineBg, eyebrowCol, valoreCol, etichettaCol, sepCol } = config;
 
   return (
     <section
       data-theme={paletteToTheme[palette]}
       className={`relative ${bg}`}
-      style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
+      style={{
+        paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
+        ...(inlineBg ? { backgroundColor: inlineBg } : {}),
+      }}
     >
       <Container>
         {eyebrow && (
@@ -65,19 +150,15 @@ export function CounterStrip({
           role="list"
         >
           {numeri.map((n, i) => (
-            <li
-              key={`${n.etichetta}-${i}`}
-              className="text-center relative"
-            >
-              <span
+            <li key={`${n.etichetta}-${i}`} className="text-center relative">
+              <CounterNumber
+                target={n.valore}
                 className={`block font-display leading-none ${valoreCol}`}
                 style={{
                   fontSize: "clamp(3rem, 7vw, 5rem)",
                   letterSpacing: "0.01em",
                 }}
-              >
-                {n.valore}
-              </span>
+              />
               <span
                 className={`mt-3 block text-caption uppercase-tracked ${etichettaCol}`}
               >

@@ -7,6 +7,7 @@ import {
   ContattiSezione,
   type AreaContatto,
 } from "@/components/caraval/ContattiSezione";
+import { CtaFinale } from "@/components/caraval/CtaFinale";
 
 type ContattiCopy = {
   heroEyebrow?: string;
@@ -82,14 +83,36 @@ async function getData() {
   return { copy: copy ?? {}, impostazioni: impostazioni ?? {} };
 }
 
+/** Fallback social ufficiali. Stesso pattern del Footer per garantire render
+ *  decente anche se Sanity non ha socialLinks configurati. */
+const SOCIAL_FALLBACK: Array<{
+  piattaforma: "instagram" | "facebook" | "youtube" | "tiktok";
+  url: string;
+  mostraInFooter?: boolean;
+}> = [
+  {
+    piattaforma: "facebook",
+    url: "https://www.facebook.com/Caraval-Spettacoli-101656231430635/",
+  },
+  {
+    piattaforma: "instagram",
+    url: "https://www.instagram.com/caravalspettacoli/",
+  },
+  {
+    piattaforma: "youtube",
+    url: "https://www.youtube.com/channel/UC-9aDMm5MfweZP7Weq881EA",
+  },
+];
+
 export default async function ContattiPage() {
   const { copy, impostazioni } = await getData();
   const dati = impostazioni.datiAssociazione ?? {};
   const fallbackContatti = impostazioni.contattiPubblici ?? {};
   const aree = copy.aree ?? [];
-  const social = (impostazioni.socialLinks ?? []).filter(
+  const socialLive = (impostazioni.socialLinks ?? []).filter(
     (s) => s.url && s.mostraInFooter !== false
   );
+  const social = socialLive.length > 0 ? socialLive : SOCIAL_FALLBACK;
 
   const indirizzo = [
     dati.indirizzo,
@@ -184,6 +207,24 @@ export default async function ContattiPage() {
           </Container>
         </Section>
       )}
+
+      <CtaFinale
+        variant="accent"
+        heading="Pronto a iniziare?"
+        sottotitolo="Scrivici. Ti rispondiamo entro 24 ore."
+        ctaPrimaria={{
+          label: "Manda una mail",
+          href: `mailto:${fallbackContatti.email ?? "caravalspettacoli@gmail.com"}`,
+        }}
+        ctaSecondaria={
+          fallbackContatti.telefono
+            ? {
+                label: "Chiama",
+                href: `tel:${fallbackContatti.telefono.replace(/\s+/g, "")}`,
+              }
+            : undefined
+        }
+      />
     </>
   );
 }
