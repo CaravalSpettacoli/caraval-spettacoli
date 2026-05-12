@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { Button } from "@/components/ui/Button";
 import { urlFor } from "@/../sanity/lib/image";
+import { themeStyles } from "@/lib/theme-system";
 
 type CTA = { label: string; href: string; esterno?: boolean };
 
@@ -42,17 +43,20 @@ export function CtaFinale({
           .url()
       : null;
 
-  const bg = isAccent
-    ? "bg-rosso-base text-crema-base"
-    : "bg-nero-base text-crema-base";
+  // Hotfix 1: variant accent ora usa themeStyles.accent.bg = #8b0e3a
+  // (rosso scuro, distinto dal #a8174a di light/Imaginarium).
+  const accentBg = themeStyles.accent.bg;
   const eyebrowCol = isAccent ? "text-crema-base/80" : "text-rosso-base/90";
   const sottotitoloCol = isAccent ? "text-crema-base/90" : "text-crema-muted";
 
   return (
     <section
       data-theme={isAccent ? "accent" : "dark"}
-      className={`relative overflow-hidden ${bg}`}
-      style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
+      className="relative overflow-hidden text-crema-base"
+      style={{
+        backgroundColor: isAccent ? accentBg : "#0a0a0a",
+        paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
+      }}
     >
       {fotoUrl && (
         <>

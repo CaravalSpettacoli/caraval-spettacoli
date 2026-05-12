@@ -98,11 +98,39 @@ export function CustomCursor() {
     };
 
     let observer: IntersectionObserver | null = null;
+    let mutationObserver: MutationObserver | null = null;
     const iframeBindings: Array<{
       el: HTMLIFrameElement;
       enter: () => void;
       leave: () => void;
     }> = [];
+
+    /** Forza cursor:none su tutti gli elementi interattivi.
+     *  Necessario perché user-agent styles + utility-classes Tailwind possono
+     *  vincere sul `cursor: none !important` in globals.css per alcuni elementi. */
+    const TEXT_INPUT_SELECTOR =
+      'input[type="text"], input[type="email"], input[type="tel"], input[type="search"], input[type="url"], input[type="password"], textarea, [contenteditable="true"]';
+    const applyNoCursor = () => {
+      const interactives = document.querySelectorAll<HTMLElement>(
+        'a, button, [role="button"], [onclick], input, textarea, select, iframe, video, [draggable]'
+      );
+      for (let i = 0; i < interactives.length; i++) {
+        const el = interactives[i];
+        if (el.matches(TEXT_INPUT_SELECTOR)) continue;
+        if (el.style.cursor !== "none") el.style.cursor = "none";
+      }
+    };
+
+    // MutationObserver: ri-applica `cursor: none` quando il DOM cambia
+    // (nuovi link/button aggiunti, route change, ecc.). Throttled via rAF.
+    let mutationRaf = 0;
+    const scheduleApply = () => {
+      if (mutationRaf) return;
+      mutationRaf = requestAnimationFrame(() => {
+        applyNoCursor();
+        mutationRaf = 0;
+      });
+    };
 
     // Setup dopo un piccolo delay: al cambio pathname il DOM può non essere
     // ancora montato quando l'useEffect ri-runna.
@@ -135,6 +163,14 @@ export function CustomCursor() {
         iframe.addEventListener("mouseleave", leave);
         iframeBindings.push({ el: iframe, enter, leave });
       });
+
+      // Applica subito + osserva DOM per future aggiunte di elementi interattivi.
+      applyNoCursor();
+      mutationObserver = new MutationObserver(scheduleApply);
+      mutationObserver.observe(document.body, {
+        childList: true,
+        subtree: true,
+      });
     }, 50);
 
     // Scroll fallback: recompute sincrono su ogni scroll. Throttled via rAF.
@@ -156,7 +192,9 @@ export function CustomCursor() {
       window.removeEventListener("scroll", onScroll);
       cancelAnimationFrame(frame);
       if (scrollRaf) cancelAnimationFrame(scrollRaf);
+      if (mutationRaf) cancelAnimationFrame(mutationRaf);
       if (observer) observer.disconnect();
+      if (mutationObserver) mutationObserver.disconnect();
       iframeBindings.forEach(({ el, enter, leave }) => {
         el.removeEventListener("mouseenter", enter);
         el.removeEventListener("mouseleave", leave);
@@ -166,7 +204,7 @@ export function CustomCursor() {
 
   if (!enabled) return null;
 
-  const { cursorColor, trailColor } = themeStyles[currentTheme];
+  const { cursorColor, cursorGlow } = themeStyles[currentTheme];
 
   return (
     <>
@@ -181,8 +219,8 @@ export function CustomCursor() {
           filter: "blur(5px)",
           transform: "translate3d(-9999px, -9999px, 0)",
           willChange: "transform",
-          backgroundColor: trailColor,
-          transition: "background-color 220ms ease-out",
+          backgroundColor: cursorGlow,
+          transition: "background-color 250ms ease-out",
         }}
       />
       <div
@@ -195,7 +233,7 @@ export function CustomCursor() {
           transform: "translate3d(-9999px, -9999px, 0) scale(1)",
           willChange: "transform",
           backgroundColor: cursorColor,
-          transition: "background-color 220ms ease-out",
+          transition: "background-color 250ms ease-out",
         }}
       />
     </>

@@ -584,6 +584,7 @@ type SpettacoloImagSeed = {
   compagnia: string;
   eCaraval?: boolean;
   eOfficina?: boolean;
+  descrizioneBreve?: string;
 };
 
 const spettacoliImag2026: SpettacoloImagSeed[] = [
@@ -592,6 +593,8 @@ const spettacoliImag2026: SpettacoloImagSeed[] = [
     data: "2026-06-04T21:00:00",
     titolo: "Letizia va alla guerra",
     compagnia: "Teatro degli Incamminati",
+    descrizioneBreve:
+      "Storia di una giovane donna nel cuore di un conflitto. Drammaturgia originale per la scena.",
   },
   {
     _id: "imag-2026-romeo",
@@ -599,6 +602,8 @@ const spettacoliImag2026: SpettacoloImagSeed[] = [
     titolo: "Romeo + Giulietta",
     compagnia: "Caraval Spettacoli",
     eCaraval: true,
+    descrizioneBreve:
+      "La rilettura cruda di Shakespeare ambientata all'Inferno: due personaggi-diavoli trovano un baule e un copione. Il gioco diventa tragedia.",
   },
   {
     _id: "imag-2026-james-brown",
@@ -606,12 +611,16 @@ const spettacoliImag2026: SpettacoloImagSeed[] = [
     titolo: "James Brown si metteva i bigodini",
     compagnia: "Officina Caraval",
     eOfficina: true,
+    descrizioneBreve:
+      "Lo spettacolo finale degli allievi adulti dell'Officina Teatrale Caraval. Una commedia che gioca con identità e maschere.",
   },
   {
     _id: "imag-2026-mandragola",
     data: "2026-06-12T21:00:00",
     titolo: "La Mandragola",
     compagnia: "Stivalaccio Teatro",
+    descrizioneBreve:
+      "Il classico di Machiavelli rivisitato con la cifra stilistica del teatro di strada e le maschere della Commedia dell'Arte.",
   },
   {
     _id: "imag-2026-matti",
@@ -619,12 +628,16 @@ const spettacoliImag2026: SpettacoloImagSeed[] = [
     titolo: "Matti da slegare",
     compagnia: "Officina Caraval",
     eOfficina: true,
+    descrizioneBreve:
+      "Spettacolo finale dell'Officina Teatrale Caraval. Una riflessione collettiva su normalità e libertà.",
   },
   {
     _id: "imag-2026-modi",
     data: "2026-06-18T21:00:00",
     titolo: "Modì",
     compagnia: "Cantibhakta",
+    descrizioneBreve:
+      "La vita di Amedeo Modigliani raccontata attraverso il teatro fisico e la danza. Un omaggio all'artista maledetto.",
   },
 ];
 
@@ -642,6 +655,7 @@ function spettacoloImagDoc(s: SpettacoloImagSeed): AnyDoc {
       eOfficina: !!s.eOfficina,
     },
     dataInizio: s.data,
+    ...(s.descrizioneBreve ? { descrizioneBreve: s.descrizioneBreve } : {}),
   };
 }
 
@@ -978,6 +992,18 @@ async function main() {
       .setIfMissing({ descrizioneNarrativa: blocks })
       .commit();
     console.log(`✓ patch: ${id}.descrizioneNarrativa (da caraval.it)`);
+  }
+
+  // 15. Patch descrizioniBreve sui 6 spettacoli Imaginarium 2026 (Hotfix 1).
+  //     `upsert` di step 7 non aggiorna document esistenti → serve patch esplicita.
+  //     setIfMissing → non sovrascrive se Vera ha editato in Studio.
+  for (const s of spettacoliImag2026) {
+    if (!s.descrizioneBreve) continue;
+    await client
+      .patch(s._id)
+      .setIfMissing({ descrizioneBreve: s.descrizioneBreve })
+      .commit();
+    console.log(`✓ patch: ${s._id}.descrizioneBreve`);
   }
 
   console.log("\n✅ Seed completato.");

@@ -15,6 +15,8 @@ export type SpettacoloImagItem = {
   };
   linkCompagniaEsterna?: string;
   immagineCover?: { asset?: { _ref?: string }; alt?: string };
+  /** Descrizione breve 1-2 righe per card programma (Hotfix 1). */
+  descrizioneBreve?: string;
   descrizione?: Array<{ children?: Array<{ text?: string }> }>;
   cast?: string;
   locationSpecifica?: string;
@@ -64,28 +66,33 @@ export function ProgrammaCompleto({
   heading?: string;
   palette?: "imaginarium" | "rosso";
 }) {
-  const isRosso = palette === "rosso";
-  const bg = isRosso ? "bg-rosso-base text-crema-base" : "bg-crema-base text-nero-base";
-  const eyebrowCol = isRosso ? "text-crema-base/80" : "text-rosso-deep/80";
-  const headingCol = isRosso ? "text-crema-bright" : "text-rosso-deep";
-  const dataCol = isRosso ? "text-crema-bright" : "text-rosso-deep";
-  const titoloCol = isRosso ? "text-crema-bright" : "text-nero-base";
-  const compagniaCol = isRosso ? "text-crema-base/80" : "text-nero-base/75";
-  const compagniaUnderline = isRosso
-    ? "decoration-crema-base/40 hover:text-crema-bright"
-    : "decoration-rosso-deep/40 hover:text-rosso-deep";
-  const descrCol = isRosso ? "text-crema-base/85" : "text-nero-base/85";
-  const dlLabelCol = isRosso ? "text-crema-base/75" : "text-rosso-deep/80";
-  const dlValueCol = isRosso ? "text-crema-bright" : "text-nero-base";
-  const fotoBorder = isRosso ? "border-crema-base/20" : "border-rosso-deep/20";
-  const datasubCol = isRosso ? "text-crema-base/65" : "text-nero-base/60";
+  // Hotfix 1: entrambe le palette (imaginarium/rosso) ora hanno bg rosso saturo
+  // con testi crema. palette="imaginarium" usa #a8174a (rosso brand),
+  // palette="rosso" usa #a8174a anche, prima distinte erano crema/rosso.
+  const inlineBg = "#a8174a";
+  const bg = "text-crema-base";
+  const eyebrowCol = "text-crema-base/80";
+  const headingCol = "text-crema-bright";
+  const dataCol = "text-crema-bright";
+  const titoloCol = "text-crema-bright";
+  const compagniaCol = "text-crema-base/80";
+  const compagniaUnderline =
+    "decoration-crema-base/40 hover:text-crema-bright";
+  const descrCol = "text-crema-base/85";
+  const dlLabelCol = "text-crema-base/75";
+  const dlValueCol = "text-crema-bright";
+  const fotoBorder = "border-crema-base/20";
+  const datasubCol = "text-crema-base/65";
 
   if (!spettacoli || spettacoli.length === 0) {
     return (
       <section
         data-theme={paletteToTheme[palette]}
         className={bg}
-        style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
+        style={{
+          backgroundColor: inlineBg,
+          paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
+        }}
       >
         <Container>
           <p className="text-center text-body-l opacity-70 italic">
@@ -101,7 +108,10 @@ export function ProgrammaCompleto({
     <section
       data-theme={paletteToTheme[palette]}
       className={bg}
-      style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
+      style={{
+        backgroundColor: inlineBg,
+        paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
+      }}
     >
       <Container>
         {heading && (
@@ -128,7 +138,9 @@ export function ProgrammaCompleto({
             const linkCompagnia =
               s.linkCompagniaEsterna ?? s.compagnia?.urlSitoCompagnia;
             const data = dataParts(s.dataInizio);
-            const descrizione = blocksToText(s.descrizione);
+            // Priorità: descrizione lunga (PortableText) > descrizioneBreve > descrizione compagnia.
+            const descrizione =
+              blocksToText(s.descrizione) || s.descrizioneBreve || "";
             const luogoStr = locationLabel(s);
 
             return (

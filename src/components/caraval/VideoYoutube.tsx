@@ -36,15 +36,18 @@ export function VideoYoutube({
   const config = (() => {
     switch (palette) {
       case "imaginarium":
+        // Hotfix 1: rosso pieno (era crema invertita).
         return {
-          bg: "bg-crema-base text-nero-base",
-          eyebrowCol: "text-rosso-deep/80",
-          headingCol: "text-rosso-deep",
-          frameBg: "bg-rosso-deep/10",
+          bg: "text-crema-base",
+          inlineBg: "#a8174a",
+          eyebrowCol: "text-crema-base/80",
+          headingCol: "text-crema-bright",
+          frameBg: "bg-nero-base",
         };
       case "rosso":
         return {
           bg: "bg-rosso-base text-crema-base",
+          inlineBg: undefined,
           eyebrowCol: "text-crema-base/80",
           headingCol: "text-crema-bright",
           frameBg: "bg-rosso-deep",
@@ -52,19 +55,23 @@ export function VideoYoutube({
       default:
         return {
           bg: "bg-nero-base text-crema-base",
+          inlineBg: undefined,
           eyebrowCol: "text-rosso-base/90",
           headingCol: "text-crema-base",
           frameBg: "bg-nero-deep",
         };
     }
   })();
-  const { bg, eyebrowCol, headingCol, frameBg } = config;
+  const { bg, inlineBg, eyebrowCol, headingCol, frameBg } = config;
 
   return (
     <section
       data-theme={paletteToTheme[palette]}
       className={bg}
-      style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
+      style={{
+        paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
+        ...(inlineBg ? { backgroundColor: inlineBg } : {}),
+      }}
     >
       <Container width="narrow">
         {(eyebrow || heading) && (

@@ -118,22 +118,30 @@ export function Header() {
     };
   }, [open]);
 
-  // Scrim sottile in cima quando non scrollato — garantisce leggibilità
-  // anche su foto sfondo o gradient inattesi.
-  const scrimClass = scrolled
-    ? ""
-    : variant === "light"
-      ? "bg-gradient-to-b from-crema-base/70 to-transparent"
-      : "bg-gradient-to-b from-black/55 to-transparent";
+  // Scrim adattivo (Hotfix 1): garantisce leggibilità delle voci menu
+  // anche quando l'header passa sopra sezioni di colore inaspettato.
+  // - currentTheme=dark → scrim nero (already coerente)
+  // - currentTheme=light → scrim rosso scuro (light = #a8174a rosso pieno)
+  // - currentTheme=accent → scrim nero (anche se accent è rosso scuro, lo scrim
+  //   nero dà più contrasto con testo crema)
+  const scrimStyle: React.CSSProperties = scrolled
+    ? {}
+    : {
+        background:
+          currentTheme === "light"
+            ? "linear-gradient(to bottom, rgba(0,0,0,0.35) 0%, transparent 100%)"
+            : "linear-gradient(to bottom, rgba(0,0,0,0.55) 0%, transparent 100%)",
+      };
 
-  // Backdrop blur con bg coerente al tema corrente (su scroll mostra dark
-  // perché `dark` include `scrolled`).
+  // Backdrop blur con bg coerente al tema corrente (su scroll forziamo dark =
+  // nero semi-trasparente — backdrop blur nero è la scelta UX coerente).
   const backdropClass = scrolled
     ? "bg-nero-base/85 backdrop-blur-md border-b border-crema-faint/40"
-    : scrimClass;
+    : "";
 
   return (
     <header
+      style={scrimStyle}
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-base ease-cinema",
         backdropClass
@@ -157,6 +165,11 @@ export function Header() {
             <img
               src="/caraval-logo-white.png"
               alt=""
+              width={180}
+              height={48}
+              loading="eager"
+              decoding="sync"
+              fetchPriority="high"
               className="absolute inset-0 w-full h-full object-contain object-left"
               style={{
                 opacity: dark ? 1 : 0,
@@ -170,6 +183,11 @@ export function Header() {
             <img
               src="/caraval-logo-black.png"
               alt=""
+              width={180}
+              height={48}
+              loading="eager"
+              decoding="sync"
+              fetchPriority="high"
               className="absolute inset-0 w-full h-full object-contain object-left"
               style={{
                 opacity: dark ? 0 : 1,

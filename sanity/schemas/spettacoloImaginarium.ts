@@ -77,8 +77,15 @@ export default defineType({
       type: "string",
     }),
     defineField({
+      name: "descrizioneBreve",
+      title: "Descrizione breve (max 200 caratteri, 1-2 righe per card programma)",
+      type: "text",
+      rows: 2,
+      validation: (r) => r.max(200),
+    }),
+    defineField({
       name: "descrizione",
-      title: "Descrizione",
+      title: "Descrizione lunga",
       type: "array",
       of: [{ type: "block" }],
     }),

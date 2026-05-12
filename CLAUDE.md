@@ -678,6 +678,66 @@ Branch `feat/polish-definitivo` da `main` post-merge PR #8.
 - Task 1 fix è basato su analisi statica + ridondanza. Se Edo riscontra ancora "ogni tanto non coerente", servirà diagnosi runtime live (cosa impossibile in questa sessione per Chrome MCP down).
 - Programma Imaginarium con palette `imaginarium` (light) anziché `rosso` come prima: visivamente più chiaro, da validare con Edo nel preview.
 
+### ✅ Hotfix 1 — Palette Imaginarium + fix UX (FATTO)
+Continuation di `feat/polish-definitivo` (PR #9), commit aggiuntivo.
+
+**Problemi risolti (feedback Edo da preview PR #9):**
+
+**Task 1 — Theme palette rossa (revisione strutturale):**
+- `themeStyles.light.bg`: da `#f5e6d3` (crema) a `#a8174a` (rosso pieno). Palette inversa: sfondo rosso saturo, testi crema, accenti nero.
+- `themeStyles.accent.bg`: da `#a8174a` a `#8b0e3a` (rosso scuro) per dare distacco visivo da `light` quando una pagina rossa ha la sua CTA finale.
+- Nuova prop `cursorGlow` su tutti i temi: sincronizzata con `cursorColor`, contrasta con lo sfondo. `dark.cursorGlow = #a8174a`, `light.cursorGlow = #0a0a0a`, `accent.cursorGlow = #0a0a0a`.
+- `themeStyles.light.headerVariant`: da `light` a `dark` (su rosso saturo il testo crema legge meglio del nero).
+- `Section.tsx` aggiornato per usare style inline da `themeStyles` (single-source-of-truth) invece di classi Tailwind ad hoc — i nuovi colori non sono in tailwind.config.
+
+**Task 2 — Cursore sincronizzato + MutationObserver:**
+- `CustomCursor`: glow color ora derivato da `cursorGlow` (non più `trailColor`). Transition 250ms (era 220ms).
+- `MutationObserver` aggiunto: ri-applica `cursor: none` programmaticamente su tutti gli elementi interattivi (`a, button, [role="button"], [onclick], input, textarea, select, iframe, video, [draggable]`) quando il DOM cambia. Eccezioni per text input (caret style desiderato). Throttled via rAF.
+- `lastThemeRef` ref guard già presente da PR #8 (Polish Definitivo) — confermato.
+
+**Task 3 — Header scrim adattivo + fix glitch logo:**
+- Scrim adattivo: gradient nero `rgba(0,0,0,0.55)` su tema dark/accent, `rgba(0,0,0,0.35)` su tema light (rosso saturo, contrasta con testo crema senza serve scrim rosso).
+- Logo `<img>`: aggiunti `width={180}`, `height={48}` fissi + `loading="eager"` + `decoding="sync"` + `fetchPriority="high"` per evitare layout shift.
+- `<link rel="preload" as="image">` per entrambi i loghi (white + black) in `<head>` di `layout.tsx`. Risolve FOUC al refresh dove il logo nero veniva mostrato per qualche frame prima del bianco.
+
+**Task 4 — Counter Imaginarium animato:**
+- `CounterStrip` diventato Client Component (`"use client"`).
+- Nuovo `CounterNumber` interno: `IntersectionObserver` con threshold 0.4, rAF easing-out-cubic 1500ms, one-shot (`animatedRef` guard).
+- Gestisce stringhe complete: estrae numero (`2.500+` → 2500) + suffisso (`+`). Format `value.toLocaleString("it-IT")` per separatore punto migliaia.
+- Skip animazione se `prefers-reduced-motion: reduce`.
+- Palette `imaginarium` aggiornata a bg rosso `#a8174a` (era crema).
+
+**Task 5 — Card programma Imaginarium con descrizioni:**
+- Schema `spettacoloImaginarium` esteso con `descrizioneBreve` (text max 200 char).
+- Seed esteso: 6 spettacoli Imag 2026 con `descrizioneBreve` plausibile (Letizia, Romeo, James Brown, Mandragola, Matti, Modì).
+- Step 15 nuovo nel seed: patch idempotente `setIfMissing` su `descrizioneBreve` per i 6 doc esistenti.
+- `ProgrammaCompleto`: type esteso, query GROQ aggiornata, render fallback `descrizione lunga > descrizioneBreve > descrizioneCompagniaBreve > vuoto`.
+
+**Task 6 — CtaFinale variant="dark" per /imaginarium:**
+- Variant `dark` esistente, ma rinforzato per essere coerente con palette Hotfix 1.
+- `variant="accent"` ora usa `themeStyles.accent.bg = #8b0e3a` (era `bg-rosso-base` Tailwind = #a8174a).
+- `/imaginarium`: CTA finale cambiata da `variant="accent"` a `variant="dark"` per dare distacco visivo dal resto della pagina (rosso saturo). Ora la CTA è nero pieno.
+
+**Task 7 — Refactor componenti palette imaginarium:**
+- `HeroPagina` palette="imaginarium": bg rosso `#a8174a` inline, testi crema, CTA primaria nera (override `!bg-nero-base`). Filter sul logo PNG rimosso (il logo è già beige naturale, non serve trasformazione cromatica).
+- `VideoYoutube` palette="imaginarium": bg rosso inline, frame video bg nero (era bg-rosso-deep/10).
+- `ProgrammaCompleto`: entrambe le palette (imaginarium + rosso) ora convergono a bg `#a8174a` + testi crema. Variabile `isRosso` rimossa, codice semplificato.
+- `SponsorPartnerStrip`: bg `#8a1340` (light bgSoft per alternanza), testi crema, label uppercase crema/85.
+- `EdizioniPassate`: bg `#a8174a`, testi crema, card con border crema + bg `rosso-deep/30`. Prop `palette` ignorata ma mantenuta per back-compat.
+
+**Decisioni autonome documentate:**
+1. **Header variant `dark` su `/imaginarium`**: rosso saturo + testo crema = leggibile. Logo white usato (non black).
+2. **MutationObserver throttled via rAF**: evita overhead su DOM grandi.
+3. **CtaFinale variant="accent" cambiato colore** (`#a8174a → #8b0e3a`): non solo per `/imaginarium`. Tutte le altre pagine ora hanno CTA finale con rosso scuro distinguibile.
+4. **Filter su logo Imaginarium rimosso**: prima il filter trasformava il logo beige in rosso scuro per leggibilità su crema. Ora il bg è rosso saturo e il logo beige sta perfetto.
+5. **Counter `prefers-reduced-motion`**: salta direttamente al valore finale invece di animare. UX accessibile.
+6. **`ProgrammaCompleto` palette convergono**: entrambe ora producono rosso pieno con testi crema. La distinzione tra `imaginarium`/`rosso` non ha più senso semantico ma le 2 prop sono lasciate per back-compat dei call-site.
+7. **Sponsor strip bg `#8a1340` (bgSoft)** invece di `#a8174a` per alternanza visiva tra ProgrammaCompleto (rosso saturo) e Edizioni Passate (rosso saturo).
+
+**Limitazioni di sessione:**
+- Chrome MCP non disponibile → niente screenshot allegati al commit. Verifica HTML server-rendered via curl OK.
+- Hotfix sarà visibile sulla preview Vercel della PR #9 dopo push.
+
 ### ⏳ Da fare nelle prossime sessioni
 - [ ] **Sessione 6** — Chi siamo + ospita + contatti + privacy/cookie
 - [ ] **Sessione 7** — Iubenda + Umami analytics + accessibilità WCAG AA

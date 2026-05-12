@@ -1,6 +1,10 @@
 import type { HTMLAttributes, ReactNode } from "react";
 import { cn } from "@/lib/cn";
-import { sectionBgToTheme, type SectionTheme } from "@/lib/theme-system";
+import {
+  sectionBgToTheme,
+  themeStyles,
+  type SectionTheme,
+} from "@/lib/theme-system";
 
 type Background = "nero" | "nero-soft" | "crema" | "transparent";
 type BgVariant = "base" | "soft";
@@ -23,18 +27,19 @@ const bgs: Record<Background, string> = {
   transparent: "bg-transparent",
 };
 
-/** Background class derivata da theme + bgVariant. */
-function themeBgClass(theme: SectionTheme, bgVariant: BgVariant): string {
-  if (theme === "accent") return "bg-rosso-base text-crema-base";
-  if (theme === "light") {
-    return bgVariant === "soft"
-      ? "bg-[#ebd9c0] text-nero-base"
-      : "bg-crema-base text-nero-base";
-  }
-  // dark
-  return bgVariant === "soft"
-    ? "bg-nero-soft text-crema-base"
-    : "bg-nero-base text-crema-base";
+/** Stili inline derivati da theme + bgVariant. Usiamo inline (non Tailwind)
+ *  perché i nuovi colori palette (Hotfix 1) non sono nella config Tailwind:
+ *  light = #a8174a, accent = #8b0e3a. Più semplice tenere il single-source-of-truth
+ *  in `themeStyles` e usare style inline che CSS classes ad hoc. */
+function themeInlineStyle(
+  theme: SectionTheme,
+  bgVariant: BgVariant
+): { backgroundColor: string; color: string } {
+  const t = themeStyles[theme];
+  return {
+    backgroundColor: bgVariant === "soft" ? t.bgSoft : t.bg,
+    color: t.text,
+  };
 }
 
 export function Section({
@@ -54,15 +59,19 @@ export function Section({
   const resolvedTheme: SectionTheme =
     theme ?? (background ? sectionBgToTheme[background] ?? "dark" : "dark");
 
-  // Determina la classe di background:
-  // - Se passi `theme` esplicita → uso themeBgClass(theme, bgVariant)
-  // - Se passi solo `background` (legacy) → uso bgs[background]
-  // - Se entrambi → priorità a theme
-  const bgClass = theme
-    ? themeBgClass(theme, bgVariant)
-    : background
+  // Determina lo styling:
+  // - Se passi `theme` esplicita → uso style inline da themeStyles (single source of truth)
+  // - Se passi solo `background` (legacy) → uso classe Tailwind
+  const useInlineTheme = !!theme;
+  const inlineThemeStyle = useInlineTheme
+    ? themeInlineStyle(resolvedTheme, bgVariant)
+    : null;
+  const bgClass =
+    !useInlineTheme && background
       ? bgs[background]
-      : themeBgClass("dark", "base");
+      : !useInlineTheme
+        ? bgs.nero
+        : "";
 
   // data-theme: applicato sempre tranne quando background="transparent" senza theme esplicito
   const applyDataTheme = theme || (background && background !== "transparent");
@@ -72,6 +81,7 @@ export function Section({
       className={cn(bgClass, className)}
       style={{
         paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
+        ...(inlineThemeStyle ?? {}),
         ...style,
       }}
       {...(applyDataTheme ? { "data-theme": resolvedTheme } : {})}

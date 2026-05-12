@@ -65,7 +65,7 @@ async function getImaginariumData() {
           `*[_type == "spettacoloImaginarium" && edizioneRif->anno == $anno] | order(dataInizio asc){
             _id, titolo, dataInizio, linkCompagniaEsterna,
             compagnia { nome, urlSitoCompagnia, descrizioneCompagniaBreve },
-            descrizione, cast, locationSpecifica,
+            descrizione, descrizioneBreve, cast, locationSpecifica,
             "luogo": { "nome": luogo.nomeStruttura, "citta": luogo.citta },
             immagineCover
           }`,
@@ -185,7 +185,7 @@ export default async function ImaginariumPage() {
       <SponsorPartnerStrip data={edizioneCorrente} />
       <EdizioniPassate edizioni={edizioniPassate} />
       <CtaFinale
-        variant="accent"
+        variant="dark"
         heading="Imaginarium è un progetto della comunità."
         sottotitolo={
           edizioneCorrente?.dataInizio && edizioneCorrente?.dataFine

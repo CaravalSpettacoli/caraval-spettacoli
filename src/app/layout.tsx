@@ -45,6 +45,13 @@ export default function RootLayout({
       lang="it"
       className={`${inter.variable} ${cinzel.variable}`}
     >
+      <head>
+        {/* Preload entrambi i loghi: l'header li cross-fade tra le 2 varianti
+            in base al tema della sezione corrente. Senza preload, al primo
+            paint può vedersi il logo nero per qualche frame prima del bianco. */}
+        <link rel="preload" as="image" href="/caraval-logo-white.png" />
+        <link rel="preload" as="image" href="/caraval-logo-black.png" />
+      </head>
       <body className="bg-nero-base text-crema-base antialiased flex flex-col min-h-screen">
         <SkipLink />
         <CustomCursor />
