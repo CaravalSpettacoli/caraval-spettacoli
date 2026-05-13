@@ -130,7 +130,7 @@ const homepageCopy: AnyDoc = {
   repertorioCtaTesto: "Vedi tutto il repertorio",
   repertorioCtaLink: "/spettacoli",
   officinaEyebrow: "FORMAZIONE",
-  officinaHeading: "Officina Teatrale",
+  officinaHeading: "Caraval Academy",
   officinaBody:
     "Corsi serali per adulti da ottobre a maggio. Spettacolo finale a Imaginarium. Laboratori nelle scuole primarie del territorio.",
   officinaTagline: "Non serve esperienza. Serve curiosità.",
@@ -151,7 +151,7 @@ const homepageCopy: AnyDoc = {
     "Tutte le date di Caraval Spettacoli e del festival Imaginarium.",
   // Formazione (pagina)
   formazioneHeroEyebrow: "FORMAZIONE",
-  formazioneHeroHeading: "Officina Teatrale",
+  formazioneHeroHeading: "Caraval Academy",
   formazioneHeroSubheading: "Non serve esperienza. Serve curiosità.",
   formazioneHeroIntro:
     "Corsi serali per adulti da ottobre a maggio. Spettacolo finale a Imaginarium.",
@@ -206,7 +206,7 @@ const membri: AnyDoc[] = [
     slug: { _type: "slug", current: "vera-rossini" },
     ruoli: ["Regista", "Formatrice"],
     bioBreve:
-      "Fondatrice di Caraval. Cura la regia degli spettacoli di prosa e dirige l'Officina Teatrale.",
+      "Fondatrice di Caraval. Cura la regia degli spettacoli di prosa e dirige la Caraval Academy.",
     bio: "Fondatrice di Caraval Spettacoli. Cura regia, formazione e direzione artistica del festival Imaginarium.",
     ordinamento: 1,
     referenteAreaTesto: "Formazione, regia, generale",
@@ -238,31 +238,40 @@ const membri: AnyDoc[] = [
     emailPubblica: "nicolapignoli8@gmail.com",
   },
   {
-    _id: "membro-lorenzo-samanni",
-    _type: "membro",
-    nome: "Lorenzo Samanni",
-    slug: { _type: "slug", current: "lorenzo-samanni" },
-    ruoli: ["Attore"],
-    bioBreve: "Attore della compagnia.",
-    ordinamento: 4,
-  },
-  {
-    _id: "membro-marco-ravelli",
-    _type: "membro",
-    nome: "Marco Ravelli",
-    slug: { _type: "slug", current: "marco-ravelli" },
-    ruoli: ["Attore"],
-    bioBreve: "Attore della compagnia.",
-    ordinamento: 5,
-  },
-  {
     _id: "membro-ilaria-cavalli",
     _type: "membro",
     nome: "Ilaria Cavalli",
     slug: { _type: "slug", current: "ilaria-cavalli" },
     ruoli: ["Attrice"],
     bioBreve: "Attrice della compagnia.",
+    ordinamento: 4,
+  },
+  {
+    _id: "membro-aurora-rossini",
+    _type: "membro",
+    nome: "Aurora Rossini",
+    slug: { _type: "slug", current: "aurora-rossini" },
+    ruoli: ["Attrice"],
+    bioBreve: "In aggiornamento.",
+    ordinamento: 5,
+  },
+  {
+    _id: "membro-francesco-trunfio",
+    _type: "membro",
+    nome: "Francesco Trunfio",
+    slug: { _type: "slug", current: "francesco-trunfio" },
+    ruoli: ["Attore"],
+    bioBreve: "In aggiornamento.",
     ordinamento: 6,
+  },
+  {
+    _id: "membro-antonio-botti",
+    _type: "membro",
+    nome: "Antonio Botti",
+    slug: { _type: "slug", current: "antonio-botti" },
+    ruoli: ["Attore"],
+    bioBreve: "In aggiornamento.",
+    ordinamento: 7,
   },
 ];
 
@@ -282,7 +291,7 @@ const paginaChiSiamoCopy: AnyDoc = {
     "Caraval Spettacoli è una compagnia teatrale che vanta tra le sue fila attori esperti, giocolieri e scenografi in grado di realizzare spettacoli di successo. Dal 2016 portiamo sul palco diverse storie e personaggi, passando dalla commedia dell'arte al teatro di prosa fino a quello più sperimentale, senza mai dimenticare l'arte di strada che è dove affondano le nostre radici.\n\nMettiamo in scena sia i testi di grandi autori teatrali che copioni nuovi scritti da noi, per il teatro ma non solo. Infatti, abbiamo partecipato a festival e feste locali in cui i committenti ci hanno chiesto di scrivere uno spettacolo ad hoc, che parlasse di una tematica particolare o rappresentasse un evento storico importante per il luogo.\n\nIl teatro non è quindi l'unico spazio in cui operiamo: piazze, dimore storiche e castelli sono spesso cornici delle nostre performance. Curiamo ogni dettaglio occupandoci anche della scenografia e dei costumi, creati su misura per ogni spettacolo, così da rendere qualsiasi location il palcoscenico perfetto.\n\nDa diversi anni partecipiamo al Carnevale di Venezia, portando per le calle della città costumi realizzati interamente da noi e figure fantastiche frutto della nostra creatività.\n\n#inviaggioconcaraval è il nostro hashtag ufficiale, perché amiamo viaggiare sia sulla strada che sulle ali della fantasia.",
   membriEyebrow: "LA COMPAGNIA",
   membriHeading: "Le persone di Caraval",
-  membriIntro: "Sei artisti che fanno teatro insieme.",
+  membriIntro: "Sette artisti che fanno teatro insieme.",
   premiEyebrow: "RICONOSCIMENTI",
   premiHeading: "I premi che abbiamo ricevuto",
   scuolaMagiaEyebrow: "ALTRI PROGETTI",
@@ -315,9 +324,9 @@ const paginaContattiCopy: AnyDoc = {
       _key: "area-formazione",
       icona: "formazione",
       eyebrow: "CORSI E FORMAZIONE",
-      titolo: "Officina Teatrale e laboratori",
+      titolo: "Caraval Academy e laboratori",
       descrizione:
-        "Officina Teatrale per adulti, laboratori nelle scuole. Per informazioni o iscrizioni.",
+        "Caraval Academy per adulti, laboratori nelle scuole. Per informazioni o iscrizioni.",
       referente: { _type: "reference", _ref: "membro-vera-rossini" },
     },
     {
@@ -629,11 +638,13 @@ const edizioni: AnyDoc[] = [
 
 type SpettacoloImagSeed = {
   _id: string;
+  slug?: string; // override slug (default: _id senza prefix)
   data: string; // ISO datetime
   titolo: string;
   compagnia: string;
   eCaraval?: boolean;
   eOfficina?: boolean;
+  locationSpecifica?: string;
   descrizioneBreve?: string;
 };
 
@@ -659,16 +670,18 @@ const spettacoliImag2026: SpettacoloImagSeed[] = [
     _id: "imag-2026-james-brown",
     data: "2026-06-07T21:00:00",
     titolo: "James Brown si metteva i bigodini",
-    compagnia: "Officina Caraval",
+    compagnia: "Caraval Academy",
     eOfficina: true,
+    locationSpecifica: "Teatro di Orzinuovi",
     descrizioneBreve:
-      "Lo spettacolo finale degli allievi adulti dell'Officina Teatrale Caraval. Una commedia che gioca con identità e maschere.",
+      "Lo spettacolo finale degli allievi adulti della Caraval Academy. Una commedia che gioca con identità e maschere.",
   },
   {
     _id: "imag-2026-mandragola",
     data: "2026-06-12T21:00:00",
     titolo: "La Mandragola",
     compagnia: "Stivalaccio Teatro",
+    locationSpecifica: "Il Fagiolo di Soncino",
     descrizioneBreve:
       "Il classico di Machiavelli rivisitato con la cifra stilistica del teatro di strada e le maschere della Commedia dell'Arte.",
   },
@@ -676,23 +689,24 @@ const spettacoliImag2026: SpettacoloImagSeed[] = [
     _id: "imag-2026-matti",
     data: "2026-06-14T21:00:00",
     titolo: "Matti da slegare",
-    compagnia: "Officina Caraval",
+    compagnia: "Caraval Academy",
     eOfficina: true,
+    locationSpecifica: "L'Inchiostro di Soncino",
     descrizioneBreve:
-      "Spettacolo finale dell'Officina Teatrale Caraval. Una riflessione collettiva su normalità e libertà.",
+      "Spettacolo finale della Caraval Academy. Una riflessione collettiva su normalità e libertà.",
   },
   {
     _id: "imag-2026-modi",
+    slug: "voglio-bruciare",
     data: "2026-06-18T21:00:00",
-    titolo: "Modì",
+    titolo: "Voglio Bruciare",
     compagnia: "Cantibhakta",
-    descrizioneBreve:
-      "La vita di Amedeo Modigliani raccontata attraverso il teatro fisico e la danza. Un omaggio all'artista maledetto.",
+    descrizioneBreve: "Descrizione in aggiornamento.",
   },
 ];
 
 function spettacoloImagDoc(s: SpettacoloImagSeed): AnyDoc {
-  const slug = s._id.replace(/^imag-2026-/, "");
+  const slug = s.slug ?? s._id.replace(/^imag-2026-/, "");
   return {
     _id: s._id,
     _type: "spettacoloImaginarium",
@@ -705,6 +719,7 @@ function spettacoloImagDoc(s: SpettacoloImagSeed): AnyDoc {
       eOfficina: !!s.eOfficina,
     },
     dataInizio: s.data,
+    ...(s.locationSpecifica ? { locationSpecifica: s.locationSpecifica } : {}),
     ...(s.descrizioneBreve ? { descrizioneBreve: s.descrizioneBreve } : {}),
   };
 }
@@ -839,7 +854,7 @@ const corsi: AnyDoc[] = [
   {
     _id: "corso-james-brown-2025-26",
     _type: "corso",
-    titolo: "Officina adulti — James Brown si metteva i bigodini",
+    titolo: "Caraval Academy — James Brown si metteva i bigodini",
     slug: { _type: "slug", current: "officina-james-brown-2025-26" },
     target: "adulti",
     statoCorso: "in_corso",
@@ -854,7 +869,7 @@ const corsi: AnyDoc[] = [
   {
     _id: "corso-matti-2025-26",
     _type: "corso",
-    titolo: "Officina adulti — Matti da slegare",
+    titolo: "Caraval Academy — Matti da slegare",
     slug: { _type: "slug", current: "officina-matti-2025-26" },
     target: "adulti",
     statoCorso: "in_corso",
@@ -1249,6 +1264,72 @@ async function main() {
       .setIfMissing({ descrizioneBreve: s.descrizioneBreve })
       .commit();
     console.log(`✓ patch: ${s._id}.descrizioneBreve`);
+  }
+
+  // 16. Hotfix 5 — Patch contenuti post-call Imaginarium 2026.
+  //     - Modì → Voglio Bruciare (titolo + slug forced; descrizione setIfMissing)
+  //     - Officina Caraval → Caraval Academy (compagnia + descrizione forced sui 2 doc)
+  //     - locationSpecifica per 7/12/14 giu (setIfMissing per non sovrascrivere edit Vera)
+  for (const s of spettacoliImag2026) {
+    const patches: { set?: Record<string, unknown>; setIfMissing?: Record<string, unknown> } = {};
+
+    if (s._id === "imag-2026-modi") {
+      patches.set = {
+        titolo: s.titolo,
+        "slug.current": s.slug ?? "voglio-bruciare",
+      };
+    }
+
+    if (s.compagnia === "Caraval Academy") {
+      patches.set = {
+        ...(patches.set ?? {}),
+        "compagnia.nome": "Caraval Academy",
+      };
+      if (s.descrizioneBreve) {
+        patches.set["descrizioneBreve"] = s.descrizioneBreve;
+      }
+    }
+
+    if (s.locationSpecifica) {
+      patches.setIfMissing = { locationSpecifica: s.locationSpecifica };
+    }
+
+    if (!patches.set && !patches.setIfMissing) continue;
+
+    let p = client.patch(s._id);
+    if (patches.set) p = p.set(patches.set);
+    if (patches.setIfMissing) p = p.setIfMissing(patches.setIfMissing);
+    await p.commit();
+    console.log(`✓ patch Hotfix 5: ${s._id}`);
+  }
+
+  // 17. Hotfix 5 — Cleanup membri post-call con Vera.
+  //     Delete: Lorenzo Samanni, Marco Ravelli.
+  //     Patch ordinamento: Ilaria 6 → 4 (per doc esistenti, upsert non aggiorna).
+  const membriDaRimuovere = ["membro-lorenzo-samanni", "membro-marco-ravelli"];
+  for (const id of membriDaRimuovere) {
+    try {
+      await client.delete(id);
+      console.log(`✓ delete: ${id}`);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : String(e);
+      console.log(`  (skip delete ${id}: ${msg.slice(0, 80)})`);
+    }
+  }
+  //     Ordinamento finale (post Hotfix 5):
+  //       Vera 1, Alessio 2, Nicola 3, Ilaria 4, Aurora 5, Francesco 6, Antonio 7
+  const ordinamentoFinale: Record<string, number> = {
+    "membro-vera-rossini": 1,
+    "membro-alessio-rosin": 2,
+    "membro-nicola-pignoli": 3,
+    "membro-ilaria-cavalli": 4,
+    "membro-aurora-rossini": 5,
+    "membro-francesco-trunfio": 6,
+    "membro-antonio-botti": 7,
+  };
+  for (const [id, ord] of Object.entries(ordinamentoFinale)) {
+    await client.patch(id).set({ ordinamento: ord }).commit();
+    console.log(`✓ patch: ${id}.ordinamento = ${ord}`);
   }
 
   console.log("\n✅ Seed completato.");

@@ -9,7 +9,7 @@ export default defineType({
     { name: "numeri", title: "I numeri" },
     { name: "imaginarium", title: "Imaginarium preview" },
     { name: "repertorio", title: "Repertorio" },
-    { name: "officina", title: "Officina Teatrale" },
+    { name: "officina", title: "Caraval Academy" },
     { name: "ospita", title: "Ospita Caraval" },
     { name: "contatti", title: "Contatti prelude" },
     { name: "calendario", title: "Calendario (pagina)" },
@@ -144,7 +144,7 @@ export default defineType({
       group: "repertorio",
     }),
 
-    // Officina
+    // Caraval Academy (campo tecnico "officina" mantenuto per backcompat)
     defineField({
       name: "officinaEyebrow",
       title: "Eyebrow",
