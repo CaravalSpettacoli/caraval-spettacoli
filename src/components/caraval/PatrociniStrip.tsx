@@ -68,11 +68,12 @@ export function PatrociniStrip({
 
             const box = (
               <div
-                className="logo-box flex items-center justify-center p-3 md:p-4 rounded-md transition-transform duration-base hover:scale-105"
+                className="logo-box flex items-center justify-center p-6 md:p-8 rounded-md transition-transform duration-base hover:scale-105"
                 style={{
                   backgroundColor: "#ffffff",
-                  aspectRatio: "4 / 3",
+                  aspectRatio: "1 / 1",
                 }}
+                title={p.nome}
               >
                 {fotoUrl && (
                   <div className="relative w-full h-full">
@@ -82,6 +83,7 @@ export function PatrociniStrip({
                       fill
                       sizes="(min-width: 1024px) 18vw, (min-width: 768px) 22vw, 45vw"
                       className="object-contain"
+                      style={{ objectPosition: "center" }}
                     />
                   </div>
                 )}

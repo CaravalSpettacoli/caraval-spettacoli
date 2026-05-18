@@ -361,24 +361,41 @@ Pattern: i componenti derivano automaticamente `data-theme` dalle prop esistenti
 
 ## 11. Foto/loghi pendenti per Edo
 
-### Da caricare in Sanity Studio
-- `homepageHero.fotoSfondo` ✓ caricata (verificare)
-- `paginaChiSiamoCopy.heroFotoSfondo` + `storiaFotoSezione` + `scuolaMagiaFoto`
-- `paginaContattiCopy.heroFotoSfondo`
-- `paginaOspitaCopy.heroFotoSfondo`
-- `paginaImaginariumCopy.heroFotoSfondo`
-- `homepageCopy.formazioneHeroFotoSfondo` + `calendarioHeroFotoSfondo`
-- `paginaChiSiamoCopy.scuolaMagiaUrl` (da chiedere a Vera)
-- Foto 6 membri (Vera/Alessio/Nicola/Lorenzo/Marco/Ilaria) per carosello
-- **Foto 6 doc `imag-2026-*` in `immagineCover`** (0/6 popolati al 2026-05-13)
-- Foto schede 10 spettacoli attivi (campi `immagineCover` 4:5 + `fotoHero` 16:9)
-- Foto archivio: 7 produzioni mancanti (Giovanna D'Arco, L'Inferno di Dante, I Folli di Notre Dame, Servitore di due padroni, Sogno di una notte di mezza estate, Ezzelino da Romano, Battute fuori scena)
+### Stato post Hotfix 6 (import 31/41 file via `scripts/import-images-hotfix-6.ts`)
 
-### Cleanup
-- Cancellare in Studio entries placeholder testuali duplicate in `homepageCopy.patrociniHomepage[]` (PatrociniStrip filtra già automaticamente entries senza logo, ma meglio pulire)
+**Già caricati ✓:**
+- Hero homepage, hero `/imaginarium`, hero `/chi-siamo`
+- Spettacoli attivi (cover+hero): Romeo+Giulietta, Arlecchino, Fine del Mondo, Miseria e Nobiltà
+- Spettacoli attivi (solo cover): Viaggiastorie
+- Spettacoli archivio (cover+hero): Giovanna D'Arco, Sogno di una notte di mezza estate, Inferno di Dante
+- Imaginarium 2025 cover: Buffoni All'Inferno, Ciccio Speranza, Elena, Due Partite, Amore & Psiche, Brancaglione
+- Membri (foto): Vera Rossini, Nicola Pignoli
+- Patrocini Imaginarium: array resettato a 5 entries definitive (Bacco da seta, Danesi, Pro Loco Soncino, Comune di Soncino, Viaggia Storie)
+
+**Ancora da caricare in Sanity Studio:**
+- Hero pagine: `paginaContattiCopy.heroFotoSfondo`, `paginaOspitaCopy.heroFotoSfondo`, `homepageCopy.formazioneHeroFotoSfondo` + `calendarioHeroFotoSfondo`, `paginaSpettacoliCopy.heroFotoSfondo`
+- `paginaChiSiamoCopy.storiaFotoSezione` + `scuolaMagiaFoto`
+- `paginaChiSiamoCopy.scuolaMagiaUrl` (da chiedere a Vera)
+- Foto membri: Alessio Rosin, Ilaria Cavalli, Aurora Rossini, Francesco Trunfio, Antonio Botti (5/7 mancanti)
+- **Foto 6 doc `imag-2026-*` in `immagineCover`** (0/6 popolate)
+- Spettacoli attivi senza foto: Christmas Carol, Cubiculum Diaboli, Macbeth, Legend, Skog, Banalità del Male (6 mancanti)
+- Spettacoli archivio senza foto: Battute fuori scena, Ezzelino, Folli Notre Dame, Servitore due padroni (4 mancanti)
+- Imaginarium 2025 senza cover: Party Inaugurazione, Party Finale
+
+**File in MATERIALE-PER-SITO non utilizzati (decisione Edo):**
+- `IMAGINARIUM-orizzontale.jpg` (duplicato hero imag)
+- `stivalaccio-imaginarium.jpg`, `tournee-imaginarium.jpg`, `les-moustaches-imaginarium.jpg` (duplicati versioni `Imaginarium2025_*`)
+- `spettacolo-fuoco-*.jpg/png` (generici, da assegnare a uno specifico fuoco)
+- `adariapaoletta-imaginarium.jpg`, `Imaginarium2025_FRATERNAL-orizzontale.jpg` (no match titoli)
+- `WhatsApp Image 2026-05-18 at 11.36.54.jpeg` (nome generico)
+- `LOGO DANESI VETTORIALE.eps` (EPS non supportato Sanity, Edo ha caricato `logo-danesi.jpeg` come fallback)
+
+### Script import
+- `scripts/import-images-to-sanity.ts` — pattern-matching auto (Hotfix 3, riusabile per future foto con naming standard)
+- `scripts/import-images-hotfix-6.ts` — override espliciti per filename con naming non standard + cleanup patrocini (una-tantum, riferimento storico)
 
 ### Workflow alternativo
-Aggiungere file in `MATERIALE-PER-SITO/FOTO PER SITO/` con naming `{slug}-verticale.jpg` (o `-orizzontale.jpg`, `-anteprima.jpg`, `{pagina}-hero.jpg`, ecc.) e ri-eseguire `npx tsx scripts/import-images-to-sanity.ts`.
+Aggiungere file in `MATERIALE-PER-SITO/FOTO PER SITO/` con naming `{slug}-verticale.jpg` / `-orizzontale.jpg` / `-anteprima.jpg` / `{pagina}-hero.jpg` e ri-eseguire `npx tsx scripts/import-images-to-sanity.ts`. Per casi speciali, estendere `OVERRIDES` in `import-images-hotfix-6.ts` e ri-eseguire.
 
 ---
 
