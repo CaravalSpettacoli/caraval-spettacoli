@@ -289,16 +289,24 @@ body {
   color: var(--header-hover, #c01d56);
 }
 
-/* Hotfix pre-golive: fallback robusto via data attribute sull'<header>.
-   Se per qualsiasi motivo la CSS variable inline non è settata (es. flash al
-   primo render o IntersectionObserver in ritardo), questi selettori garantiscono
-   un hover sempre leggibile rispetto allo sfondo della sezione corrente.
-   I selettori più specifici (data attr + !important) vincono sulla variable. */
-header[data-current-theme="light"] .header-link:hover {
-  color: #0a0a0a !important;
+/* Hotfix Finale Desktop: hover voci nav SEMPRE leggibile contro lo sfondo
+   della sezione corrente. Specificità alta + overlay nero su sfondi rossi
+   per dare distacco anche se il colore si avvicina al bg. */
+header[data-current-theme="light"] .header-link:hover,
+header[data-current-theme="light"] .header-link:focus-visible {
+  color: #f5e6d3 !important;
+  background-color: rgba(10, 10, 10, 0.18);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin: -2px -8px;
 }
-header[data-current-theme="accent"] .header-link:hover {
-  color: #0a0a0a !important;
+header[data-current-theme="accent"] .header-link:hover,
+header[data-current-theme="accent"] .header-link:focus-visible {
+  color: #f5e6d3 !important;
+  background-color: rgba(10, 10, 10, 0.18);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin: -2px -8px;
 }
 header[data-current-theme="dark"] .header-link:hover,
 header[data-scrolled="true"] .header-link:hover {
@@ -480,6 +488,47 @@ header[data-scrolled="true"] .header-link:hover {
   background-color: transparent;
   color: var(--color-crema-base);
   border-color: var(--color-crema-base);
+}
+
+/* === Loghi patrocini Imaginarium === */
+/* Hotfix Finale Desktop: width/height 100% + object-contain → ogni logo riempie
+   lo spazio max possibile mantenendo proporzioni. Loghi grossi (Danesi)
+   raggiungono il limite di larghezza, loghi stretti raggiungono il limite di
+   altezza — ma tutti occupano una "dignità visiva" simile. */
+.logo-box-img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Hover: overlay nero entra da destra scoprendo il nome del partner in Cinzel */
+.logo-hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: #0a0a0a;
+  color: #f5e6d3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 0.75rem;
+  line-height: 1.15;
+  transform: translateX(101%);
+  transition: transform 380ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
+}
+.logo-box:hover .logo-hover-overlay,
+.logo-box:focus-within .logo-hover-overlay {
+  transform: translateX(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-hover-overlay {
+    transition: none;
+  }
 }
 
 /* === Biglietto vintage — reveal della CTA al click === */

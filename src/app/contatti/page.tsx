@@ -9,6 +9,7 @@ import {
 } from "@/components/caraval/ContattiSezione";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
 import { Reveal } from "@/components/effects/Reveal";
+import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 
 type ContattiCopy = {
   heroEyebrow?: string;
@@ -139,8 +140,15 @@ export default async function ContattiPage() {
       />
 
       {/* Dove siamo + Contatti diretti — 2 colonne paritarie desktop, stack mobile */}
-      <Section background="nero">
+      <Section theme="dark" bgVariant="base" glow="top-left">
         <Container>
+          <div className="text-center mb-10">
+            <OndaDecorativa
+              width={220}
+              variant="sottile"
+              className="text-rosso-base/60 mx-auto"
+            />
+          </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16">
             <div>
               <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
@@ -191,14 +199,14 @@ export default async function ContattiPage() {
 
       {/* Aree contatto */}
       {aree.length > 0 && (
-        <Section background="nero-soft">
+        <Section theme="dark" bgVariant="soft" glow="bottom-right">
           <Container>
             <Reveal
               as="ul"
-              className="reveal-stagger grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8"
+              className="reveal-stagger grid grid-cols-1 md:grid-cols-2 auto-rows-fr gap-6 md:gap-8"
             >
               {aree.map((a, i) => (
-                <li key={`${a.icona}-${i}`}>
+                <li key={`${a.icona}-${i}`} className="h-full">
                   <ContattiSezione area={a} fallback={fallbackContatti} />
                 </li>
               ))}
@@ -212,6 +220,11 @@ export default async function ContattiPage() {
         <Section background="nero">
           <Container>
             <div className="text-center max-w-xl mx-auto">
+              <OndaDecorativa
+                width={180}
+                variant="sottile"
+                className="text-rosso-base/60 mx-auto mb-6"
+              />
               <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
                 SUI SOCIAL
               </p>

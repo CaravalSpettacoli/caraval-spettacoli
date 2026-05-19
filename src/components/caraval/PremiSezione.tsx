@@ -1,4 +1,6 @@
 import { Container } from "@/components/ui/Container";
+import { GlowSfondo } from "@/components/caraval/GlowSfondo";
+import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 import type { PremioItem } from "@/components/caraval/StripPremi";
 
 export function PremiSezione({
@@ -15,11 +17,17 @@ export function PremiSezione({
   return (
     <section
       data-theme="dark"
-      className="bg-nero-base text-crema-base"
+      className="relative overflow-hidden bg-nero-base text-crema-base"
       style={{ paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))" }}
     >
-      <Container>
+      <GlowSfondo posizione="top-right" intensita="medium" />
+      <Container className="relative" style={{ zIndex: 1 }}>
         <div className="max-w-2xl mb-12">
+          <OndaDecorativa
+            width={180}
+            variant="sottile"
+            className="text-rosso-base/60 mb-4"
+          />
           {eyebrow && (
             <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
               {eyebrow}

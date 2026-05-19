@@ -69,33 +69,31 @@ export function PatrociniStrip({
 
             const box = (
               <div
-                className="logo-box flex items-center justify-center p-7 md:p-10 rounded-md transition-transform duration-base hover:scale-105"
+                className="logo-box group relative flex items-center justify-center rounded-md overflow-hidden transition-shadow duration-base hover:shadow-md"
                 style={{
                   backgroundColor: "#ffffff",
                   aspectRatio: "4 / 3",
+                  padding: "0.75rem",
                 }}
                 title={p.nome}
               >
                 {fotoUrl && (
-                  <div className="relative w-full h-full">
-                    {/* Hotfix pre-golive: <img> nativo invece di next/image fill.
-                        next/image con `fill` + container piccolo a volte zoomava i
-                        loghi tagliandoli; con <img> nativo + object-contain + max
-                        constraints i loghi si adattano sempre interi al box. */}
+                  <>
+                    {/* Hotfix Finale: <img> nativo + width/height 100% + object-contain
+                        garantisce uniformità visiva — ogni logo riempie lo spazio max
+                        possibile mantenendo proporzioni. */}
                     {/* eslint-disable-next-line @next/next/no-img-element */}
                     <img
                       src={fotoUrl}
                       alt={p.logo?.alt ?? p.nome}
                       loading="lazy"
                       decoding="async"
-                      className="absolute inset-0 w-full h-full object-contain"
-                      style={{
-                        objectPosition: "center",
-                        maxWidth: "100%",
-                        maxHeight: "100%",
-                      }}
+                      className="logo-box-img"
                     />
-                  </div>
+                    <div className="logo-hover-overlay" aria-hidden>
+                      <span className="font-display">{p.nome}</span>
+                    </div>
+                  </>
                 )}
               </div>
             );

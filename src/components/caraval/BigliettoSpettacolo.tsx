@@ -49,15 +49,15 @@ function pulisciTel(tel?: string) {
 function defaultCtaLabel(modalita: ModalitaPrenotazione): string {
   switch (modalita) {
     case "linkEsterno":
-      return "Acquista il biglietto";
+      return "Vai al sito ufficiale";
     case "emailTelefono":
-      return "Vedi come prenotare";
+      return "Clicca per la prenotazione";
     case "ingressoLibero":
-      return "Vedi i dettagli";
+      return "Clicca per maggiori informazioni";
     case "botteghino":
-      return "Come ottenere il biglietto";
+      return "Acquista biglietto";
     default:
-      return "Vai allo spettacolo";
+      return "Clicca per maggiori informazioni";
   }
 }
 
@@ -76,10 +76,6 @@ export function BigliettoSpettacolo({ data }: { data: BigliettoSpettacoloData })
     data.prenotazione?.modalita ?? "richiestaContatto";
   const ctaLabel =
     data.prenotazione?.etichettaCustom ?? defaultCtaLabel(modalita);
-  const seriale = (data.slug ?? data.titolo)
-    .slice(0, 14)
-    .toUpperCase()
-    .replace(/[^A-Z0-9]/g, "");
 
   const reveal = () => setRevealed(true);
   const reset = () => setRevealed(false);
@@ -203,11 +199,6 @@ export function BigliettoSpettacolo({ data }: { data: BigliettoSpettacoloData })
             {data.prenotazione.noteAggiuntive}
           </p>
         )}
-
-        <div className="mt-4 flex items-center justify-between text-[9px] font-mono text-nero-base/45 uppercase-tracked">
-          <span>N° SERIE</span>
-          <span>{seriale || "CARAVAL"}</span>
-        </div>
       </div>
 
       <PerforazioniOrizzontali position="bottom" />

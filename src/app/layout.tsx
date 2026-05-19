@@ -5,6 +5,7 @@ import { SkipLink } from "@/components/layout/SkipLink";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { CustomCursor } from "@/components/effects/CustomCursor";
+import { getFeatureFlags } from "@/lib/feature-flags";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,11 +36,12 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const flags = await getFeatureFlags();
   return (
     <html
       lang="it"
@@ -55,11 +57,11 @@ export default function RootLayout({
       <body className="bg-nero-base text-crema-base antialiased flex flex-col min-h-screen">
         <SkipLink />
         <CustomCursor />
-        <Header />
+        <Header mostraCalendario={flags.mostraCalendario} />
         <main id="contenuto" className="flex-1">
           {children}
         </main>
-        <Footer />
+        <Footer mostraCalendario={flags.mostraCalendario} />
       </body>
     </html>
   );

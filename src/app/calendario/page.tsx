@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { client } from "@/../sanity/lib/client";
+import { getFeatureFlags } from "@/lib/feature-flags";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import {
@@ -70,6 +72,10 @@ async function getCalendarioData() {
 }
 
 export default async function CalendarioPage() {
+  const flags = await getFeatureFlags();
+  if (!flags.mostraCalendario) {
+    notFound();
+  }
   const { items, copy } = await getCalendarioData();
 
   const eyebrow = copy.calendarioHeroEyebrow ?? "CALENDARIO";

@@ -142,6 +142,24 @@ export default defineType({
       ],
     }),
     defineField({
+      name: "featureFlags",
+      title: "Visibilità sezioni sito",
+      type: "object",
+      description:
+        "Toggle on/off per sezioni che possono essere attivate o disattivate in modo non distruttivo.",
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({
+          name: "mostraCalendario",
+          title: "Mostra pagina Calendario",
+          type: "boolean",
+          initialValue: false,
+          description:
+            "Se attivo, /calendario è accessibile e appare nel menu header/footer. Se disattivato (default), la pagina restituisce 404 e la voce è nascosta. La sezione 'Prossimi eventi' della homepage rimane sempre visibile a parte.",
+        }),
+      ],
+    }),
+    defineField({
       name: "seoDefault",
       title: "SEO default",
       type: "object",

@@ -56,9 +56,8 @@ const FALLBACK: ImpostazioniFooter = {
   ],
 };
 
-const SITO_LINKS = [
+const SITO_LINKS_BASE = [
   { href: "/spettacoli", label: "Spettacoli" },
-  { href: "/calendario", label: "Calendario" },
   { href: "/formazione", label: "Formazione" },
   { href: "/imaginarium", label: "Imaginarium" },
 ];
@@ -93,8 +92,11 @@ async function getImpostazioni(): Promise<ImpostazioniFooter> {
   }
 }
 
-export async function Footer() {
+export async function Footer({ mostraCalendario = false }: { mostraCalendario?: boolean }) {
   const impostazioni = await getImpostazioni();
+  const SITO_LINKS = mostraCalendario
+    ? [SITO_LINKS_BASE[0], { href: "/calendario", label: "Calendario" }, ...SITO_LINKS_BASE.slice(1)]
+    : SITO_LINKS_BASE;
   const dati = impostazioni.datiAssociazione || {};
   const contatti = impostazioni.contattiPubblici || {};
   const socialLive = (impostazioni.socialLinks || []).filter(

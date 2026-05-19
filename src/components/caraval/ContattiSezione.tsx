@@ -49,31 +49,33 @@ export function ContattiSezione({
     area.emailOverride || area.referente?.emailPubblica || fallback?.email;
 
   return (
-    <article className="flex flex-col gap-3 p-6 md:p-8 min-h-[280px] bg-nero-soft border border-crema-faint/30 hover:border-rosso-base/60 transition-colors duration-base">
+    <article className="contatto-card h-full flex flex-col gap-3 p-6 md:p-8 min-h-[380px] bg-nero-soft border border-rosso-base/25 hover:border-rosso-base/70 rounded-md transition-colors duration-base">
       <div className="text-rosso-hover">
         <Icon size={36} strokeWidth={1.5} />
       </div>
-      {area.eyebrow && (
-        <p className="uppercase-tracked text-caption text-rosso-base/90">
-          {area.eyebrow}
-        </p>
-      )}
-      {area.titolo && (
-        <h3 className="font-display text-h3 text-crema-base leading-tight">
-          {area.titolo}
-        </h3>
-      )}
-      {area.descrizione && (
-        <p className="text-body text-crema-muted leading-relaxed">
-          {area.descrizione}
-        </p>
-      )}
-      {area.referente?.nome && (
-        <p className="text-caption uppercase-tracked text-crema-base/65 mt-1">
-          Referente: {area.referente.nome}
-        </p>
-      )}
-      <div className="mt-auto pt-4 flex flex-col gap-1.5 text-body-s">
+      <div className="contatto-card-content flex-grow flex flex-col gap-3">
+        {area.eyebrow && (
+          <p className="uppercase-tracked text-caption text-rosso-base/90">
+            {area.eyebrow}
+          </p>
+        )}
+        {area.titolo && (
+          <h3 className="font-display text-h3 text-crema-base leading-tight">
+            {area.titolo}
+          </h3>
+        )}
+        {area.descrizione && (
+          <p className="text-body text-crema-muted leading-relaxed">
+            {area.descrizione}
+          </p>
+        )}
+        {area.referente?.nome && (
+          <p className="text-caption uppercase-tracked text-crema-base/65 mt-1">
+            Referente: {area.referente.nome}
+          </p>
+        )}
+      </div>
+      <div className="contatto-card-recapiti mt-auto pt-4 border-t border-crema-faint/20 flex flex-col gap-1.5 text-body-s">
         {telefono && (
           <a
             href={`tel:${pulisciTel(telefono)}`}

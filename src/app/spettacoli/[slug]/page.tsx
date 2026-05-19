@@ -100,7 +100,12 @@ async function getData(slug: string) {
         "referenteContatto": referenteContatto->{
           nome, ruoli, referenteAreaTesto, telefonoPubblico, emailPubblica
         },
-        "correlati": *[_type == "spettacolo" && categoria == ^.categoria && _id != ^._id && inRepertorio == true][0..2]{
+        "correlati": *[
+          _type == "spettacolo"
+          && slug.current != $slug
+          && categoria == ^.categoria
+          && inRepertorio == true
+        ] | order(ordineHomepage asc, titolo asc) [0..2] {
           _id, titolo, sottotitolo, slug, categoria, descrizioneBreve, immagineCover,
           "premiAssociati": premiAssociati[]->{ _id, anno, nomePremio }
         }
