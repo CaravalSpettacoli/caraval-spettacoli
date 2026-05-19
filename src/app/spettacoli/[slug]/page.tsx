@@ -51,6 +51,7 @@ type SpettacoloPage = HeroSpettacoloData & {
       | "botteghino"
       | "richiestaContatto";
     urlBiglietti?: string;
+    qrCode?: { asset?: { _ref?: string }; alt?: string };
     etichettaCustom?: string;
     noteAggiuntive?: string;
   };

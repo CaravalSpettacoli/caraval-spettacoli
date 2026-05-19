@@ -49,9 +49,10 @@ function EventoFeedRow({ evento }: { evento: ProssimoEvento }) {
   const dataLabel = formatDataLunga(evento.data);
   const oraLabel = formatOra(evento.data);
   const iniziale = evento.titolo.slice(0, 2).toUpperCase();
+  const isImaginarium = evento.fonte === "imaginarium";
 
   return (
-    <article className="grid grid-cols-1 md:grid-cols-[180px_1fr_auto] gap-4 md:gap-6 items-center p-4 md:p-5 transition-all duration-base hover:-translate-y-0.5">
+    <article className="evento-row grid grid-cols-1 md:grid-cols-[180px_1fr_auto] gap-4 md:gap-6 items-center p-4 md:p-5 transition-all duration-base hover:-translate-y-0.5">
       {/* Foto sx (desktop) / top (mobile) */}
       <div className="relative w-full aspect-[4/3] md:h-[120px] md:aspect-auto rounded-md overflow-hidden">
         {fotoUrl ? (
@@ -64,10 +65,8 @@ function EventoFeedRow({ evento }: { evento: ProssimoEvento }) {
           />
         ) : (
           <div
-            className="w-full h-full flex items-center justify-center font-display text-rosso-base"
+            className="evento-row-placeholder w-full h-full flex items-center justify-center font-display"
             style={{
-              background:
-                "linear-gradient(135deg, rgba(168,23,74,0.22), rgba(168,23,74,0.06))",
               fontSize: "clamp(1.5rem, 3vw, 2rem)",
             }}
           >
@@ -81,33 +80,35 @@ function EventoFeedRow({ evento }: { evento: ProssimoEvento }) {
         <div className="flex items-center gap-3 flex-wrap">
           <time
             dateTime={evento.data.toISOString()}
-            className="text-caption text-crema-muted"
+            className="evento-row-date text-caption"
           >
             {dataLabel} · {oraLabel}
           </time>
+          {isImaginarium && (
+            <span className="evento-row-tag text-[0.7rem] uppercase tracking-wider font-semibold px-2 py-0.5 rounded">
+              Imaginarium
+            </span>
+          )}
           {countdown && (
-            <span
-              className="text-[0.7rem] uppercase tracking-wider font-medium px-2 py-0.5 rounded text-rosso-base"
-              style={{ backgroundColor: "rgba(168,23,74,0.15)" }}
-            >
+            <span className="evento-row-countdown text-[0.7rem] uppercase tracking-wider font-medium px-2 py-0.5 rounded">
               {countdown}
             </span>
           )}
         </div>
 
-        <h3 className="font-display text-h4 leading-tight text-crema-base m-0 truncate">
+        <h3 className="evento-row-title font-display text-h4 leading-tight m-0 truncate">
           {evento.titolo}
         </h3>
 
         {evento.location && (
-          <p className="flex items-center gap-1.5 text-body-s text-crema-muted m-0">
+          <p className="evento-row-location flex items-center gap-1.5 text-body-s m-0">
             <MapPin size={14} className="shrink-0" aria-hidden />
             <span className="truncate">{evento.location}</span>
           </p>
         )}
 
         {evento.descrizioneBreve && (
-          <p className="text-body-s text-crema-base/80 m-0 line-clamp-2">
+          <p className="evento-row-desc text-body-s m-0 line-clamp-2">
             {evento.descrizioneBreve}
           </p>
         )}
@@ -117,7 +118,7 @@ function EventoFeedRow({ evento }: { evento: ProssimoEvento }) {
       <div className="flex md:justify-end">
         <Link
           href={evento.ctaHref}
-          className="inline-flex items-center px-4 py-2 text-caption uppercase tracking-wider border border-rosso-base/40 text-crema-base hover:border-rosso-base hover:bg-rosso-muted transition-all duration-base rounded-md"
+          className="evento-row-cta inline-flex items-center px-4 py-2 text-caption uppercase tracking-wider border transition-all duration-base rounded-md"
           {...(evento.ctaExternal
             ? { target: "_blank", rel: "noopener noreferrer" }
             : {})}
@@ -165,7 +166,8 @@ export function ProssimiEventiHomepage({
           {eventi.map((evento) => (
             <li
               key={evento.id}
-              className="border border-rosso-base/20 rounded-md transition-colors duration-base hover:border-rosso-base"
+              data-fonte={evento.fonte}
+              className="evento-row-wrapper rounded-md transition-colors duration-base"
             >
               <EventoFeedRow evento={evento} />
             </li>

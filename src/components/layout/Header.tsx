@@ -141,6 +141,8 @@ export function Header() {
 
   return (
     <header
+      data-current-theme={currentTheme}
+      data-scrolled={scrolled ? "true" : "false"}
       style={scrimStyle}
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-base ease-cinema",

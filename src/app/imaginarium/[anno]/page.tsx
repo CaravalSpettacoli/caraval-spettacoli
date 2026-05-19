@@ -16,14 +16,10 @@ import {
   ProgrammaCompleto,
   type SpettacoloImagItem,
 } from "@/components/imaginarium/ProgrammaCompleto";
-import {
-  SponsorPartnerStrip,
-  type SponsorPartnerData,
-} from "@/components/imaginarium/SponsorPartnerStrip";
 
 export const revalidate = 60;
 
-type EdizioneFull = EdizioneHero & SponsorPartnerData & { anno?: number };
+type EdizioneFull = EdizioneHero & { anno?: number };
 
 async function getEdizione(anno: string): Promise<{
   edizione: EdizioneFull | null;
@@ -86,13 +82,10 @@ export default async function EdizionePassataPage({
       />
 
       {haProgramma ? (
-        <>
-          <ProgrammaCompleto
-            spettacoli={spettacoli}
-            heading={`Programma ${edizione.anno}`}
-          />
-          <SponsorPartnerStrip data={edizione} />
-        </>
+        <ProgrammaCompleto
+          spettacoli={spettacoli}
+          heading={`Programma ${edizione.anno}`}
+        />
       ) : (
         <section
           data-theme="light"

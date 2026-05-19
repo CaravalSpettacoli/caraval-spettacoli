@@ -298,6 +298,17 @@ export default defineType({
           hidden: ({ parent }) => parent?.modalita !== "linkEsterno",
         }),
         defineField({
+          name: "qrCode",
+          title: "QR code biglietto (opzionale)",
+          type: "image",
+          options: { hotspot: false },
+          description:
+            "Se caricato, il biglietto mostra il QR al posto della CTA (override di qualsiasi modalità). Utile per biglietti già emessi su sistemi esterni.",
+          fields: [
+            defineField({ name: "alt", title: "Testo alternativo", type: "string" }),
+          ],
+        }),
+        defineField({
           name: "etichettaCustom",
           title: "Etichetta CTA personalizzata (opzionale)",
           type: "string",

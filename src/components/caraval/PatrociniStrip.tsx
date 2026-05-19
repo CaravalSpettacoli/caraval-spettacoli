@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { urlFor } from "@/../sanity/lib/image";
 
@@ -58,32 +57,43 @@ export function PatrociniStrip({
           className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6 items-stretch"
         >
           {conLogo.map((p, idx) => {
+            // Hotfix pre-golive: aumentata risoluzione (era 400×300 con .fit("max") che
+            // poteva sgranare loghi piccoli). Ora 600 px lato lungo, fit("max") preserva
+            // proporzioni originali senza tagli.
             const fotoUrl =
               p.logo?.asset?._ref &&
               urlFor(p.logo as Parameters<typeof urlFor>[0])
-                .width(400)
-                .height(300)
+                .width(600)
                 .fit("max")
                 .url();
 
             const box = (
               <div
-                className="logo-box flex items-center justify-center p-6 md:p-8 rounded-md transition-transform duration-base hover:scale-105"
+                className="logo-box flex items-center justify-center p-7 md:p-10 rounded-md transition-transform duration-base hover:scale-105"
                 style={{
                   backgroundColor: "#ffffff",
-                  aspectRatio: "1 / 1",
+                  aspectRatio: "4 / 3",
                 }}
                 title={p.nome}
               >
                 {fotoUrl && (
                   <div className="relative w-full h-full">
-                    <Image
+                    {/* Hotfix pre-golive: <img> nativo invece di next/image fill.
+                        next/image con `fill` + container piccolo a volte zoomava i
+                        loghi tagliandoli; con <img> nativo + object-contain + max
+                        constraints i loghi si adattano sempre interi al box. */}
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
                       src={fotoUrl}
                       alt={p.logo?.alt ?? p.nome}
-                      fill
-                      sizes="(min-width: 1024px) 18vw, (min-width: 768px) 22vw, 45vw"
-                      className="object-contain"
-                      style={{ objectPosition: "center" }}
+                      loading="lazy"
+                      decoding="async"
+                      className="absolute inset-0 w-full h-full object-contain"
+                      style={{
+                        objectPosition: "center",
+                        maxWidth: "100%",
+                        maxHeight: "100%",
+                      }}
                     />
                   </div>
                 )}

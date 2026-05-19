@@ -16,10 +16,6 @@ import {
   type SpettacoloImagItem,
 } from "@/components/imaginarium/ProgrammaCompleto";
 import {
-  SponsorPartnerStrip,
-  type SponsorPartnerData,
-} from "@/components/imaginarium/SponsorPartnerStrip";
-import {
   EdizioniPassate,
   type EdizionePassataItem,
 } from "@/components/imaginarium/EdizioniPassate";
@@ -30,8 +26,15 @@ import {
   PatrociniStrip,
   type PatrocinioItem,
 } from "@/components/caraval/PatrociniStrip";
+import { Stella5Punte } from "@/components/decorative/Stella5Punte";
 
 export const revalidate = 60;
+
+type SponsorPartnerData = {
+  patrocinio?: string[];
+  sponsor?: string[];
+  partnerLista?: string[];
+};
 
 type EdizioneCorrenteFull = EdizioneHero & SponsorPartnerData & { anno?: number };
 
@@ -186,6 +189,22 @@ export default async function ImaginariumPage() {
         logoSrc="/imaginarium-logo.png"
         logoAlt="Imaginarium — Festival di Teatro Itinerante"
       />
+      {/* Hotfix pre-golive: divisore di transizione hero (nero) → counter (rosso).
+          Risolve la mancanza di distacco segnalata da Vera. Gradient verticale +
+          stella centrale + bordo netto basso per ancorare l'occhio. */}
+      <div
+        aria-hidden
+        className="relative w-full"
+        style={{
+          height: "72px",
+          background:
+            "linear-gradient(to bottom, #050505 0%, #5c0d2a 60%, #a8174a 100%)",
+        }}
+      >
+        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-crema-base/80">
+          <Stella5Punte size={20} />
+        </span>
+      </div>
       <CounterStrip
         eyebrow={paginaCopy?.counterEyebrow ?? "IMAGINARIUM IN NUMERI"}
         numeri={counterNumeri}
@@ -209,8 +228,9 @@ export default async function ImaginariumPage() {
         }
         palette="imaginarium"
       />
-      <SponsorPartnerStrip data={edizioneCorrente} />
-      {/* Hotfix 4: patrocini spostati da homepage a /imaginarium */}
+      {/* Hotfix pre-golive: SponsorPartnerStrip rimosso. I tre blocchi testuali
+          "Con il patrocinio di / Sponsor / Partner" duplicavano i loghi grid
+          sottostanti senza valore informativo aggiuntivo. */}
       <PatrociniStrip
         patrocini={patrocini}
         eyebrow="Con il sostegno di"
