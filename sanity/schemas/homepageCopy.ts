@@ -88,6 +88,21 @@ export default defineType({
           name: "patrocinioItem",
           fields: [
             {
+              name: "categoria",
+              title: "Categoria",
+              type: "string",
+              options: {
+                list: [
+                  { title: "Con il patrocinio di", value: "patrocinio" },
+                  { title: "Sponsor", value: "sponsor" },
+                  { title: "Partner", value: "partner" },
+                ],
+                layout: "radio",
+              },
+              initialValue: "partner",
+              validation: (R) => R.required(),
+            },
+            {
               name: "nome",
               title: "Nome",
               type: "string",
@@ -97,18 +112,18 @@ export default defineType({
             { name: "url", title: "URL (opzionale)", type: "url" },
           ],
           preview: {
-            select: { title: "nome", media: "logo" },
+            select: { title: "nome", subtitle: "categoria", media: "logo" },
           },
         },
       ],
       initialValue: [
-        { nome: "Comune di Soncino", url: "https://www.comune.soncino.cr.it" },
-        { nome: "Danesi" },
-        { nome: "Bacco da Seta" },
-        { nome: "Pro Loco Soncino" },
-        { nome: "I Viaggiastorie" },
+        { categoria: "patrocinio", nome: "Comune di Soncino", url: "https://www.comune.soncino.cr.it" },
+        { categoria: "sponsor", nome: "Danesi" },
+        { categoria: "partner", nome: "Bacco da Seta" },
+        { categoria: "partner", nome: "Pro Loco Soncino" },
+        { categoria: "partner", nome: "I Viaggiastorie" },
       ],
-      validation: (R) => R.max(10),
+      validation: (R) => R.max(20),
     }),
 
     // Repertorio

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Container } from "@/components/ui/Container";
+import { GlifoDecorativo } from "@/components/decorative/GlifoDecorativo";
 
 export type SpettacoloHomepage = {
   _id: string;
@@ -124,6 +125,7 @@ export function SpettacoliAccordionHomepage({
       <Container>
         {(eyebrow || heading || intro) && (
           <div className="mb-12 max-w-2xl">
+            <GlifoDecorativo tipo="drama" size={28} align="left" />
             {eyebrow && (
               <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
                 {eyebrow}

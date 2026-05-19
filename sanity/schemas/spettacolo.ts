@@ -83,6 +83,33 @@ export default defineType({
       fieldset: "contenutiConsigliati",
     }),
     defineField({
+      name: "annoProduzione",
+      title: "Anno produzione (biglietto)",
+      type: "number",
+      description:
+        "Anno in cui lo spettacolo è stato prodotto. Visualizzato sul biglietto come 'PRODUZIONE YYYY'. Se vuoto, fallback ad annoCreazione.",
+      validation: (r) => r.min(2010).max(new Date().getFullYear() + 1),
+      fieldset: "contenutiConsigliati",
+    }),
+    defineField({
+      name: "durataMinuti",
+      title: "Durata in minuti (biglietto)",
+      type: "number",
+      description:
+        "Durata totale dello spettacolo (esclusi intervalli). Visualizzata nel biglietto.",
+      validation: (r) => r.min(15).max(300),
+      fieldset: "contenutiConsigliati",
+    }),
+    defineField({
+      name: "postiLimitati",
+      title: "Posti limitati",
+      type: "boolean",
+      initialValue: false,
+      description:
+        "Se attivo, il biglietto mostra il badge 'Posti limitati'.",
+      fieldset: "contenutiConsigliati",
+    }),
+    defineField({
       name: "immagineCover",
       title: "Cover anteprima (verticale 4:5)",
       type: "image",

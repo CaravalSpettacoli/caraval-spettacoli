@@ -4,6 +4,7 @@ import { PlaceholderImage } from "@/components/ui/PlaceholderImage";
 import { urlFor } from "@/../sanity/lib/image";
 import { paletteToTheme } from "@/lib/theme-system";
 import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
+import { GlifoDecorativo } from "@/components/decorative/GlifoDecorativo";
 import { Reveal } from "@/components/effects/Reveal";
 
 export type SpettacoloImagItem = {
@@ -125,6 +126,11 @@ export function ProgrammaCompleto({
                 className="text-crema-base/50"
               />
             </div>
+            <GlifoDecorativo
+              tipo="theater"
+              size={32}
+              className="text-crema-base/70"
+            />
             <p className={`uppercase-tracked text-caption mb-3 ${eyebrowCol}`}>
               Programma
             </p>

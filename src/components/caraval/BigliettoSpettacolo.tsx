@@ -3,7 +3,13 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState, type KeyboardEvent } from "react";
-import { ArrowLeft, ExternalLink, Mail, Phone, Ticket as TicketIcon } from "lucide-react";
+import {
+  ArrowLeft,
+  ExternalLink,
+  Mail,
+  Phone,
+  Ticket as TicketIcon,
+} from "lucide-react";
 import { Stella5Punte } from "@/components/decorative/Stella5Punte";
 import { cn } from "@/lib/cn";
 import { urlFor } from "@/../sanity/lib/image";
@@ -22,6 +28,9 @@ export type BigliettoSpettacoloData = {
   sottotitolo?: string;
   categoria?: "prosa" | "fuoco" | "strada";
   annoCreazione?: number;
+  annoProduzione?: number;
+  durataMinuti?: number;
+  postiLimitati?: boolean;
   slug?: string;
   prenotazione?: {
     modalita?: ModalitaPrenotazione;
@@ -61,21 +70,20 @@ function defaultCtaLabel(modalita: ModalitaPrenotazione): string {
   }
 }
 
-/** Biglietto teatrale vintage con reveal animato della CTA in base alla
- *  modalità di prenotazione configurata su Sanity (`prenotazione.modalita`).
+/** Biglietto teatrale vintage con watermark CARAVAL, badges produzione/durata/posti,
+ *  stella centrale + linea perforata, e CTA condizionale per modalità Sanity.
  *
- *  Stati:
- *  - chiuso: card "biglietto" con titolo, categoria, anno, e CTA "Vai allo
- *    spettacolo →"
- *  - aperto: la zona CTA viene rivelata con fade+slide e mostra il contenuto
- *    appropriato alla modalità (link esterno / QR code / telefono / mail /
- *    info ingresso libero / richiesta contatti). */
+ *  Stati: chiuso → click CTA → reveal animato con contenuto modalità-specifico. */
 export function BigliettoSpettacolo({ data }: { data: BigliettoSpettacoloData }) {
   const [revealed, setRevealed] = useState(false);
   const modalita: ModalitaPrenotazione =
     data.prenotazione?.modalita ?? "richiestaContatto";
   const ctaLabel =
     data.prenotazione?.etichettaCustom ?? defaultCtaLabel(modalita);
+  const annoProd = data.annoProduzione ?? data.annoCreazione;
+  const categoriaLabel = data.categoria
+    ? CATEGORIA_LABEL[data.categoria]
+    : null;
 
   const reveal = () => setRevealed(true);
   const reset = () => setRevealed(false);
@@ -89,83 +97,143 @@ export function BigliettoSpettacolo({ data }: { data: BigliettoSpettacoloData })
 
   return (
     <article
-      className="biglietto-vintage relative mx-auto w-full max-w-[320px] flex flex-col bg-crema-base text-nero-base border-[1.5px] border-rosso-base rounded-xl overflow-hidden shadow-lg"
+      className="biglietto-vintage relative mx-auto w-full max-w-[340px] flex flex-col bg-crema-base text-nero-base border-[1.5px] border-rosso-base rounded-xl overflow-hidden"
       style={{
         aspectRatio: "5 / 8",
+        minHeight: "560px",
         boxShadow:
           "0 18px 40px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(168,23,74,0.08)",
       }}
       aria-label={`Biglietto — ${data.titolo}`}
     >
-      {/* Header band — perforazione superiore */}
-      <PerforazioniOrizzontali position="top" />
+      {/* Watermark CARAVAL diagonale, sotto al contenuto */}
+      <div
+        aria-hidden
+        className="biglietto-watermark pointer-events-none absolute inset-0 flex items-center justify-center"
+      >
+        <span
+          className="font-stonehead text-rosso-base"
+          style={{
+            fontSize: "clamp(3.5rem, 9vw, 5rem)",
+            opacity: 0.08,
+            transform: "rotate(-15deg)",
+            letterSpacing: "0.1em",
+            whiteSpace: "nowrap",
+          }}
+        >
+          CARAVAL
+        </span>
+      </div>
 
-      {/* "INGRESSO" verticale */}
+      {/* Stelle decorative angoli (sopra watermark, sotto contenuto) */}
       <span
         aria-hidden
-        className="absolute -left-1 top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[9px] uppercase-tracked text-rosso-base/70 tracking-[0.3em] font-semibold whitespace-nowrap pointer-events-none"
+        className="absolute top-3 right-3 opacity-30 pointer-events-none z-[1]"
+      >
+        <Stella5Punte size={14} className="text-rosso-base" />
+      </span>
+      <span
+        aria-hidden
+        className="absolute bottom-3 left-3 opacity-30 pointer-events-none z-[1]"
+      >
+        <Stella5Punte size={14} className="text-rosso-base" />
+      </span>
+
+      {/* Perforazioni superiore + inferiore */}
+      <PerforazioniOrizzontali position="top" />
+      <PerforazioniOrizzontali position="bottom" />
+
+      {/* INGRESSO verticale lato sinistro */}
+      <span
+        aria-hidden
+        className="absolute left-0.5 top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[9px] uppercase-tracked text-rosso-base/70 tracking-[0.3em] font-semibold whitespace-nowrap pointer-events-none z-[2]"
       >
         INGRESSO
       </span>
 
-      {/* TOP HALF — titolo + meta */}
-      <div className="relative flex-1 flex flex-col px-6 pt-9 pb-3">
+      {/* Contenuto sopra al watermark */}
+      <div className="relative z-[2] flex flex-col flex-1 px-7 pt-8 pb-6">
+        {/* Header — TicketIcon + "BIGLIETTO" */}
         <div className="flex items-center gap-2 text-rosso-base">
-          <TicketIcon className="h-3.5 w-3.5" aria-hidden />
+          <TicketIcon className="h-4 w-4" aria-hidden />
           <span className="uppercase-tracked text-caption tracking-[0.2em] font-semibold">
             Biglietto
           </span>
         </div>
 
+        {/* Titolo Cinzel */}
         <h3
-          className="mt-5 font-display text-nero-base leading-[1.1] text-balance line-clamp-4"
+          className="mt-4 font-display text-nero-base leading-[1.1] text-balance line-clamp-3"
           style={{
-            fontSize: "clamp(1.4rem, 2.6vw, 1.7rem)",
+            fontSize: "clamp(1.5rem, 2.6vw, 1.8rem)",
             letterSpacing: "0.01em",
           }}
         >
           {data.titolo}
         </h3>
 
+        {/* Meta produzione */}
+        {annoProd && (
+          <p className="mt-2 text-[0.7rem] uppercase tracking-[0.15em] text-rosso-base font-semibold">
+            Produzione {annoProd}
+          </p>
+        )}
+
+        {/* Badges inline: categoria · durata · posti */}
+        {(categoriaLabel || data.durataMinuti || data.postiLimitati) && (
+          <p className="mt-3 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-body-s text-nero-base">
+            {categoriaLabel && <span>{categoriaLabel}</span>}
+            {data.durataMinuti && (
+              <>
+                {categoriaLabel && (
+                  <span className="text-rosso-base font-bold">·</span>
+                )}
+                <span>{data.durataMinuti} min</span>
+              </>
+            )}
+            {data.postiLimitati && (
+              <>
+                {(categoriaLabel || data.durataMinuti) && (
+                  <span className="text-rosso-base font-bold">·</span>
+                )}
+                <span className="italic text-rosso-base">Posti limitati</span>
+              </>
+            )}
+          </p>
+        )}
+
+        {/* Sottotitolo opzionale */}
         {data.sottotitolo && (
-          <p className="mt-2 text-body-s text-nero-base/70 italic line-clamp-2">
+          <p className="mt-3 text-body-s text-nero-base/70 italic line-clamp-2">
             {data.sottotitolo}
           </p>
         )}
 
-        <div className="mt-auto flex items-baseline justify-between text-caption text-nero-base/65 pt-4">
-          {data.categoria && (
-            <span className="uppercase-tracked font-semibold text-rosso-base">
-              {CATEGORIA_LABEL[data.categoria]}
-            </span>
-          )}
-          {data.annoCreazione && (
-            <span className="font-display text-rosso-base">
-              {data.annoCreazione}
-            </span>
-          )}
-        </div>
-      </div>
+        {/* Spacer flessibile */}
+        <div className="flex-grow" />
 
-      {/* DIVISORE perforato */}
-      <div className="relative h-6 shrink-0">
-        <span
-          aria-hidden
-          className="absolute -left-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-nero-soft border-[1.5px] border-rosso-base"
-        />
-        <span
-          aria-hidden
-          className="absolute -right-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full bg-nero-soft border-[1.5px] border-rosso-base"
-        />
-        <div className="absolute inset-x-4 top-1/2 -translate-y-1/2 flex items-center gap-2">
-          <span className="flex-1 h-px border-t border-dashed border-rosso-base/70" />
-          <Stella5Punte size={12} className="text-rosso-base shrink-0" />
-          <span className="flex-1 h-px border-t border-dashed border-rosso-base/70" />
+        {/* Stella decorativa centrale */}
+        <div className="flex justify-center mt-2 mb-2">
+          <Stella5Punte size={14} className="text-rosso-base" />
         </div>
-      </div>
 
-      {/* BOTTOM HALF — CTA con reveal */}
-      <div className="relative flex flex-col px-6 pt-4 pb-5 shrink-0">
+        {/* Linea perforata */}
+        <div
+          aria-hidden
+          className="border-t border-dashed border-rosso-base/50 mb-3"
+        />
+
+        {/* Categoria bottom (sotto la perforata) */}
+        {categoriaLabel && (
+          <p className="text-[0.7rem] uppercase tracking-[0.15em] text-rosso-base font-semibold mb-3">
+            {categoriaLabel.toUpperCase()}
+            {data.durataMinuti && (
+              <span className="ml-2">· Durata {data.durataMinuti}&apos;</span>
+            )}
+          </p>
+        )}
+
+        {/* CTA con reveal */}
         <div className="min-h-[110px] flex flex-col">
           {!revealed ? (
             <button
@@ -199,12 +267,6 @@ export function BigliettoSpettacolo({ data }: { data: BigliettoSpettacoloData })
             {data.prenotazione.noteAggiuntive}
           </p>
         )}
-      </div>
-
-      <PerforazioniOrizzontali position="bottom" />
-
-      <div className="absolute bottom-3 right-3 opacity-25 pointer-events-none">
-        <Stella5Punte size={14} className="text-rosso-base" />
       </div>
     </article>
   );
@@ -242,7 +304,6 @@ function BigliettoCtaContent({
     </button>
   );
 
-  // QR code prevale sempre se configurato (Vera può attivarlo solo quando ha il QR pronto)
   if (qrCodeUrl) {
     return (
       <>
@@ -257,7 +318,7 @@ function BigliettoCtaContent({
             />
           </div>
           <p className="mt-2 text-caption text-nero-base/65 text-center">
-            Inquadra per acquistare
+            Scansiona per acquistare
           </p>
         </div>
         {backBtn}
@@ -350,7 +411,6 @@ function BigliettoCtaContent({
     );
   }
 
-  // richiestaContatto (default)
   return (
     <>
       <Link
@@ -373,7 +433,7 @@ function PerforazioniOrizzontali({ position }: { position: "top" | "bottom" }) {
     <div
       aria-hidden
       className={cn(
-        "absolute left-4 right-4 flex justify-between items-center pointer-events-none",
+        "absolute left-5 right-5 flex justify-between items-center pointer-events-none z-[2]",
         position === "top" ? "top-2.5" : "bottom-2.5"
       )}
     >

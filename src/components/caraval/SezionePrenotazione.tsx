@@ -19,6 +19,9 @@ export type SezionePrenotazioneSpettacolo = {
   sottotitolo?: string;
   categoria?: "prosa" | "fuoco" | "strada";
   annoCreazione?: number;
+  annoProduzione?: number;
+  durataMinuti?: number;
+  postiLimitati?: boolean;
   slug?: { current?: string };
   prenotazione?: {
     modalita?: ModalitaPrenotazione;
@@ -50,6 +53,9 @@ export function SezionePrenotazione({
     sottotitolo: spettacolo.sottotitolo,
     categoria: spettacolo.categoria,
     annoCreazione: spettacolo.annoCreazione,
+    annoProduzione: spettacolo.annoProduzione,
+    durataMinuti: spettacolo.durataMinuti,
+    postiLimitati: spettacolo.postiLimitati,
     slug: spettacolo.slug?.current,
     prenotazione: spettacolo.prenotazione,
     contatti: { telefono, email },

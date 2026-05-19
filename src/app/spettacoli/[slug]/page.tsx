@@ -43,6 +43,9 @@ type SpettacoloPage = HeroSpettacoloData & {
   cast?: CastItem[];
   regia?: string;
   citazioniStampa?: CitazioneItem[];
+  annoProduzione?: number;
+  durataMinuti?: number;
+  postiLimitati?: boolean;
   prenotazione?: {
     modalita?:
       | "linkEsterno"
@@ -93,6 +96,7 @@ async function getData(slug: string) {
     client.fetch<SpettacoloPage | null>(
       `*[_type == "spettacolo" && slug.current == $slug][0]{
         _id, titolo, sottotitolo, slug, categoria, annoCreazione, regia,
+        annoProduzione, durataMinuti, postiLimitati,
         descrizioneNarrativa, gallery, trailerYoutube,
         schedaTecnica, cast, citazioniStampa, immagineCover, fotoHero,
         prenotazione,

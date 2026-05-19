@@ -65,7 +65,9 @@ async function getImaginariumData() {
       }`
     ),
     client.fetch<{ patrociniHomepage?: PatrocinioItem[] } | null>(
-      `*[_type == "homepageCopy"][0]{ patrociniHomepage }`
+      `*[_type == "homepageCopy"][0]{
+        "patrociniHomepage": patrociniHomepage[]{ _key, categoria, nome, logo, url }
+      }`
     ),
   ]);
 
@@ -228,14 +230,11 @@ export default async function ImaginariumPage() {
         }
         palette="imaginarium"
       />
-      {/* Hotfix pre-golive: SponsorPartnerStrip rimosso. I tre blocchi testuali
-          "Con il patrocinio di / Sponsor / Partner" duplicavano i loghi grid
-          sottostanti senza valore informativo aggiuntivo. */}
-      <PatrociniStrip
-        patrocini={patrocini}
-        eyebrow="Con il sostegno di"
-        palette="light"
-      />
+      {/* Hotfix Finale 2: PatrociniStrip ora rende 3 categorie distinte
+          (patrocinio / sponsor / partner) basate sul campo Sanity
+          `patrociniHomepage[].categoria`. Niente eyebrow override —
+          ogni gruppo ha il suo titolo. */}
+      <PatrociniStrip patrocini={patrocini} palette="light" />
       <EdizioniPassate edizioni={edizioniPassate} />
       <CtaFinale
         variant="dark"
