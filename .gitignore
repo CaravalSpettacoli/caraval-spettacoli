@@ -41,3 +41,7 @@ next-env.d.ts
 
 # screenshots (Chrome MCP visual checks)
 .screenshots/
+Hotfix_*.md
+Eventi_*.md
+Import_*.md
+Polish_*.md
