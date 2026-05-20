@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { notFound } from "next/navigation";
 import { client } from "@/../sanity/lib/client";
+import { getFeatureFlags } from "@/lib/feature-flags";
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
 import {
@@ -24,6 +26,7 @@ type CopyCalendario = {
   calendarioHeroEyebrow?: string;
   calendarioHeroHeading?: string;
   calendarioHeroIntro?: string;
+  calendarioHeroFotoSfondo?: { asset?: { _ref?: string }; alt?: string };
   ospitaHeading?: string;
   ospitaBody?: string;
   ospitaCtaTesto?: string;
@@ -56,6 +59,7 @@ async function getCalendarioData() {
     client.fetch<CopyCalendario | null>(
       `*[_type == "homepageCopy"][0]{
         calendarioHeroEyebrow, calendarioHeroHeading, calendarioHeroIntro,
+        calendarioHeroFotoSfondo,
         ospitaHeading, ospitaBody, ospitaCtaTesto, ospitaCtaLink
       }`
     ),
@@ -68,6 +72,10 @@ async function getCalendarioData() {
 }
 
 export default async function CalendarioPage() {
+  const flags = await getFeatureFlags();
+  if (!flags.mostraCalendario) {
+    notFound();
+  }
   const { items, copy } = await getCalendarioData();
 
   const eyebrow = copy.calendarioHeroEyebrow ?? "CALENDARIO";
@@ -91,6 +99,7 @@ export default async function CalendarioPage() {
         eyebrow={eyebrow}
         heading={heading}
         sottotitolo={intro}
+        fotoSfondo={copy.calendarioHeroFotoSfondo}
         palette="default"
         altezza="compatto"
       />

@@ -1,9 +1,11 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
+import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "spettacolo",
   title: "Spettacolo",
   type: "document",
+  groups: [SEO_GROUP],
   fieldsets: [
     {
       name: "homepage",
@@ -83,8 +85,35 @@ export default defineType({
       fieldset: "contenutiConsigliati",
     }),
     defineField({
+      name: "annoProduzione",
+      title: "Anno produzione (biglietto)",
+      type: "number",
+      description:
+        "Anno in cui lo spettacolo è stato prodotto. Visualizzato sul biglietto come 'PRODUZIONE YYYY'. Se vuoto, fallback ad annoCreazione.",
+      validation: (r) => r.min(2010).max(new Date().getFullYear() + 1),
+      fieldset: "contenutiConsigliati",
+    }),
+    defineField({
+      name: "durataMinuti",
+      title: "Durata in minuti (biglietto)",
+      type: "number",
+      description:
+        "Durata totale dello spettacolo (esclusi intervalli). Visualizzata nel biglietto.",
+      validation: (r) => r.min(15).max(300),
+      fieldset: "contenutiConsigliati",
+    }),
+    defineField({
+      name: "postiLimitati",
+      title: "Posti limitati",
+      type: "boolean",
+      initialValue: false,
+      description:
+        "Se attivo, il biglietto mostra il badge 'Posti limitati'.",
+      fieldset: "contenutiConsigliati",
+    }),
+    defineField({
       name: "immagineCover",
-      title: "Immagine di copertina",
+      title: "Cover anteprima (verticale 4:5)",
       type: "image",
       options: { hotspot: true },
       fields: [
@@ -95,6 +124,24 @@ export default defineType({
         }),
       ],
       fieldset: "contenutiConsigliati",
+      description:
+        "Foto verticale per le card anteprima nelle griglie. Idealmente 4:5 o 2:3.",
+    }),
+    defineField({
+      name: "fotoHero",
+      title: "Foto hero scheda (orizzontale 16:9)",
+      type: "image",
+      options: { hotspot: true },
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Testo alternativo",
+          type: "string",
+        }),
+      ],
+      fieldset: "contenutiConsigliati",
+      description:
+        "Foto orizzontale per l'hero della scheda dettaglio. Idealmente 16:9 o panoramica.",
     }),
     defineField({
       name: "gallery",
@@ -280,6 +327,17 @@ export default defineType({
           hidden: ({ parent }) => parent?.modalita !== "linkEsterno",
         }),
         defineField({
+          name: "qrCode",
+          title: "QR code biglietto (opzionale)",
+          type: "image",
+          options: { hotspot: false },
+          description:
+            "Se caricato, il biglietto mostra il QR al posto della CTA (override di qualsiasi modalità). Utile per biglietti già emessi su sistemi esterni.",
+          fields: [
+            defineField({ name: "alt", title: "Testo alternativo", type: "string" }),
+          ],
+        }),
+        defineField({
           name: "etichettaCustom",
           title: "Etichetta CTA personalizzata (opzionale)",
           type: "string",
@@ -295,8 +353,7 @@ export default defineType({
         }),
       ],
     }),
-    defineField({ name: "seoTitle", title: "SEO title (override)", type: "string" }),
-    defineField({ name: "seoDescription", title: "SEO description", type: "text", rows: 2 }),
+    ...seoOverrideFields(),
   ],
   preview: {
     select: { title: "titolo", subtitle: "categoria", media: "immagineCover" },

@@ -1,7 +1,8 @@
 import { client } from "@/../sanity/lib/client";
 import { HeroPagina } from "@/components/caraval/HeroPagina";
 import { SezioneStoria } from "@/components/caraval/SezioneStoria";
-import { MembriGrid, type MembroItem } from "@/components/caraval/MembriGrid";
+import type { MembroItem } from "@/components/caraval/MembriGrid";
+import { MembriCarosello } from "@/components/caraval/MembriCarosello";
 import { PremiSezione } from "@/components/caraval/PremiSezione";
 import { ScuolaMagiaBox } from "@/components/caraval/ScuolaMagiaBox";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
@@ -11,6 +12,7 @@ type ChiSiamoCopy = {
   heroEyebrow?: string;
   heroHeading?: string;
   heroSottotitolo?: string;
+  heroFotoSfondo?: { asset?: { _ref?: string }; alt?: string };
   storiaEyebrow?: string;
   storiaHeading?: string;
   storiaBody?: string;
@@ -29,11 +31,18 @@ type ChiSiamoCopy = {
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Chi siamo · Caraval Spettacoli",
-  description:
-    "Caraval è una compagnia teatrale di Soncino. Sei artisti che fanno prosa, fuoco e strada. Dal 2020.",
-};
+import type { Metadata } from "next";
+import { generatePageMetadata } from "@/lib/generate-page-metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    singletonId: "paginaChiSiamoCopy",
+    slug: "/chi-siamo",
+    defaultTitle: "Chi siamo — Caraval Spettacoli, compagnia teatrale di Soncino",
+    defaultDescription:
+      "Caraval è una compagnia teatrale di Soncino (CR) dal 2020. Sei artisti che fanno prosa, teatro di fuoco e teatro di strada.",
+  });
+}
 
 async function getData() {
   const [copy, membri, premi] = await Promise.all([
@@ -66,6 +75,8 @@ export default async function ChiSiamoPage() {
         sottotitolo={
           copy.heroSottotitolo ?? "Compagnia teatrale di Soncino, dal 2016."
         }
+        fotoSfondo={copy.heroFotoSfondo}
+        fotoObjectPosition="center top"
         palette="default"
         altezza="compatto"
       />
@@ -77,7 +88,7 @@ export default async function ChiSiamoPage() {
         foto={copy.storiaFotoSezione}
       />
 
-      <MembriGrid
+      <MembriCarosello
         eyebrow={copy.membriEyebrow ?? "LA COMPAGNIA"}
         heading={copy.membriHeading ?? "Le persone di Caraval"}
         intro={copy.membriIntro}

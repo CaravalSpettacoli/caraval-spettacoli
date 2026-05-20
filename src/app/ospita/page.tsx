@@ -17,6 +17,7 @@ type OspitaCopy = {
   heroEyebrow?: string;
   heroHeading?: string;
   heroSottotitolo?: string;
+  heroFotoSfondo?: { asset?: { _ref?: string }; alt?: string };
   valorePropostoEyebrow?: string;
   valorePropostoHeading?: string;
   valorePropostoBody?: string;
@@ -38,11 +39,18 @@ type Impostazioni = {
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Ospita Caraval · Caraval Spettacoli",
-  description:
-    "Comuni, Pro Loco, dimore storiche, associazioni: porta uno spettacolo Caraval nella tua piazza. Prosa, fuoco, strada.",
-};
+import type { Metadata } from "next";
+import { generatePageMetadata } from "@/lib/generate-page-metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    singletonId: "paginaOspitaCopy",
+    slug: "/ospita",
+    defaultTitle: "Ospita Caraval — Informazioni per teatri ed enti",
+    defaultDescription:
+      "Comuni, Pro Loco, dimore storiche, associazioni: porta uno spettacolo Caraval nella tua piazza. Prosa, fuoco, strada.",
+  });
+}
 
 async function getData() {
   const [copy, impostazioni] = await Promise.all([
@@ -67,12 +75,13 @@ export default async function OspitaPage() {
         heading={copy.heroHeading ?? "Porta il teatro nella tua piazza"}
         sottotitolo={copy.heroSottotitolo}
         ctaPrimaria={{ label: "Contattaci ora →", href: ctaHref, esterno: false }}
+        fotoSfondo={copy.heroFotoSfondo}
         palette="default"
         altezza="compatto"
       />
 
       {/* Valore proposto */}
-      <Section background="nero-soft">
+      <Section background="nero-soft" glow="bottom-right">
         <Container>
           <div className="max-w-3xl">
             {copy.valorePropostoEyebrow && (

@@ -11,7 +11,6 @@ import { SpettacoloCard } from "@/components/caraval/SpettacoloCard";
 import { EventoCardSimple as EventoCard } from "@/components/caraval/EventoCardSimple";
 import { TitoloDoppio } from "@/components/caraval/TitoloDoppio";
 import { TitoloRitmico } from "@/components/caraval/TitoloRitmico";
-import { Ticket } from "@/components/caraval/Ticket";
 import { CreditiLocandina } from "@/components/caraval/CreditiLocandina";
 import { CitazioneStampa } from "@/components/caraval/CitazioneStampa";
 import { Stella5Punte } from "@/components/decorative/Stella5Punte";
@@ -554,55 +553,16 @@ export default function DesignSystemPage() {
         </Container>
       </Section>
 
-      {/* 10 — EVENTI & TICKET */}
+      {/* 10 — EVENTI */}
       <Section>
         <Container>
-          <GroupTitle>10 — Eventi & Ticket</GroupTitle>
+          <GroupTitle>10 — Eventi</GroupTitle>
 
           <SubTitle>10.1 — EventoCard standard</SubTitle>
           <div className="grid grid-cols-1 gap-4 max-w-3xl mb-16">
             {EVENTI_MOCK.map((e) => (
               <EventoCard key={e.titolo} evento={e} />
             ))}
-          </div>
-
-          <SubTitle>10.2 — Ticket</SubTitle>
-          <p className="text-body-s text-crema-muted mb-8 max-w-2xl">
-            Componente unico con filigrana SVG ondulata di sfondo (opacity 0.07),
-            bordo rosso 1.5px, perforazione laterale a 8 puntini, stub
-            &ldquo;INGRESSO&rdquo; ruotato. Hover: lift di 4px + shadow leggera.
-            Click: animazione &ldquo;strappo&rdquo; sullo stub sinistro (skip su{" "}
-            <code className="font-mono">prefers-reduced-motion</code>).
-          </p>
-          <div className="space-y-10 mb-16">
-            <div>
-              <p className="text-caption uppercase-tracked text-crema-muted mb-3">
-                Desktop · larghezza piena
-              </p>
-              <Ticket
-                data="2026-07-12"
-                titolo="Romeo + Giulietta"
-                citta="Brescia"
-                struttura="Teatro Sociale"
-                prezzo="12 €"
-                urlBiglietti="https://example.com/ticket"
-              />
-            </div>
-            <div>
-              <p className="text-caption uppercase-tracked text-crema-muted mb-3">
-                Mobile · max-w-sm (aspect 3:1)
-              </p>
-              <div className="max-w-sm">
-                <Ticket
-                  data="2026-08-20"
-                  titolo="Cubiculum Diaboli"
-                  citta="Cremona"
-                  struttura="Piazza del Comune"
-                  prezzo="Ingresso libero"
-                  urlBiglietti="https://example.com/info"
-                />
-              </div>
-            </div>
           </div>
         </Container>
       </Section>

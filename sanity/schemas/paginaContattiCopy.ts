@@ -1,4 +1,5 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
+import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "paginaContattiCopy",
@@ -7,6 +8,7 @@ export default defineType({
   groups: [
     { name: "hero", title: "Hero" },
     { name: "aree", title: "Aree di contatto" },
+    SEO_GROUP,
   ],
   fields: [
     defineField({ name: "heroEyebrow", title: "Hero — Eyebrow", type: "string", group: "hero", initialValue: "CONTATTI" }),
@@ -18,6 +20,14 @@ export default defineType({
       rows: 2,
       group: "hero",
       initialValue: "Per spettacoli, formazione, collaborazioni o solo per dirci ciao.",
+    }),
+    defineField({
+      name: "heroFotoSfondo",
+      title: "Hero — Foto sfondo",
+      type: "image",
+      options: { hotspot: true },
+      group: "hero",
+      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
     }),
     defineField({
       name: "aree",
@@ -91,6 +101,7 @@ export default defineType({
         }),
       ],
     }),
+    ...seoOverrideFields(),
   ],
   preview: { prepare: () => ({ title: "Contatti — Copy pagina" }) },
 });

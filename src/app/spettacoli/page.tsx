@@ -9,8 +9,11 @@ import {
 } from "@/components/caraval/ArchivioSpettacoliGrid";
 import type { SpettacoloCardLargeData } from "@/components/caraval/SpettacoloCardLarge";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { GlifoDecorativo } from "@/components/decorative/GlifoDecorativo";
+import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 
 type PaginaCopy = {
+  heroFotoSfondo?: { asset?: { _ref?: string }; alt?: string } | null;
   eyebrow?: string;
   heading?: string;
   intro?: string;
@@ -35,16 +38,29 @@ async function getData() {
         "premiAssociati": premiAssociati[]->{ _id, anno, nomePremio }
       }`
     ),
-    client.fetch<PaginaCopy | null>(`*[_type == "paginaSpettacoliCopy"][0]`),
+    client.fetch<PaginaCopy | null>(
+      `*[_type == "paginaSpettacoliCopy"][0]{
+        eyebrow, heading, intro,
+        archivioEyebrow, archivioHeading, archivioIntro,
+        heroFotoSfondo{ asset, alt }
+      }`
+    ),
   ]);
   return { spettacoli, archivio, copy };
 }
 
-export const metadata = {
-  title: "Spettacoli",
-  description:
-    "Il repertorio attivo di Caraval Spettacoli: prosa, teatro di fuoco, teatro di strada.",
-};
+import type { Metadata } from "next";
+import { generatePageMetadata } from "@/lib/generate-page-metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    singletonId: "paginaSpettacoliCopy",
+    slug: "/spettacoli",
+    defaultTitle: "Spettacoli — Caraval Spettacoli Soncino",
+    defaultDescription:
+      "Il repertorio attivo di Caraval Spettacoli: prosa, teatro di fuoco, teatro di strada. Produzioni della compagnia teatrale di Soncino (Cremona).",
+  });
+}
 
 export default async function PaginaSpettacoli() {
   const { spettacoli, archivio, copy } = await getData();
@@ -57,9 +73,18 @@ export default async function PaginaSpettacoli() {
         sottotitolo={copy?.intro}
         palette="default"
         altezza="compatto"
+        fotoSfondo={copy?.heroFotoSfondo ?? undefined}
       />
 
-      <Section theme="dark" bgVariant="soft">
+      {/* Onda separatore tra hero e sezione spettacoli. Bg combaciante con
+          la Section che segue (nero-soft) per dare continuità: la wave fa
+          da "ingresso decorativo" alla sezione invece di fluttuare in una
+          banda nero-deep orfana (Diagnosi_Fix_Mobile §3). */}
+      <div className="flex justify-center bg-nero-soft pt-8 pb-2 -mt-px">
+        <OndaDecorativa width={260} variant="sottile" className="text-rosso-base/60" />
+      </div>
+
+      <Section theme="dark" bgVariant="soft" glow="top-right">
         <Container>
           <SpettacoliGrid spettacoli={spettacoli} />
         </Container>
@@ -69,6 +94,7 @@ export default async function PaginaSpettacoli() {
         <Section theme="dark" bgVariant="base" id="archivio">
           <Container>
             <div className="mb-12 max-w-2xl">
+              <GlifoDecorativo tipo="sparkles" size={26} align="left" />
               <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
                 {copy?.archivioEyebrow ?? "ARCHIVIO"}
               </p>
@@ -84,6 +110,10 @@ export default async function PaginaSpettacoli() {
           </Container>
         </Section>
       )}
+
+      <div className="flex justify-center bg-nero-base pt-2 pb-8">
+        <OndaDecorativa width={220} variant="sottile" className="text-rosso-base/60" />
+      </div>
 
       <CtaFinale
         variant="accent"

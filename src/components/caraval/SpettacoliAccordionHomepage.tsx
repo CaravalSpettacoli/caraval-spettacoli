@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { Container } from "@/components/ui/Container";
+import { GlifoDecorativo } from "@/components/decorative/GlifoDecorativo";
 
 export type SpettacoloHomepage = {
   _id: string;
@@ -37,7 +38,7 @@ function ColonnaAccordion({
       <h3 className="font-display text-rosso-base/90 uppercase-tracked text-caption mb-6">
         {titolo}
       </h3>
-      <ul className="border-t border-crema-faint/30">
+      <ul className="border-t border-rosso-base/20">
         {spettacoli.map((s) => {
           const isOpen = aperto === s._id;
           const slug = s.slug?.current;
@@ -46,16 +47,16 @@ function ColonnaAccordion({
           return (
             <li
               key={s._id}
-              className="border-b border-crema-faint/30"
+              className="border-b border-rosso-base/20"
             >
               <button
                 type="button"
                 aria-expanded={isOpen}
                 onClick={() => setAperto(isOpen ? null : s._id)}
-                className="w-full flex items-center justify-between gap-4 py-5 md:py-6 text-left group min-h-[4rem] md:min-h-[5rem]"
+                className="w-full flex items-center justify-between gap-4 text-left group min-h-[5rem] md:min-h-[6rem]"
               >
                 <span
-                  className="font-display text-crema-base group-hover:text-rosso-hover transition-colors leading-tight"
+                  className="font-display text-crema-base group-hover:text-rosso-hover transition-colors leading-tight line-clamp-2"
                   style={{ fontSize: "clamp(1.5rem, 3vw, 2.25rem)" }}
                 >
                   {s.titolo}
@@ -69,26 +70,24 @@ function ColonnaAccordion({
                   +
                 </span>
               </button>
-              <div
-                className={`overflow-hidden transition-[max-height,opacity] duration-300 ease-out ${
-                  isOpen ? "max-h-[400px] opacity-100" : "max-h-0 opacity-0"
-                }`}
-              >
-                <div className="pb-6">
-                  {excerpt && (
-                    <p className="text-body text-crema-muted leading-relaxed">
-                      {excerpt}
-                    </p>
-                  )}
-                  {slug && (
-                    <Link
-                      href={`/spettacoli/${slug}`}
-                      className="mt-4 inline-flex items-center gap-2 text-body-s text-crema-base underline underline-offset-4 decoration-rosso-base hover:text-rosso-hover transition-colors uppercase-tracked"
-                    >
-                      Vai allo spettacolo →
-                    </Link>
-                  )}
-                </div>
+              <div className={`accordion-body ${isOpen ? "open" : ""}`}>
+                {excerpt ? (
+                  <p className="text-body text-crema-muted leading-relaxed">
+                    {excerpt}
+                  </p>
+                ) : (
+                  <p className="text-body text-crema-muted/70 italic leading-relaxed">
+                    Descrizione in arrivo.
+                  </p>
+                )}
+                {slug && (
+                  <Link
+                    href={`/spettacoli/${slug}`}
+                    className="mt-4 inline-flex items-center gap-2 text-body-s text-crema-base underline underline-offset-4 decoration-rosso-base hover:text-rosso-hover transition-colors uppercase-tracked"
+                  >
+                    Vai allo spettacolo →
+                  </Link>
+                )}
               </div>
             </li>
           );
@@ -126,6 +125,7 @@ export function SpettacoliAccordionHomepage({
       <Container>
         {(eyebrow || heading || intro) && (
           <div className="mb-12 max-w-2xl">
+            <GlifoDecorativo tipo="drama" size={28} align="left" />
             {eyebrow && (
               <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
                 {eyebrow}
@@ -150,7 +150,7 @@ export function SpettacoliAccordionHomepage({
         <div className="mt-16 text-center">
           <Link
             href={ctaLink}
-            className="inline-flex items-center gap-3 font-display text-h3 text-crema-base hover:text-rosso-hover transition-colors"
+            className="cta-tertiary font-display text-h3 text-crema-base hover:text-rosso-hover transition-colors"
           >
             {ctaTesto} <span aria-hidden>→</span>
           </Link>

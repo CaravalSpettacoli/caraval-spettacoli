@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { Container } from "@/components/ui/Container";
 import { urlFor } from "@/../sanity/lib/image";
+import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 
 type FotoSezione = { asset?: { _ref?: string }; alt?: string };
 
@@ -33,6 +34,11 @@ export function SezioneStoria({
       <Container>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10 md:gap-16 items-center">
           <div>
+            <OndaDecorativa
+              width={120}
+              variant="sottile"
+              className="text-rosso-base/50 mb-4"
+            />
             {eyebrow && (
               <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
                 {eyebrow}

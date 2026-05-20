@@ -21,6 +21,10 @@ type ImpostazioniFooter = {
     codiceFiscale?: string;
   };
   socialLinks?: SocialLink[];
+  iubenda?: {
+    privacyPolicyUrl?: string;
+    cookiePolicyUrl?: string;
+  };
 };
 
 const FALLBACK: ImpostazioniFooter = {
@@ -56,9 +60,8 @@ const FALLBACK: ImpostazioniFooter = {
   ],
 };
 
-const SITO_LINKS = [
+const SITO_LINKS_BASE = [
   { href: "/spettacoli", label: "Spettacoli" },
-  { href: "/calendario", label: "Calendario" },
   { href: "/formazione", label: "Formazione" },
   { href: "/imaginarium", label: "Imaginarium" },
 ];
@@ -82,7 +85,8 @@ async function getImpostazioni(): Promise<ImpostazioniFooter> {
       `*[_type == "impostazioniSito"][0]{
         contattiPubblici,
         datiAssociazione,
-        socialLinks[]{piattaforma, url, mostraInFooter}
+        socialLinks[]{piattaforma, url, mostraInFooter},
+        iubenda{ privacyPolicyUrl, cookiePolicyUrl }
       }`,
       {},
       { next: { revalidate: 300 } }
@@ -93,8 +97,11 @@ async function getImpostazioni(): Promise<ImpostazioniFooter> {
   }
 }
 
-export async function Footer() {
+export async function Footer({ mostraCalendario = false }: { mostraCalendario?: boolean }) {
   const impostazioni = await getImpostazioni();
+  const SITO_LINKS = mostraCalendario
+    ? [SITO_LINKS_BASE[0], { href: "/calendario", label: "Calendario" }, ...SITO_LINKS_BASE.slice(1)]
+    : SITO_LINKS_BASE;
   const dati = impostazioni.datiAssociazione || {};
   const contatti = impostazioni.contattiPubblici || {};
   const socialLive = (impostazioni.socialLinks || []).filter(
@@ -228,17 +235,49 @@ export async function Footer() {
           </div>
         </div>
 
-        <div className="mt-16 pt-6 border-t border-crema-faint flex flex-col md:flex-row gap-4 md:items-center md:justify-between text-caption text-crema-muted">
-          <div>
-            © {new Date().getFullYear()} Caraval Spettacoli — Sito di Eddidesign
+        <div className="mt-16 pt-6 border-t border-crema-faint footer-crediti-row text-caption text-crema-muted">
+          <div className="flex gap-6 footer-crediti-legal">
+            {impostazioni.iubenda?.privacyPolicyUrl ? (
+              <a
+                href={impostazioni.iubenda.privacyPolicyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-crema-base"
+              >
+                Privacy
+              </a>
+            ) : (
+              <Link href="/privacy" className="hover:text-crema-base">
+                Privacy
+              </Link>
+            )}
+            {impostazioni.iubenda?.cookiePolicyUrl ? (
+              <a
+                href={impostazioni.iubenda.cookiePolicyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-crema-base"
+              >
+                Cookie
+              </a>
+            ) : (
+              <Link href="/cookie" className="hover:text-crema-base">
+                Cookie
+              </Link>
+            )}
           </div>
-          <div className="flex gap-6">
-            <Link href="/privacy" className="hover:text-crema-base">
-              Privacy
-            </Link>
-            <Link href="/cookie" className="hover:text-crema-base">
-              Cookie
-            </Link>
+          <div className="footer-crediti-blocco">
+            <p className="footer-crediti-testo">
+              © {new Date().getFullYear()} Caraval Spettacoli · Tutti i diritti riservati
+            </p>
+            <a
+              href="https://www.eddidesign.it"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-eddidesign-link"
+            >
+              Design by Eddidesign
+            </a>
           </div>
         </div>
       </Container>

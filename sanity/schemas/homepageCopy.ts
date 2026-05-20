@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "homepageCopy",
@@ -9,11 +10,12 @@ export default defineType({
     { name: "numeri", title: "I numeri" },
     { name: "imaginarium", title: "Imaginarium preview" },
     { name: "repertorio", title: "Repertorio" },
-    { name: "officina", title: "Officina Teatrale" },
+    { name: "officina", title: "Caraval Academy" },
     { name: "ospita", title: "Ospita Caraval" },
     { name: "contatti", title: "Contatti prelude" },
     { name: "calendario", title: "Calendario (pagina)" },
     { name: "formazione", title: "Formazione (pagina)" },
+    SEO_GROUP,
   ],
   fields: [
     // Strip Premi
@@ -75,6 +77,56 @@ export default defineType({
       type: "string",
       group: "imaginarium",
     }),
+    defineField({
+      name: "patrociniHomepage",
+      title: "Strip patrocini & partner (homepage)",
+      type: "array",
+      group: "imaginarium",
+      description:
+        "Loghi patrocini/sponsor/partner mostrati sotto la preview Imaginarium in homepage. Se logo manca, viene mostrato un placeholder col nome.",
+      of: [
+        {
+          type: "object",
+          name: "patrocinioItem",
+          fields: [
+            {
+              name: "categoria",
+              title: "Categoria",
+              type: "string",
+              options: {
+                list: [
+                  { title: "Con il patrocinio di", value: "patrocinio" },
+                  { title: "Sponsor", value: "sponsor" },
+                  { title: "Partner", value: "partner" },
+                ],
+                layout: "radio",
+              },
+              initialValue: "partner",
+              validation: (R) => R.required(),
+            },
+            {
+              name: "nome",
+              title: "Nome",
+              type: "string",
+              validation: (R) => R.required(),
+            },
+            { name: "logo", title: "Logo", type: "image", options: { hotspot: true } },
+            { name: "url", title: "URL (opzionale)", type: "url" },
+          ],
+          preview: {
+            select: { title: "nome", subtitle: "categoria", media: "logo" },
+          },
+        },
+      ],
+      initialValue: [
+        { categoria: "patrocinio", nome: "Comune di Soncino", url: "https://www.comune.soncino.cr.it" },
+        { categoria: "sponsor", nome: "Danesi" },
+        { categoria: "partner", nome: "Bacco da Seta" },
+        { categoria: "partner", nome: "Pro Loco Soncino" },
+        { categoria: "partner", nome: "I Viaggiastorie" },
+      ],
+      validation: (R) => R.max(20),
+    }),
 
     // Repertorio
     defineField({
@@ -109,7 +161,7 @@ export default defineType({
       group: "repertorio",
     }),
 
-    // Officina
+    // Caraval Academy (campo tecnico "officina" mantenuto per backcompat)
     defineField({
       name: "officinaEyebrow",
       title: "Eyebrow",
@@ -210,6 +262,14 @@ export default defineType({
       rows: 2,
       group: "calendario",
     }),
+    defineField({
+      name: "calendarioHeroFotoSfondo",
+      title: "Hero — Foto sfondo",
+      type: "image",
+      options: { hotspot: true },
+      group: "calendario",
+      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+    }),
 
     // Formazione (pagina)
     defineField({
@@ -236,6 +296,14 @@ export default defineType({
       type: "text",
       rows: 3,
       group: "formazione",
+    }),
+    defineField({
+      name: "formazioneHeroFotoSfondo",
+      title: "Hero — Foto sfondo",
+      type: "image",
+      options: { hotspot: true },
+      group: "formazione",
+      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
     }),
     defineField({
       name: "corsiSezioneEyebrow",
@@ -290,6 +358,7 @@ export default defineType({
       type: "string",
       group: "formazione",
     }),
+    ...seoOverrideFields(),
   ],
   preview: { prepare: () => ({ title: "Homepage — Copy sezioni" }) },
 });

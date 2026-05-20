@@ -193,6 +193,160 @@ body {
   transform: translateY(0);
 }
 
+/* Reveal on scroll: usato dal componente <Reveal>. Threshold 0.1 aggressivo
+   per garantire attivazione anche su sezioni piccole. Durata 900ms visibile. */
+.reveal {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 900ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 900ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+.reveal.reveal-left {
+  transform: translateX(-40px);
+}
+.reveal.reveal-right {
+  transform: translateX(40px);
+}
+.reveal.revealed {
+  opacity: 1;
+  transform: translate(0, 0);
+}
+
+/* Stagger CSS-only: applica a un container con `<Reveal as="ul" className="reveal-stagger">`.
+   Il container è osservato da IntersectionObserver (via Reveal): quando entra in
+   viewport riceve `.revealed`. I figli si animano in stagger via :nth-child delay.
+   Hotfix 5: selettore self-applicato (.reveal-stagger.revealed >) invece di nested,
+   così funziona anche senza un Reveal parent di sezione. */
+.reveal-stagger > * {
+  opacity: 0;
+  transform: translateY(20px);
+  transition:
+    opacity 700ms cubic-bezier(0.25, 0.46, 0.45, 0.94),
+    transform 700ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  will-change: opacity, transform;
+}
+.reveal-stagger.revealed > * {
+  opacity: 1;
+  transform: translateY(0);
+}
+.reveal-stagger > *:nth-child(1) { transition-delay: 0ms; }
+.reveal-stagger > *:nth-child(2) { transition-delay: 100ms; }
+.reveal-stagger > *:nth-child(3) { transition-delay: 200ms; }
+.reveal-stagger > *:nth-child(4) { transition-delay: 300ms; }
+.reveal-stagger > *:nth-child(5) { transition-delay: 400ms; }
+.reveal-stagger > *:nth-child(6) { transition-delay: 500ms; }
+.reveal-stagger > *:nth-child(7) { transition-delay: 600ms; }
+.reveal-stagger > *:nth-child(8) { transition-delay: 700ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
+
+/* CTA terziarie tipo "Vedi tutto il repertorio →": underline sempre visibile,
+   al hover cambia colore (cremisi). Più chiaro che è cliccabile. */
+.cta-tertiary {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  text-decoration: none;
+  border-bottom: 1px solid currentColor;
+  padding-bottom: 4px;
+  transition: border-color 220ms ease-out, color 220ms ease-out;
+}
+.cta-tertiary:hover,
+.cta-tertiary:focus-visible {
+  border-bottom-color: var(--color-rosso-base);
+}
+
+/* Accordion homepage: animazione apertura/chiusura body. Snappy (250ms). */
+.accordion-body {
+  max-height: 0;
+  opacity: 0;
+  overflow: hidden;
+  transition:
+    max-height 250ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 200ms ease-out,
+    padding 250ms cubic-bezier(0.4, 0, 0.2, 1);
+  padding-bottom: 0;
+}
+.accordion-body.open {
+  max-height: 600px;
+  opacity: 1;
+  padding-bottom: 1.5rem;
+}
+
+/* Hover voci header: colore dinamico via CSS variable, settato da Header.tsx
+   in base al tema della sezione corrente (es. su light=#0a0a0a per non fondersi
+   col rosso, su dark=#c01d56 rosso-hover). */
+.header-link:hover {
+  color: var(--header-hover, #c01d56);
+}
+
+/* Hotfix Finale Desktop: hover voci nav SEMPRE leggibile contro lo sfondo
+   della sezione corrente. Specificità alta + overlay nero su sfondi rossi
+   per dare distacco anche se il colore si avvicina al bg. */
+header[data-current-theme="light"] .header-link:hover,
+header[data-current-theme="light"] .header-link:focus-visible {
+  color: #f5e6d3 !important;
+  background-color: rgba(10, 10, 10, 0.18);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin: -2px -8px;
+}
+header[data-current-theme="accent"] .header-link:hover,
+header[data-current-theme="accent"] .header-link:focus-visible {
+  color: #f5e6d3 !important;
+  background-color: rgba(10, 10, 10, 0.18);
+  border-radius: 4px;
+  padding: 2px 8px;
+  margin: -2px -8px;
+}
+header[data-current-theme="dark"] .header-link:hover,
+header[data-scrolled="true"] .header-link:hover {
+  color: #c01d56 !important;
+}
+
+/* Hero foto sfondo: subtle zoom infinite alternate per dinamicità. */
+.hero-foto-sfondo {
+  animation: subtle-zoom 20s ease-in-out infinite alternate;
+  will-change: transform;
+}
+@keyframes subtle-zoom {
+  from { transform: scale(1); }
+  to { transform: scale(1.08); }
+}
+
+/* Glow sfondo cremisi pulsante su sezioni alternate. */
+.glow-sfondo {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  animation: glow-pulse 8s ease-in-out infinite alternate;
+}
+@keyframes glow-pulse {
+  from { opacity: 0.35; transform: scale(1); }
+  to { opacity: 0.65; transform: scale(1.08); }
+}
+
+/* Page transition (template.tsx): fade tra route. 300ms ease-out.
+   Niente translate per non rompere lo scroll restore. */
+.page-transition {
+  animation: page-fade-in 300ms ease-out;
+}
+@keyframes page-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -210,6 +364,18 @@ body {
   .fade-in-on-scroll {
     opacity: 1 !important;
     transform: none !important;
+  }
+  .reveal {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .page-transition {
+    animation: none !important;
+  }
+  .hero-foto-sfondo,
+  .glow-sfondo {
+    animation: none !important;
   }
 }
 
@@ -243,6 +409,219 @@ body {
 .ticket .stub.is-tearing {
   transform: translateX(-20px);
   opacity: 0;
+}
+
+/* === Card "Prossimi eventi" homepage — variant per fonte ===
+   Differenzia visivamente eventi del repertorio Caraval (dark/cremisi) dagli
+   spettacoli Imaginarium (palette inversa rosso pieno). Hotfix pre-golive. */
+.evento-row-wrapper {
+  border: 1px solid rgba(168, 23, 74, 0.2);
+}
+.evento-row-wrapper:hover {
+  border-color: var(--color-rosso-base);
+}
+.evento-row-date,
+.evento-row-location,
+.evento-row-desc {
+  color: var(--color-crema-muted);
+}
+.evento-row-title {
+  color: var(--color-crema-base);
+}
+.evento-row-countdown {
+  background-color: rgba(168, 23, 74, 0.15);
+  color: var(--color-rosso-base);
+}
+.evento-row-tag {
+  background-color: rgba(168, 23, 74, 0.2);
+  color: var(--color-rosso-base);
+}
+.evento-row-placeholder {
+  background: linear-gradient(135deg, rgba(168, 23, 74, 0.22), rgba(168, 23, 74, 0.06));
+  color: var(--color-rosso-base);
+}
+.evento-row-cta {
+  border-color: rgba(168, 23, 74, 0.4);
+  color: var(--color-crema-base);
+}
+.evento-row-cta:hover {
+  border-color: var(--color-rosso-base);
+  background-color: var(--color-rosso-muted);
+}
+
+/* Variant Imaginarium — palette inversa */
+.evento-row-wrapper[data-fonte="imaginarium"] {
+  background-color: var(--color-rosso-base);
+  border-color: rgba(10, 10, 10, 0.25);
+}
+.evento-row-wrapper[data-fonte="imaginarium"]:hover {
+  border-color: var(--color-crema-base);
+}
+.evento-row-wrapper[data-fonte="imaginarium"] .evento-row-title,
+.evento-row-wrapper[data-fonte="imaginarium"] .evento-row-date,
+.evento-row-wrapper[data-fonte="imaginarium"] .evento-row-location,
+.evento-row-wrapper[data-fonte="imaginarium"] .evento-row-desc {
+  color: var(--color-crema-base);
+}
+.evento-row-wrapper[data-fonte="imaginarium"] .evento-row-date,
+.evento-row-wrapper[data-fonte="imaginarium"] .evento-row-location,
+.evento-row-wrapper[data-fonte="imaginarium"] .evento-row-desc {
+  color: rgba(245, 230, 211, 0.78);
+}
+.evento-row-wrapper[data-fonte="imaginarium"] .evento-row-tag {
+  background-color: rgba(10, 10, 10, 0.35);
+  color: var(--color-crema-base);
+}
+.evento-row-wrapper[data-fonte="imaginarium"] .evento-row-countdown {
+  background-color: rgba(10, 10, 10, 0.35);
+  color: var(--color-crema-base);
+}
+.evento-row-wrapper[data-fonte="imaginarium"] .evento-row-placeholder {
+  background: linear-gradient(135deg, rgba(10, 10, 10, 0.45), rgba(10, 10, 10, 0.12));
+  color: var(--color-crema-base);
+}
+.evento-row-wrapper[data-fonte="imaginarium"] .evento-row-cta {
+  background-color: var(--color-crema-base);
+  border-color: var(--color-crema-base);
+  color: #5c0d2a;
+}
+.evento-row-wrapper[data-fonte="imaginarium"] .evento-row-cta:hover {
+  background-color: transparent;
+  color: var(--color-crema-base);
+  border-color: var(--color-crema-base);
+}
+
+/* === Loghi patrocini Imaginarium === */
+/* Hotfix Mini Patrocini: striscia orizzontale con 3 colonne flex paritarie e
+   pipe verticali sottili tra le categorie. Stack verticale su mobile. */
+.patrocini-strip {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: nowrap;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.patrocini-categoria {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding: 0 1.5rem;
+  min-width: 0;
+}
+.patrocini-separatore {
+  width: 1px;
+  align-self: stretch;
+  margin: 0.5rem 0;
+  flex-shrink: 0;
+}
+@media (max-width: 768px) {
+  .patrocini-strip {
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+  .patrocini-categoria {
+    padding: 0;
+    width: 100%;
+  }
+  .patrocini-separatore {
+    width: 60%;
+    height: 1px;
+    margin: 0 auto;
+    align-self: center;
+  }
+}
+
+/* Hotfix Finale Desktop: width/height 100% + object-contain → ogni logo riempie
+   lo spazio max possibile mantenendo proporzioni. Loghi grossi (Danesi)
+   raggiungono il limite di larghezza, loghi stretti raggiungono il limite di
+   altezza — ma tutti occupano una "dignità visiva" simile. */
+.logo-box-img {
+  width: 100%;
+  height: 100%;
+  max-width: none;
+  max-height: none;
+  object-fit: contain;
+  object-position: center;
+}
+
+/* Hover: overlay nero entra da destra scoprendo il nome del partner in Cinzel */
+.logo-hover-overlay {
+  position: absolute;
+  inset: 0;
+  background: #0a0a0a;
+  color: #f5e6d3;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.95rem;
+  text-align: center;
+  padding: 0.75rem;
+  line-height: 1.15;
+  transform: translateX(101%);
+  transition: transform 380ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  pointer-events: none;
+}
+.logo-box:hover .logo-hover-overlay,
+.logo-box:focus-within .logo-hover-overlay {
+  transform: translateX(0);
+}
+@media (prefers-reduced-motion: reduce) {
+  .logo-hover-overlay {
+    transition: none;
+  }
+}
+
+/* === Biglietto vintage — reveal della CTA al click === */
+.animate-biglietto-reveal {
+  animation: biglietto-reveal 380ms cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+@keyframes biglietto-reveal {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .animate-biglietto-reveal {
+    animation: none !important;
+  }
+}
+
+/* === Biglietto vintage — identità ticket (Hotfix Finale 3) === */
+/* Texture puntinata sottile (carta vintage) + bordo doppio cremisi/crema. */
+.biglietto-vintage {
+  background-color: var(--color-crema-base);
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(168, 23, 74, 0.05) 1px, transparent 1.5px);
+  background-size: 14px 14px;
+  /* doppio bordo: esterno cremisi + interno crema + filo cremisi sottile */
+  box-shadow:
+    inset 0 0 0 3px var(--color-crema-base),
+    inset 0 0 0 4px rgba(168, 23, 74, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+/* Perforazioni laterali (strappo) ai 2 lati corti centrali.
+   Colore dei cerchi = nero-base (sfondo pagina) per simulare il buco. */
+.biglietto-vintage::before,
+.biglietto-vintage::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  background-color: var(--color-nero-base);
+  border-radius: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.biglietto-vintage::before {
+  left: -11px;
+}
+.biglietto-vintage::after {
+  right: -11px;
 }
 
 /* === Sipario preloader (Sessione 2.7) === */
@@ -370,5 +749,504 @@ body {
     animation: none;
     transition: opacity 400ms ease-out;
     opacity: 0;
+  }
+}
+
+/* ============================================================
+   MOBILE & TABLET WEB APP — Bottom Nav + Bottom Sheet
+   Breakpoint: <1024px (Tailwind lg). Desktop ≥1024px invariato.
+   ============================================================ */
+
+/* --- Bottom navigation fissa --- */
+.bottom-nav-mobile {
+  display: none;
+}
+
+@media (max-width: 1023px) {
+  .bottom-nav-mobile {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgba(10, 10, 10, 0.92);
+    border-top: 1px solid rgba(168, 23, 74, 0.25);
+    padding: 0.5rem 0 calc(0.5rem + env(safe-area-inset-bottom));
+    height: calc(64px + env(safe-area-inset-bottom));
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    /* Fade-in soft alla prima comparsa post-mount (Fix_3_Bug_Pre_Golive §1) */
+    animation: bottom-nav-appear 350ms ease-out both;
+  }
+  @keyframes bottom-nav-appear {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bottom-nav-mobile { animation: none; }
+  }
+
+  /* Padding bottom sul footer per non essere coperto dalla bottom nav.
+     Diagnosi_Fix_Mobile §4-5: prima il padding era su main, ma il footer è
+     sibling di main (non figlio) → il footer veniva coperto dalla bottom nav.
+     Spostiamo il padding sul footer. */
+  body > footer {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom) + 1rem);
+  }
+}
+
+/* Su tablet, contieni la nav e ingrandisci leggermente le voci */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .bottom-nav-mobile {
+    padding-inline: 4rem;
+    height: calc(70px + env(safe-area-inset-bottom));
+  }
+  body > footer {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom) + 1rem);
+  }
+}
+
+.bottom-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  flex: 1;
+  height: 56px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: rgba(245, 230, 211, 0.6);
+  text-decoration: none;
+  transition: color 200ms ease-out;
+  -webkit-tap-highlight-color: transparent;
+  max-width: 140px;
+  padding: 0 0.25rem;
+}
+
+.bottom-nav-item:hover,
+.bottom-nav-item:focus-visible {
+  color: var(--color-crema-base);
+  outline: none;
+}
+
+.bottom-nav-item--active {
+  color: var(--color-rosso-base);
+}
+
+.bottom-nav-icon {
+  width: 24px;
+  height: 24px;
+  transition: transform 200ms ease-out;
+}
+
+.bottom-nav-item--active .bottom-nav-icon {
+  transform: scale(1.08);
+}
+
+.bottom-nav-label {
+  font-size: 0.7rem;
+  font-weight: 500;
+  letter-spacing: 0.02em;
+  line-height: 1;
+}
+
+@media (min-width: 768px) and (max-width: 1023px) {
+  .bottom-nav-label {
+    font-size: 0.8rem;
+  }
+  .bottom-nav-icon {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+/* --- Bottom sheet "Altro" --- */
+.bottom-sheet-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 300ms ease-out;
+  z-index: 60;
+}
+
+.bottom-sheet-overlay--open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bottom-sheet {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 70;
+  background-color: var(--color-nero-base);
+  border-top-left-radius: 24px;
+  border-top-right-radius: 24px;
+  border-top: 1px solid rgba(168, 23, 74, 0.25);
+  padding: 0.75rem 1.5rem calc(1.5rem + env(safe-area-inset-bottom));
+  max-height: 75vh;
+  overflow-y: auto;
+  transform: translateY(100%);
+  transition: transform 350ms cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom-sheet--open {
+  transform: translateY(0);
+}
+
+/* Tablet: sheet centrato con max-width */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .bottom-sheet {
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%) translateY(100%);
+    max-width: 600px;
+    width: calc(100% - 3rem);
+    border-radius: 24px 24px 0 0;
+  }
+  .bottom-sheet--open {
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Desktop: nascondi sheet anche se attivato per errore */
+@media (min-width: 1024px) {
+  .bottom-sheet,
+  .bottom-sheet-overlay {
+    display: none !important;
+  }
+}
+
+.bottom-sheet-handle {
+  width: 40px;
+  height: 4px;
+  background-color: rgba(245, 230, 211, 0.3);
+  border-radius: 2px;
+  margin: 0 auto 1rem;
+}
+
+.bottom-sheet-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid rgba(168, 23, 74, 0.25);
+}
+
+.bottom-sheet-titolo {
+  font-size: 1.25rem;
+  color: var(--color-crema-base);
+  margin: 0;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.bottom-sheet-close {
+  background: none;
+  border: none;
+  color: var(--color-crema-base);
+  cursor: pointer;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 9999px;
+  transition: background-color 200ms ease-out;
+}
+
+.bottom-sheet-close:hover,
+.bottom-sheet-close:focus-visible {
+  background-color: rgba(245, 230, 211, 0.1);
+  outline: none;
+}
+
+.bottom-sheet-nav {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.bottom-sheet-voce {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem;
+  border-radius: 12px;
+  text-decoration: none;
+  color: var(--color-crema-base);
+  background-color: rgba(168, 23, 74, 0.06);
+  border: 1px solid rgba(168, 23, 74, 0.18);
+  transition:
+    background-color 200ms ease-out,
+    border-color 200ms ease-out;
+  -webkit-tap-highlight-color: transparent;
+  min-height: 64px;
+}
+
+.bottom-sheet-voce:hover,
+.bottom-sheet-voce:focus-visible {
+  background-color: rgba(168, 23, 74, 0.18);
+  border-color: var(--color-rosso-base);
+  outline: none;
+}
+
+.bottom-sheet-voce-icona {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  background-color: rgba(168, 23, 74, 0.18);
+  border-radius: 12px;
+  color: var(--color-rosso-base);
+  flex-shrink: 0;
+}
+
+.bottom-sheet-voce-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  min-width: 0;
+}
+
+.bottom-sheet-voce-label {
+  font-size: 1.05rem;
+  color: var(--color-crema-base);
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.bottom-sheet-voce-descrizione {
+  font-size: 0.8rem;
+  color: rgba(245, 230, 211, 0.6);
+  line-height: 1.3;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .bottom-sheet,
+  .bottom-sheet-overlay,
+  .bottom-nav-icon {
+    transition: none;
+  }
+}
+
+/* ============================================================
+   COMING SOON — pagina pre-lancio (Pre_Golive_Completo §1)
+   Hide Header/Footer/BottomNav via :has() per route /coming-soon.
+   ============================================================ */
+body:has(.coming-soon-page) > header,
+body:has(.coming-soon-page) > footer,
+body:has(.coming-soon-page) > nav.bottom-nav-mobile {
+  display: none !important;
+}
+body:has(.coming-soon-page) > main {
+  padding-bottom: 0 !important;
+}
+
+.coming-soon-page {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--color-nero-base);
+}
+
+.coming-soon-foto-sfondo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.coming-soon-foto-sfondo img {
+  object-fit: cover;
+}
+.coming-soon-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.88) 100%);
+  z-index: 1;
+}
+
+.coming-soon-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2rem;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.coming-soon-logo {
+  width: 240px;
+  height: auto;
+}
+
+.coming-soon-titolo {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  color: var(--color-crema-base);
+  margin: 0;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+.coming-soon-sottotitolo {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: rgba(245, 230, 211, 0.8);
+  margin: 0.75rem auto 0;
+  max-width: 540px;
+  line-height: 1.5;
+}
+
+.coming-soon-countdown {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.countdown-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1rem 1.25rem;
+  background-color: rgba(168, 23, 74, 0.15);
+  border: 1px solid rgba(168, 23, 74, 0.3);
+  border-radius: 12px;
+  min-width: 84px;
+}
+.countdown-numero {
+  font-family: var(--font-cinzel), serif;
+  font-size: 2.4rem;
+  color: var(--color-crema-base);
+  line-height: 1;
+}
+.countdown-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(245, 230, 211, 0.6);
+}
+
+.coming-soon-social {
+  display: flex;
+  gap: 1rem;
+}
+.coming-soon-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background-color: rgba(168, 23, 74, 0.15);
+  border: 1px solid rgba(168, 23, 74, 0.3);
+  color: var(--color-crema-base);
+  transition:
+    background-color 200ms ease-out,
+    border-color 200ms ease-out,
+    transform 200ms ease-out;
+}
+.coming-soon-social a:hover,
+.coming-soon-social a:focus-visible {
+  background-color: var(--color-rosso-base);
+  border-color: var(--color-rosso-base);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.coming-soon-credits {
+  font-size: 0.75rem;
+  color: rgba(245, 230, 211, 0.4);
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 640px) {
+  .countdown-block {
+    padding: 0.75rem 0.9rem;
+    min-width: 68px;
+  }
+  .countdown-numero {
+    font-size: 1.75rem;
+  }
+}
+
+/* ============================================================
+   FOOTER — riga crediti finale (Diagnosi_Fix_Mobile §6)
+   Legal links a sinistra, crediti Caraval + Eddidesign a destra.
+   Mobile: stack centrato.
+   ============================================================ */
+.footer-crediti-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-crediti-legal {
+  flex-shrink: 0;
+}
+
+.footer-crediti-blocco {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  text-align: right;
+}
+
+.footer-crediti-testo {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(245, 230, 211, 0.55);
+  letter-spacing: 0.02em;
+}
+
+.footer-eddidesign-link {
+  font-size: 0.7rem;
+  color: rgba(245, 230, 211, 0.4);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 220ms ease-out;
+}
+
+.footer-eddidesign-link:hover,
+.footer-eddidesign-link:focus-visible {
+  color: #fec312;
+  outline: none;
+}
+
+/* Mobile/Tablet stretto: stack verticale centrato */
+@media (max-width: 640px) {
+  .footer-crediti-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    text-align: center;
+  }
+  .footer-crediti-blocco {
+    align-items: center;
+    text-align: center;
   }
 }

@@ -1,14 +1,25 @@
 import { defineType, defineField } from "sanity";
+import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "paginaImaginariumCopy",
   title: "Imaginarium — Copy pagina",
   type: "document",
   groups: [
+    { name: "hero", title: "Hero" },
     { name: "counter", title: "Counter (totali festival)" },
     { name: "video", title: "Video presentazione" },
+    SEO_GROUP,
   ],
   fields: [
+    defineField({
+      name: "heroFotoSfondo",
+      title: "Hero — Foto sfondo",
+      type: "image",
+      options: { hotspot: true },
+      group: "hero",
+      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+    }),
     defineField({
       name: "videoEyebrow",
       title: "Video — Eyebrow",
@@ -67,6 +78,7 @@ export default defineType({
       ],
       validation: (R) => R.max(6),
     }),
+    ...seoOverrideFields(),
   ],
   preview: { prepare: () => ({ title: "Imaginarium — Copy pagina" }) },
 });

@@ -1,6 +1,18 @@
+import type { Metadata } from "next";
 import { client } from "@/../sanity/lib/client";
 import { Sipario } from "@/components/layout/Sipario";
 import { HeroPagina } from "@/components/caraval/HeroPagina";
+import { generatePageMetadata } from "@/lib/generate-page-metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    singletonId: "homepageCopy",
+    slug: "/",
+    defaultTitle: "Caraval Spettacoli — Compagnia teatrale di Soncino, Cremona",
+    defaultDescription:
+      "Caraval Spettacoli è la compagnia teatrale di Soncino (Cremona). Prosa, teatro di fuoco, performance di strada. Festival Imaginarium ogni anno.",
+  });
+}
 
 type HeroHomepageData = {
   heading?: string;
@@ -28,6 +40,13 @@ import { OfficinaTeaser } from "@/components/caraval/OfficinaTeaser";
 import { ContattiPrelude } from "@/components/caraval/ContattiPrelude";
 import { CounterStrip, type CounterItem } from "@/components/caraval/CounterStrip";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { ProssimiEventiHomepage } from "@/components/caraval/ProssimiEventiHomepage";
+import {
+  buildProssimiEventi,
+  cutoffOggiISO,
+  type EventoFromSanity as ProssimoEventoFromSanity,
+  type SpettacoloImaginariumFromSanity as ProssimoImagFromSanity,
+} from "@/lib/prossimi-eventi-utils";
 
 type HomepageCopy = {
   premiHeading?: string;
@@ -61,6 +80,7 @@ type ImpostazioniContatti = {
 export const revalidate = 60;
 
 async function getHomepageData() {
+  const cutoff = cutoffOggiISO();
   const [
     hero,
     copy,
@@ -69,6 +89,8 @@ async function getHomepageData() {
     spettacoliCorrente,
     repertorio,
     impostazioni,
+    eventiManuali,
+    imaginariumImminenti,
   ] = await Promise.all([
     client.fetch<HeroHomepageData | null>(
       `*[_type == "homepageHero"][0]{
@@ -108,7 +130,40 @@ async function getHomepageData() {
         contattiPubblici { email, telefono }
       }`
     ),
+    client.fetch<ProssimoEventoFromSanity[]>(
+      `*[
+        _type == "evento"
+        && mostraInHomepage == true
+        && dataOra >= $cutoff
+      ] | order(coalesce(ordinePriorita, 999), dataOra asc) {
+        _id, dataOra, descrizioneBreve, mostraInHomepage, ordinePriorita,
+        ctaTipo, ctaValore, ctaLabel,
+        luogo { "nome": nomeStruttura, citta },
+        spettacolo->{ titolo, "slug": slug.current, immagineCover, fotoHero }
+      }`,
+      { cutoff }
+    ),
+    client.fetch<ProssimoImagFromSanity[]>(
+      `*[
+        _type == "spettacoloImaginarium"
+        && dataInizio >= $cutoff
+      ] | order(dataInizio asc) {
+        _id, titolo, "data": dataInizio, descrizioneBreve,
+        immagineCover, locationSpecifica,
+        "edizioneAnno": edizioneRif->anno,
+        "edizioneSlug": edizioneRif->slug.current,
+        "edizioneLocation": edizioneRif->locationPrincipale
+      }`,
+      { cutoff }
+    ),
   ]);
+
+  const prossimiEventi = buildProssimiEventi(
+    eventiManuali ?? [],
+    imaginariumImminenti ?? [],
+    cutoff,
+    5
+  );
 
   return {
     hero,
@@ -118,6 +173,7 @@ async function getHomepageData() {
     spettacoliCorrente,
     repertorio,
     contatti: impostazioni?.contattiPubblici ?? null,
+    prossimiEventi,
   };
 }
 
@@ -146,6 +202,7 @@ export default async function HomePage() {
           altezza="full"
         />
       )}
+      <ProssimiEventiHomepage eventi={data.prossimiEventi} />
       <StripPremi premi={data.premi} heading={data.copy?.premiHeading} />
       <CounterStrip
         eyebrow={data.copy?.numeriEyebrow ?? "I NUMERI"}

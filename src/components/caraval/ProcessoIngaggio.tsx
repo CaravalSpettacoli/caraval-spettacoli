@@ -1,4 +1,5 @@
 import { Container } from "@/components/ui/Container";
+import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 
 export type StepIngaggio = {
   numero?: string;
@@ -25,6 +26,13 @@ export function ProcessoIngaggio({
     >
       <Container>
         <div className="text-center max-w-2xl mx-auto mb-14">
+          <div className="flex justify-center mb-4">
+            <OndaDecorativa
+              width={120}
+              variant="sottile"
+              className="text-rosso-base/50"
+            />
+          </div>
           {eyebrow && (
             <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
               {eyebrow}

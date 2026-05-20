@@ -1,8 +1,8 @@
-import Image from "next/image";
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
 import { urlFor } from "@/../sanity/lib/image";
 import { paletteToTheme } from "@/lib/theme-system";
+import { HeroParallaxFoto } from "@/components/caraval/HeroParallaxFoto";
 
 type CTA = { label: string; href: string; esterno?: boolean };
 
@@ -23,6 +23,9 @@ export interface HeroPaginaProps {
   /** Se settato, sostituisce l'heading testuale con un'immagine logo. */
   logoSrc?: string;
   logoAlt?: string;
+  /** Object-position della foto sfondo. Default "center". Esempio "center 30%"
+   *  per ritratti dove servono visibili i volti (es. /chi-siamo). */
+  fotoObjectPosition?: string;
 }
 
 export function HeroPagina({
@@ -36,6 +39,7 @@ export function HeroPagina({
   altezza = "compatto",
   logoSrc,
   logoAlt,
+  fotoObjectPosition,
 }: HeroPaginaProps) {
   const isImag = palette === "imaginarium";
   const isFull = altezza === "full";
@@ -70,15 +74,12 @@ export function HeroPagina({
       className={`relative w-full overflow-hidden flex items-center ${bgClass}`}
       style={{ minHeight: isFull ? "100vh" : "60vh", ...bgInlineStyle }}
     >
-      {fotoUrl && (
+      {fotoUrl ? (
         <>
-          <Image
+          <HeroParallaxFoto
             src={fotoUrl}
             alt={fotoSfondo?.alt ?? ""}
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
+            objectPosition={fotoObjectPosition}
           />
           {/* Overlay scuro su entrambe le palette: il testo crema sopra foto
               ha bisogno di overlay scuro per leggibilità. */}
@@ -87,6 +88,28 @@ export function HeroPagina({
             className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/55 to-black/20"
           />
         </>
+      ) : (
+        // Placeholder grafico: gradient radiale sottile + noise SVG opacity 0.03.
+        // Dà profondità alla hero quando la foto Sanity non è ancora caricata.
+        <div
+          aria-hidden
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            backgroundImage: isImag
+              ? "radial-gradient(ellipse 80% 60% at 30% 40%, rgba(245,230,211,0.08), transparent 60%)"
+              : "radial-gradient(ellipse 80% 60% at 30% 40%, rgba(168,23,74,0.18), transparent 65%)",
+          }}
+        >
+          <svg
+            className="w-full h-full opacity-[0.04] mix-blend-overlay"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <filter id="hero-noise">
+              <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
+            </filter>
+            <rect width="100%" height="100%" filter="url(#hero-noise)" />
+          </svg>
+        </div>
       )}
 
       <div className="relative w-full">
