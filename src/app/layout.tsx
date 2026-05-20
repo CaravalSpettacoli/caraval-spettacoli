@@ -4,6 +4,7 @@ import "./globals.css";
 import { SkipLink } from "@/components/layout/SkipLink";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { BottomNavMobile } from "@/components/caraval/BottomNavMobile";
 import { CustomCursor } from "@/components/effects/CustomCursor";
 import { getFeatureFlags } from "@/lib/feature-flags";
 
@@ -62,6 +63,7 @@ export default async function RootLayout({
           {children}
         </main>
         <Footer mostraCalendario={flags.mostraCalendario} />
+        <BottomNavMobile />
       </body>
     </html>
   );

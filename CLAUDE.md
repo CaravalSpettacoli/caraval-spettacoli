@@ -115,7 +115,7 @@ src/app/
 src/components/
 ├── ui/         # Button, Card, Container, Section, PlaceholderImage
 ├── layout/     # SkipLink, Header, Footer, Hero, Sipario
-├── caraval/    # ~30 componenti dominio (vedi §5)
+├── caraval/    # ~30 componenti dominio (vedi §5) + BottomNavMobile, BottomSheetAltro
 ├── imaginarium/# HeroImaginarium (legacy), ProgrammaCompleto, SponsorPartnerStrip, EdizioniPassate
 ├── decorative/ # Stella5Punte, MascheraTeatrale, Fiamma, OndaDecorativa, Divider, CorniceDeco (3 varianti A/B/C)
 └── effects/    # FadeInOnScroll, RevealSipario, CustomCursor, ImmagineConOverlay, Reveal, HeroParallaxFoto, GlowSfondo
@@ -286,6 +286,20 @@ Pattern: i componenti derivano automaticamente `data-theme` dalle prop esistenti
 - `/demo` — playground query
 
 24 rotte totali in build.
+
+---
+
+## 7.5 Mobile & Tablet web app (<1024px)
+
+Sotto `lg` (Tailwind 1024px) il sito assume un layout **stile web app nativa**:
+
+- **Header minimal:** solo logo Caraval centrato, niente nav voci, niente hamburger. Mantiene logica adattiva theme (logo bianco/nero a seconda del tema della sezione sotto). Altezza ridotta: 56px mobile / 64px tablet.
+- **Bottom navigation fissa** (`BottomNavMobile.tsx`): 4 voci — Home / Spettacoli / Altro / Contatti. `position: fixed; bottom: 0; z-50`. `env(safe-area-inset-bottom)` per notch iOS. Active state cremisi (`bottom-nav-item--active`) derivato da `usePathname()`. Su `/imaginarium`, `/formazione`, `/chi-siamo`, `/ospita`, `/calendario` la voce attiva è **Altro**.
+- **Bottom sheet "Altro"** (`BottomSheetAltro.tsx`): slide-up dal basso con 4 voci (Imaginarium, Academy, Chi siamo, Ospita Caraval). Chiusura via ESC, click overlay, tap su X, drag-down (>100px). Body scroll lock quando aperto. Su tablet (≥768px) lo sheet è centrato `max-width 600px`.
+- **Padding-bottom main:** `body > main { padding-bottom: calc(64px + env(safe-area-inset-bottom)) }` (70px su tablet) per evitare che la bottom nav copra il contenuto in fondo.
+- **Breakpoint:** tutto via `@media (max-width: 1023px)` in `globals.css`. Desktop ≥1024px invariato (nav classica orizzontale).
+
+Icone via `lucide-react` (Home, Theater, MoreHorizontal, Mail, Sparkles, GraduationCap, Users, MapPin, X). Tipo `LucideIcon` per evitare incompatibilità `Booleanish` su `aria-hidden`.
 
 ---
 
