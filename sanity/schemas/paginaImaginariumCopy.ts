@@ -5,10 +5,19 @@ export default defineType({
   title: "Imaginarium — Copy pagina",
   type: "document",
   groups: [
+    { name: "hero", title: "Hero" },
     { name: "counter", title: "Counter (totali festival)" },
     { name: "video", title: "Video presentazione" },
   ],
   fields: [
+    defineField({
+      name: "heroFotoSfondo",
+      title: "Hero — Foto sfondo",
+      type: "image",
+      options: { hotspot: true },
+      group: "hero",
+      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+    }),
     defineField({
       name: "videoEyebrow",
       title: "Video — Eyebrow",

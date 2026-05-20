@@ -16,18 +16,25 @@ import {
   type SpettacoloImagItem,
 } from "@/components/imaginarium/ProgrammaCompleto";
 import {
-  SponsorPartnerStrip,
-  type SponsorPartnerData,
-} from "@/components/imaginarium/SponsorPartnerStrip";
-import {
   EdizioniPassate,
   type EdizionePassataItem,
 } from "@/components/imaginarium/EdizioniPassate";
 import { CounterStrip, type CounterItem } from "@/components/caraval/CounterStrip";
 import { VideoYoutube } from "@/components/caraval/VideoYoutube";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import {
+  PatrociniStrip,
+  type PatrocinioItem,
+} from "@/components/caraval/PatrociniStrip";
+import { Stella5Punte } from "@/components/decorative/Stella5Punte";
 
 export const revalidate = 60;
+
+type SponsorPartnerData = {
+  patrocinio?: string[];
+  sponsor?: string[];
+  partnerLista?: string[];
+};
 
 type EdizioneCorrenteFull = EdizioneHero & SponsorPartnerData & { anno?: number };
 
@@ -37,10 +44,11 @@ type PaginaImagCopy = {
   videoEyebrow?: string;
   videoHeading?: string;
   videoYoutubeUrl?: string;
+  heroFotoSfondo?: { asset?: { _ref?: string }; alt?: string };
 };
 
 async function getImaginariumData() {
-  const [edizioneCorrente, paginaCopy] = await Promise.all([
+  const [edizioneCorrente, paginaCopy, homepageCopy] = await Promise.all([
     client.fetch<EdizioneCorrenteFull | null>(
       `*[_type == "edizioneImaginarium"] | order(anno desc)[0]{
         anno, titoloEdizione, dataInizio, dataFine,
@@ -52,7 +60,13 @@ async function getImaginariumData() {
     client.fetch<PaginaImagCopy | null>(
       `*[_type == "paginaImaginariumCopy"][0]{
         counterEyebrow, counterElenco,
-        videoEyebrow, videoHeading, videoYoutubeUrl
+        videoEyebrow, videoHeading, videoYoutubeUrl,
+        heroFotoSfondo
+      }`
+    ),
+    client.fetch<{ patrociniHomepage?: PatrocinioItem[] } | null>(
+      `*[_type == "homepageCopy"][0]{
+        "patrociniHomepage": patrociniHomepage[]{ _key, categoria, nome, logo, url }
       }`
     ),
   ]);
@@ -82,7 +96,13 @@ async function getImaginariumData() {
       : Promise.resolve([] as EdizionePassataItem[]),
   ]);
 
-  return { edizioneCorrente, spettacoliCorrente, edizioniPassate, paginaCopy };
+  return {
+    edizioneCorrente,
+    spettacoliCorrente,
+    edizioniPassate,
+    paginaCopy,
+    patrocini: homepageCopy?.patrociniHomepage ?? null,
+  };
 }
 
 export const metadata = {
@@ -115,8 +135,13 @@ function descrToText(blocks?: EdizioneHero["descrizione"]): string {
 }
 
 export default async function ImaginariumPage() {
-  const { edizioneCorrente, spettacoliCorrente, edizioniPassate, paginaCopy } =
-    await getImaginariumData();
+  const {
+    edizioneCorrente,
+    spettacoliCorrente,
+    edizioniPassate,
+    paginaCopy,
+    patrocini,
+  } = await getImaginariumData();
 
   const counterFallback: CounterItem[] = [
     { valore: "3", etichetta: "edizioni" },
@@ -149,6 +174,9 @@ export default async function ImaginariumPage() {
 
   return (
     <div>
+      {/* Hotfix 4: hero su sfondo nero (palette default) per dare un distacco
+          visivo netto con la sezione "Programma" successiva (palette light = rosso).
+          Il logo PNG è beige naturale, perfetto su nero. */}
       <HeroPagina
         eyebrow="Festival di Teatro Itinerante"
         heading={
@@ -157,12 +185,28 @@ export default async function ImaginariumPage() {
             : "Imaginarium"
         }
         sottotitolo={sottotitoloHero || undefined}
-        fotoSfondo={edizioneCorrente?.fotoSfondoHero}
-        palette="imaginarium"
+        fotoSfondo={paginaCopy?.heroFotoSfondo ?? edizioneCorrente?.fotoSfondoHero}
+        palette="default"
         altezza="full"
         logoSrc="/imaginarium-logo.png"
         logoAlt="Imaginarium — Festival di Teatro Itinerante"
       />
+      {/* Hotfix pre-golive: divisore di transizione hero (nero) → counter (rosso).
+          Risolve la mancanza di distacco segnalata da Vera. Gradient verticale +
+          stella centrale + bordo netto basso per ancorare l'occhio. */}
+      <div
+        aria-hidden
+        className="relative w-full"
+        style={{
+          height: "72px",
+          background:
+            "linear-gradient(to bottom, #050505 0%, #5c0d2a 60%, #a8174a 100%)",
+        }}
+      >
+        <span className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-crema-base/80">
+          <Stella5Punte size={20} />
+        </span>
+      </div>
       <CounterStrip
         eyebrow={paginaCopy?.counterEyebrow ?? "IMAGINARIUM IN NUMERI"}
         numeri={counterNumeri}
@@ -179,10 +223,18 @@ export default async function ImaginariumPage() {
       />
       <ProgrammaCompleto
         spettacoli={spettacoliCorrente}
-        heading="Programma"
+        heading={
+          edizioneCorrente?.anno
+            ? `Programma ${edizioneCorrente.anno}`
+            : "Programma"
+        }
         palette="imaginarium"
       />
-      <SponsorPartnerStrip data={edizioneCorrente} />
+      {/* Hotfix Finale 2: PatrociniStrip ora rende 3 categorie distinte
+          (patrocinio / sponsor / partner) basate sul campo Sanity
+          `patrociniHomepage[].categoria`. Niente eyebrow override —
+          ogni gruppo ha il suo titolo. */}
+      <PatrociniStrip patrocini={patrocini} palette="light" />
       <EdizioniPassate edizioni={edizioniPassate} />
       <CtaFinale
         variant="dark"

@@ -7,11 +7,12 @@ import { CorsoCard, type CorsoCardData } from "@/components/caraval/CorsoCard";
 import { LaboratoriScuoleSection } from "@/components/caraval/LaboratoriScuoleSection";
 import { HeroPagina } from "@/components/caraval/HeroPagina";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 
 export const revalidate = 60;
 
 export const metadata: Metadata = {
-  title: "Officina Teatrale · Caraval Spettacoli",
+  title: "Caraval Academy · Caraval Spettacoli",
   description:
     "Corsi serali per adulti da ottobre a maggio. Spettacolo finale a Imaginarium. Laboratori nelle scuole primarie del territorio.",
 };
@@ -21,6 +22,7 @@ type CopyFormazione = {
   formazioneHeroHeading?: string;
   formazioneHeroSubheading?: string;
   formazioneHeroIntro?: string;
+  formazioneHeroFotoSfondo?: { asset?: { _ref?: string }; alt?: string };
   corsiSezioneEyebrow?: string;
   corsiSezioneHeading?: string;
   corsiStatoVuotoTesto?: string;
@@ -53,6 +55,7 @@ async function getFormazioneData() {
     client.fetch<CopyFormazione | null>(
       `*[_type == "homepageCopy"][0]{
         formazioneHeroEyebrow, formazioneHeroHeading, formazioneHeroSubheading, formazioneHeroIntro,
+        formazioneHeroFotoSfondo,
         corsiSezioneEyebrow, corsiSezioneHeading, corsiStatoVuotoTesto,
         laboratoriEyebrow, laboratoriHeading, laboratoriBody, laboratoriCtaTesto
       }`
@@ -69,7 +72,7 @@ export default async function FormazionePage() {
   const { corsi, copy, impostazioni } = await getFormazioneData();
 
   const heroEyebrow = copy.formazioneHeroEyebrow ?? "FORMAZIONE";
-  const heroHeading = copy.formazioneHeroHeading ?? "Officina Teatrale";
+  const heroHeading = copy.formazioneHeroHeading ?? "Caraval Academy";
   const heroSubheading =
     copy.formazioneHeroSubheading ?? "Non serve esperienza. Serve curiosità.";
   const heroIntro =
@@ -103,20 +106,28 @@ export default async function FormazionePage() {
         eyebrow={heroEyebrow}
         heading={heroHeading}
         sottotitolo={[heroSubheading, heroIntro].filter(Boolean).join("\n\n")}
+        fotoSfondo={copy.formazioneHeroFotoSfondo}
         palette="default"
         altezza="compatto"
       />
 
       {/* Sezione corsi */}
-      <Section theme="dark" bgVariant="soft">
+      <Section theme="dark" bgVariant="soft" glow="top-left">
         <Container>
-          <div className="mb-10">
-            <p className="text-label uppercase-tracked text-rosso-hover mb-3">
-              {corsiEyebrow}
-            </p>
-            <h2 className="font-display text-h2 text-crema-base leading-tight">
-              {corsiHeading}
-            </h2>
+          <div className="mb-10 flex flex-col items-start gap-4">
+            <OndaDecorativa
+              width={120}
+              variant="sottile"
+              className="text-rosso-base/60"
+            />
+            <div>
+              <p className="text-label uppercase-tracked text-rosso-hover mb-3">
+                {corsiEyebrow}
+              </p>
+              <h2 className="font-display text-h2 text-crema-base leading-tight">
+                {corsiHeading}
+              </h2>
+            </div>
           </div>
 
           {corsi.length === 0 ? (
@@ -155,7 +166,7 @@ export default async function FormazionePage() {
 
       <CtaFinale
         variant="accent"
-        heading="Vuoi iscriverti all'Officina Teatrale?"
+        heading="Vuoi iscriverti alla Caraval Academy?"
         sottotitolo="Scrivici o chiamaci per informazioni."
         ctaPrimaria={{
           label: "Scrivici",

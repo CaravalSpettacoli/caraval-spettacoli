@@ -9,8 +9,11 @@ import {
 } from "@/components/caraval/ArchivioSpettacoliGrid";
 import type { SpettacoloCardLargeData } from "@/components/caraval/SpettacoloCardLarge";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { GlifoDecorativo } from "@/components/decorative/GlifoDecorativo";
+import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 
 type PaginaCopy = {
+  heroFotoSfondo?: { asset?: { _ref?: string }; alt?: string } | null;
   eyebrow?: string;
   heading?: string;
   intro?: string;
@@ -35,7 +38,13 @@ async function getData() {
         "premiAssociati": premiAssociati[]->{ _id, anno, nomePremio }
       }`
     ),
-    client.fetch<PaginaCopy | null>(`*[_type == "paginaSpettacoliCopy"][0]`),
+    client.fetch<PaginaCopy | null>(
+      `*[_type == "paginaSpettacoliCopy"][0]{
+        eyebrow, heading, intro,
+        archivioEyebrow, archivioHeading, archivioIntro,
+        heroFotoSfondo{ asset, alt }
+      }`
+    ),
   ]);
   return { spettacoli, archivio, copy };
 }
@@ -57,9 +66,14 @@ export default async function PaginaSpettacoli() {
         sottotitolo={copy?.intro}
         palette="default"
         altezza="compatto"
+        fotoSfondo={copy?.heroFotoSfondo ?? undefined}
       />
 
-      <Section theme="dark" bgVariant="soft">
+      <div className="flex justify-center bg-nero-deep pt-6 pb-2">
+        <OndaDecorativa width={220} variant="sottile" className="text-rosso-base/60" />
+      </div>
+
+      <Section theme="dark" bgVariant="soft" glow="top-right">
         <Container>
           <SpettacoliGrid spettacoli={spettacoli} />
         </Container>
@@ -69,6 +83,7 @@ export default async function PaginaSpettacoli() {
         <Section theme="dark" bgVariant="base" id="archivio">
           <Container>
             <div className="mb-12 max-w-2xl">
+              <GlifoDecorativo tipo="sparkles" size={26} align="left" />
               <p className="uppercase-tracked text-caption text-rosso-base/90 mb-3">
                 {copy?.archivioEyebrow ?? "ARCHIVIO"}
               </p>
@@ -84,6 +99,10 @@ export default async function PaginaSpettacoli() {
           </Container>
         </Section>
       )}
+
+      <div className="flex justify-center bg-nero-base pt-2 pb-8">
+        <OndaDecorativa width={220} variant="sottile" className="text-rosso-base/60" />
+      </div>
 
       <CtaFinale
         variant="accent"

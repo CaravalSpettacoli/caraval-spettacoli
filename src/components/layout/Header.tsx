@@ -8,7 +8,7 @@ import { cn } from "@/lib/cn";
 import { splitDisplay } from "@/lib/splitDisplay";
 import { themeStyles, type SectionTheme } from "@/lib/theme-system";
 
-const NAV_LINKS = [
+const NAV_LINKS_BASE = [
   { href: "/spettacoli", label: "Spettacoli" },
   { href: "/imaginarium", label: "Imaginarium" },
   { href: "/formazione", label: "Formazione" },
@@ -21,7 +21,14 @@ const MOBILE_EXTRA_LINKS = [{ href: "/ospita", label: "Ospita Caraval" }];
 
 const HEADER_HEIGHT_PX = 80;
 
-export function Header() {
+export function Header({ mostraCalendario = false }: { mostraCalendario?: boolean }) {
+  const NAV_LINKS = mostraCalendario
+    ? [
+        ...NAV_LINKS_BASE.slice(0, 3),
+        { href: "/calendario", label: "Calendario" },
+        ...NAV_LINKS_BASE.slice(3),
+      ]
+    : NAV_LINKS_BASE;
   const pathname = usePathname();
   const [scrolled, setScrolled] = useState(false);
   const [open, setOpen] = useState(false);
@@ -141,6 +148,8 @@ export function Header() {
 
   return (
     <header
+      data-current-theme={currentTheme}
+      data-scrolled={scrolled ? "true" : "false"}
       style={scrimStyle}
       className={cn(
         "sticky top-0 z-50 w-full transition-all duration-base ease-cinema",
@@ -209,11 +218,16 @@ export function Header() {
               key={l.href}
               href={l.href}
               className={cn(
-                "text-body-s uppercase-tracked transition-colors",
-                dark
-                  ? "text-crema-base hover:text-rosso-hover"
-                  : "text-nero-base hover:text-rosso-deep"
+                "header-link text-body-s uppercase-tracked transition-colors",
+                dark ? "text-crema-base" : "text-nero-base"
               )}
+              style={
+                {
+                  ["--header-hover" as string]: scrolled
+                    ? "#c01d56"
+                    : themeStyles[currentTheme].headerHoverColor,
+                } as React.CSSProperties
+              }
             >
               {l.label}
             </Link>

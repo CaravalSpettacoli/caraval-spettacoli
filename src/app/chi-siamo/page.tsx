@@ -1,7 +1,8 @@
 import { client } from "@/../sanity/lib/client";
 import { HeroPagina } from "@/components/caraval/HeroPagina";
 import { SezioneStoria } from "@/components/caraval/SezioneStoria";
-import { MembriGrid, type MembroItem } from "@/components/caraval/MembriGrid";
+import type { MembroItem } from "@/components/caraval/MembriGrid";
+import { MembriCarosello } from "@/components/caraval/MembriCarosello";
 import { PremiSezione } from "@/components/caraval/PremiSezione";
 import { ScuolaMagiaBox } from "@/components/caraval/ScuolaMagiaBox";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
@@ -11,6 +12,7 @@ type ChiSiamoCopy = {
   heroEyebrow?: string;
   heroHeading?: string;
   heroSottotitolo?: string;
+  heroFotoSfondo?: { asset?: { _ref?: string }; alt?: string };
   storiaEyebrow?: string;
   storiaHeading?: string;
   storiaBody?: string;
@@ -66,6 +68,8 @@ export default async function ChiSiamoPage() {
         sottotitolo={
           copy.heroSottotitolo ?? "Compagnia teatrale di Soncino, dal 2016."
         }
+        fotoSfondo={copy.heroFotoSfondo}
+        fotoObjectPosition="center top"
         palette="default"
         altezza="compatto"
       />
@@ -77,7 +81,7 @@ export default async function ChiSiamoPage() {
         foto={copy.storiaFotoSezione}
       />
 
-      <MembriGrid
+      <MembriCarosello
         eyebrow={copy.membriEyebrow ?? "LA COMPAGNIA"}
         heading={copy.membriHeading ?? "Le persone di Caraval"}
         intro={copy.membriIntro}

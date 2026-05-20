@@ -43,6 +43,9 @@ type SpettacoloPage = HeroSpettacoloData & {
   cast?: CastItem[];
   regia?: string;
   citazioniStampa?: CitazioneItem[];
+  annoProduzione?: number;
+  durataMinuti?: number;
+  postiLimitati?: boolean;
   prenotazione?: {
     modalita?:
       | "linkEsterno"
@@ -51,6 +54,7 @@ type SpettacoloPage = HeroSpettacoloData & {
       | "botteghino"
       | "richiestaContatto";
     urlBiglietti?: string;
+    qrCode?: { asset?: { _ref?: string }; alt?: string };
     etichettaCustom?: string;
     noteAggiuntive?: string;
   };
@@ -92,14 +96,20 @@ async function getData(slug: string) {
     client.fetch<SpettacoloPage | null>(
       `*[_type == "spettacolo" && slug.current == $slug][0]{
         _id, titolo, sottotitolo, slug, categoria, annoCreazione, regia,
+        annoProduzione, durataMinuti, postiLimitati,
         descrizioneNarrativa, gallery, trailerYoutube,
-        schedaTecnica, cast, citazioniStampa, immagineCover,
+        schedaTecnica, cast, citazioniStampa, immagineCover, fotoHero,
         prenotazione,
         "premiAssociati": premiAssociati[]->{ _id, anno, nomePremio },
         "referenteContatto": referenteContatto->{
           nome, ruoli, referenteAreaTesto, telefonoPubblico, emailPubblica
         },
-        "correlati": *[_type == "spettacolo" && categoria == ^.categoria && _id != ^._id && inRepertorio == true][0..2]{
+        "correlati": *[
+          _type == "spettacolo"
+          && slug.current != $slug
+          && categoria == ^.categoria
+          && inRepertorio == true
+        ] | order(ordineHomepage asc, titolo asc) [0..2] {
           _id, titolo, sottotitolo, slug, categoria, descrizioneBreve, immagineCover,
           "premiAssociati": premiAssociati[]->{ _id, anno, nomePremio }
         }

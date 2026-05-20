@@ -1,5 +1,6 @@
 import { Container } from "@/components/ui/Container";
 import { Section } from "@/components/ui/Section";
+import { Reveal } from "@/components/effects/Reveal";
 
 export type PremioItem = {
   _id: string;
@@ -19,7 +20,7 @@ export function StripPremi({
 }) {
   if (!premi || premi.length === 0) return null;
   return (
-    <Section background="nero-soft" className="py-16 md:py-20">
+    <Section background="nero-soft" className="py-16 md:py-20" glow="bottom-left">
       <Container>
         <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 lg:gap-12 items-start">
           <div>
@@ -30,14 +31,14 @@ export function StripPremi({
               {heading ?? "Tre premi in quattro anni."}
             </h2>
           </div>
-          <ul
-            role="list"
-            className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
+          <Reveal
+            as="ul"
+            className="reveal-stagger grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 lg:gap-6"
           >
             {premi.map((p) => (
               <li
                 key={p._id}
-                className="border border-rosso-base/60 hover:border-rosso-base p-6 transition-colors duration-base bg-nero-base/40"
+                className="border border-rosso-base/40 hover:border-rosso-base p-6 transition-colors duration-base bg-nero-base"
               >
                 <div className="font-display text-h2 text-rosso-base leading-none">
                   {p.anno ?? ""}
@@ -63,7 +64,7 @@ export function StripPremi({
                 )}
               </li>
             ))}
-          </ul>
+          </Reveal>
         </div>
       </Container>
     </Section>

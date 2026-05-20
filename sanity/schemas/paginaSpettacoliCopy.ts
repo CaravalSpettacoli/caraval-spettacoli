@@ -5,10 +5,19 @@ export default defineType({
   title: "Pagina Spettacoli — Copy",
   type: "document",
   groups: [
+    { name: "hero", title: "Hero" },
     { name: "indice", title: "Indice /spettacoli" },
     { name: "archivio", title: "Archivio /spettacoli/archivio" },
   ],
   fields: [
+    defineField({
+      name: "heroFotoSfondo",
+      title: "Hero — Foto sfondo",
+      type: "image",
+      options: { hotspot: true },
+      group: "hero",
+      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+    }),
     defineField({
       name: "eyebrow",
       title: "Eyebrow",

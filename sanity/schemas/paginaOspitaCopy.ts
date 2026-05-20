@@ -24,6 +24,14 @@ export default defineType({
       initialValue:
         "Un Comune, una Pro Loco, una dimora storica, un'associazione culturale. Caraval può portare uno spettacolo da te.",
     }),
+    defineField({
+      name: "heroFotoSfondo",
+      title: "Hero — Foto sfondo",
+      type: "image",
+      options: { hotspot: true },
+      group: "hero",
+      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+    }),
 
     defineField({ name: "valorePropostoEyebrow", title: "Valore — Eyebrow", type: "string", group: "valore", initialValue: "PERCHÉ CARAVAL" }),
     defineField({ name: "valorePropostoHeading", title: "Valore — Heading", type: "string", group: "valore", initialValue: "Teatro che funziona, dove serve" }),

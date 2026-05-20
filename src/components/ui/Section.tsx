@@ -5,9 +5,16 @@ import {
   themeStyles,
   type SectionTheme,
 } from "@/lib/theme-system";
+import { GlowSfondo } from "@/components/caraval/GlowSfondo";
 
 type Background = "nero" | "nero-soft" | "crema" | "transparent";
 type BgVariant = "base" | "soft";
+type GlowPosizione =
+  | "center"
+  | "top-left"
+  | "top-right"
+  | "bottom-left"
+  | "bottom-right";
 
 export type SectionProps = HTMLAttributes<HTMLElement> & {
   /** Legacy: applica solo la classe Tailwind di sfondo. Usa `theme` + `bgVariant` per il sistema adattivo. */
@@ -16,6 +23,8 @@ export type SectionProps = HTMLAttributes<HTMLElement> & {
   theme?: SectionTheme;
   /** Alternanza intra-pagina del background nel theme. Solo per dark/light. */
   bgVariant?: BgVariant;
+  /** Aggiunge un glow cremisi pulsante in posizione specificata (Hotfix 4). */
+  glow?: GlowPosizione;
   children?: ReactNode;
   as?: "section" | "div" | "article";
 };
@@ -46,6 +55,7 @@ export function Section({
   background,
   theme,
   bgVariant = "base",
+  glow,
   as: Tag = "section",
   className,
   children,
@@ -78,7 +88,11 @@ export function Section({
 
   return (
     <Tag
-      className={cn(bgClass, className)}
+      className={cn(
+        bgClass,
+        glow ? "relative overflow-hidden" : "",
+        className
+      )}
       style={{
         paddingBlock: "var(--space-section-y, clamp(4rem, 8vw, 8rem))",
         ...(inlineThemeStyle ?? {}),
@@ -87,7 +101,14 @@ export function Section({
       {...(applyDataTheme ? { "data-theme": resolvedTheme } : {})}
       {...rest}
     >
-      {children}
+      {glow && <GlowSfondo posizione={glow} />}
+      {glow ? (
+        <div className="relative" style={{ zIndex: 1 }}>
+          {children}
+        </div>
+      ) : (
+        children
+      )}
     </Tag>
   );
 }

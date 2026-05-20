@@ -25,6 +25,10 @@ export type ThemeStyle = {
   cursorGlow: string;
   /** Variante grafica dell'header (testo + logo chiaro/scuro). */
   headerVariant: HeaderVariant;
+  /** Colore hover delle voci menu nell'header quando il tema è attivo.
+   *  Hotfix 4: su light (rosso pieno) il rosso-hover di default si fondeva
+   *  con lo sfondo → uso nero. Su dark resta rosso-hover. */
+  headerHoverColor: string;
 };
 
 /**
@@ -44,6 +48,7 @@ export const themeStyles: Record<SectionTheme, ThemeStyle> = {
     cursorColor: "#f5e6d3", // crema, visibile su nero
     cursorGlow: "#a8174a", // cremisi, visibile su nero
     headerVariant: "dark",
+    headerHoverColor: "#c01d56", // rosso-hover (default storico)
   },
   light: {
     // ROSSO PIENO (era crema). Palette inversa: rosso saturo, testi crema, accenti nero.
@@ -54,6 +59,7 @@ export const themeStyles: Record<SectionTheme, ThemeStyle> = {
     cursorColor: "#f5e6d3", // crema, visibile su rosso
     cursorGlow: "#0a0a0a", // nero, visibile su rosso (il rosso si fonderebbe)
     headerVariant: "dark", // header dark anche su rosso: testo crema contrasta bene
+    headerHoverColor: "#0a0a0a", // NERO (rosso-hover si fonderebbe col bg rosso)
   },
   accent: {
     // Rosso più scuro del light per dare distacco visivo su pagina rossa.
@@ -64,6 +70,7 @@ export const themeStyles: Record<SectionTheme, ThemeStyle> = {
     cursorColor: "#f5e6d3",
     cursorGlow: "#0a0a0a",
     headerVariant: "dark",
+    headerHoverColor: "#0a0a0a", // anche qui: rosso scuro + nero hover = leggibile
   },
 };
 

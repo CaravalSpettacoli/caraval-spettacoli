@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { GraduationCap } from "lucide-react";
 import { cn } from "@/lib/cn";
 
 type StatoCorso = "in_corso" | "iscrizioni_aperte" | "concluso";
@@ -78,10 +79,19 @@ export function CorsoCard({
   return (
     <article
       className={cn(
-        "flex flex-col gap-4 p-6 md:p-8 rounded-md bg-nero-soft border border-crema-faint/40",
+        "flex flex-col gap-4 p-6 md:p-8 rounded-md bg-nero-base border border-rosso-base/30 transition-all duration-base hover:border-rosso-base hover:-translate-y-1 hover:shadow-[0_8px_24px_rgba(168,23,74,0.18)]",
         className
       )}
     >
+      <div className="flex items-start justify-between gap-4">
+        <div
+          className="flex h-10 w-10 items-center justify-center rounded-full border border-rosso-base/40"
+          style={{ backgroundColor: "rgba(168, 23, 74, 0.1)" }}
+          aria-hidden
+        >
+          <GraduationCap className="h-5 w-5 text-rosso-base" />
+        </div>
+      </div>
       <div className="flex items-center gap-3">
         <span
           className={cn(
