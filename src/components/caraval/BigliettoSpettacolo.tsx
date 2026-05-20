@@ -97,12 +97,10 @@ export function BigliettoSpettacolo({ data }: { data: BigliettoSpettacoloData })
 
   return (
     <article
-      className="biglietto-vintage relative mx-auto w-full max-w-[340px] flex flex-col bg-crema-base text-nero-base border-[1.5px] border-rosso-base rounded-xl overflow-hidden"
+      className="biglietto-vintage relative mx-auto w-full max-w-[340px] flex flex-col text-nero-base border-[1.5px] border-rosso-base rounded-xl"
       style={{
         aspectRatio: "5 / 8",
         minHeight: "560px",
-        boxShadow:
-          "0 18px 40px rgba(0,0,0,0.22), inset 0 0 0 1px rgba(168,23,74,0.08)",
       }}
       aria-label={`Biglietto — ${data.titolo}`}
     >
@@ -142,14 +140,6 @@ export function BigliettoSpettacolo({ data }: { data: BigliettoSpettacoloData })
       {/* Perforazioni superiore + inferiore */}
       <PerforazioniOrizzontali position="top" />
       <PerforazioniOrizzontali position="bottom" />
-
-      {/* INGRESSO verticale lato sinistro */}
-      <span
-        aria-hidden
-        className="absolute left-0.5 top-1/2 -translate-y-1/2 -rotate-90 origin-center text-[9px] uppercase-tracked text-rosso-base/70 tracking-[0.3em] font-semibold whitespace-nowrap pointer-events-none z-[2]"
-      >
-        INGRESSO
-      </span>
 
       {/* Contenuto sopra al watermark */}
       <div className="relative z-[2] flex flex-col flex-1 px-7 pt-8 pb-6">

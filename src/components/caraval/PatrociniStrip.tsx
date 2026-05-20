@@ -61,17 +61,20 @@ export function PatrociniStrip({
       }}
     >
       <Container>
-        <div className="space-y-12 md:space-y-16">
+        {/* Hotfix Finale 3: 3 colonne orizzontali affiancate da md+, stack mobile. */}
+        <div
+          className="grid grid-cols-1 md:grid-cols-3 gap-y-12 gap-x-8 md:gap-x-10 items-start max-w-5xl mx-auto"
+        >
           {gruppi.map((gruppo) => (
-            <div key={gruppo.categoria}>
+            <div key={gruppo.categoria} className="flex flex-col items-center">
               <p
-                className={`uppercase-tracked text-caption text-center mb-8 ${
+                className={`uppercase-tracked text-caption text-center mb-6 ${
                   isLight ? "text-crema-base/85" : "text-rosso-base"
                 }`}
               >
                 {gruppo.label}
               </p>
-              <PatrociniGrid items={gruppo.items} categoria={gruppo.categoria} />
+              <PatrociniColonna items={gruppo.items} categoria={gruppo.categoria} />
             </div>
           ))}
         </div>
@@ -80,25 +83,20 @@ export function PatrociniStrip({
   );
 }
 
-function PatrociniGrid({
+function PatrociniColonna({
   items,
   categoria,
 }: {
   items: PatrocinioItem[];
   categoria: PatrocinioCategoria;
 }) {
-  // Patrocinio (1 ente in genere): griglia stretta centrata
-  // Sponsor (1-3 enti): griglia media
-  // Partner (3-5 enti): griglia ampia
-  const gridClass =
-    categoria === "patrocinio"
-      ? "grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 max-w-xs sm:max-w-sm md:max-w-md mx-auto gap-4 md:gap-6"
-      : categoria === "sponsor"
-        ? "grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 max-w-2xl mx-auto gap-4 md:gap-6"
-        : "grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6";
-
+  // Una sola colonna: i loghi all'interno si dispongono in flex-wrap centrato.
+  // Lo stesso box (140px) per tutte le categorie → simmetria visiva.
   return (
-    <ul role="list" className={`${gridClass} items-stretch`}>
+    <ul
+      role="list"
+      className="flex flex-wrap justify-center items-stretch gap-3 md:gap-4 w-full"
+    >
       {items.map((p, idx) => {
         const fotoUrl =
           p.logo?.asset?._ref &&
@@ -136,7 +134,10 @@ function PatrociniGrid({
         );
 
         return (
-          <li key={p._key ?? `${categoria}-${idx}`}>
+          <li
+            key={p._key ?? `${categoria}-${idx}`}
+            className="w-[130px] sm:w-[140px] flex-shrink-0"
+          >
             {p.url ? (
               <a
                 href={p.url}

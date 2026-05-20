@@ -545,6 +545,42 @@ header[data-scrolled="true"] .header-link:hover {
   }
 }
 
+/* === Biglietto vintage — identità ticket (Hotfix Finale 3) === */
+/* Texture puntinata sottile (carta vintage) + bordo doppio cremisi/crema. */
+.biglietto-vintage {
+  background-color: var(--color-crema-base);
+  background-image:
+    radial-gradient(circle at 1px 1px, rgba(168, 23, 74, 0.05) 1px, transparent 1.5px);
+  background-size: 14px 14px;
+  /* doppio bordo: esterno cremisi + interno crema + filo cremisi sottile */
+  box-shadow:
+    inset 0 0 0 3px var(--color-crema-base),
+    inset 0 0 0 4px rgba(168, 23, 74, 0.35),
+    0 18px 40px rgba(0, 0, 0, 0.22);
+}
+
+/* Perforazioni laterali (strappo) ai 2 lati corti centrali.
+   Colore dei cerchi = nero-base (sfondo pagina) per simulare il buco. */
+.biglietto-vintage::before,
+.biglietto-vintage::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  width: 22px;
+  height: 22px;
+  background-color: var(--color-nero-base);
+  border-radius: 50%;
+  transform: translateY(-50%);
+  z-index: 3;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.5);
+}
+.biglietto-vintage::before {
+  left: -11px;
+}
+.biglietto-vintage::after {
+  right: -11px;
+}
+
 /* === Sipario preloader (Sessione 2.7) === */
 .sipario-container {
   position: fixed;

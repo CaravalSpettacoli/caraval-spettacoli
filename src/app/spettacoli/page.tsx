@@ -13,6 +13,7 @@ import { GlifoDecorativo } from "@/components/decorative/GlifoDecorativo";
 import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 
 type PaginaCopy = {
+  heroFotoSfondo?: { asset?: { _ref?: string }; alt?: string } | null;
   eyebrow?: string;
   heading?: string;
   intro?: string;
@@ -37,7 +38,13 @@ async function getData() {
         "premiAssociati": premiAssociati[]->{ _id, anno, nomePremio }
       }`
     ),
-    client.fetch<PaginaCopy | null>(`*[_type == "paginaSpettacoliCopy"][0]`),
+    client.fetch<PaginaCopy | null>(
+      `*[_type == "paginaSpettacoliCopy"][0]{
+        eyebrow, heading, intro,
+        archivioEyebrow, archivioHeading, archivioIntro,
+        heroFotoSfondo{ asset, alt }
+      }`
+    ),
   ]);
   return { spettacoli, archivio, copy };
 }
@@ -59,13 +66,15 @@ export default async function PaginaSpettacoli() {
         sottotitolo={copy?.intro}
         palette="default"
         altezza="compatto"
+        fotoSfondo={copy?.heroFotoSfondo ?? undefined}
       />
+
+      <div className="flex justify-center bg-nero-deep pt-6 pb-2">
+        <OndaDecorativa width={220} variant="sottile" className="text-rosso-base/60" />
+      </div>
 
       <Section theme="dark" bgVariant="soft" glow="top-right">
         <Container>
-          <div className="mb-8 text-center">
-            <GlifoDecorativo tipo="theater" size={32} />
-          </div>
           <SpettacoliGrid spettacoli={spettacoli} />
         </Container>
       </Section>
