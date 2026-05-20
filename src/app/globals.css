@@ -248,24 +248,6 @@ body {
   }
 }
 
-/* Mobile/tablet (<1024px): reveal animations disabilitate, contenuto sempre
-   visibile. Il pattern IntersectionObserver è inaffidabile su iOS Safari
-   con rootMargin negativo + elementi alti — risolve bug spettacoli/animazioni
-   che restavano opacity:0 al primo render (Diagnosi_Fix_Mobile §1+2). */
-@media (max-width: 1023px) {
-  .reveal,
-  .reveal.reveal-left,
-  .reveal.reveal-right {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
-  .reveal-stagger > * {
-    opacity: 1 !important;
-    transform: none !important;
-    transition: none !important;
-  }
-}
 
 /* CTA terziarie tipo "Vedi tutto il repertorio →": underline sempre visibile,
    al hover cambia colore (cremisi). Più chiaro che è cliccabile. */
