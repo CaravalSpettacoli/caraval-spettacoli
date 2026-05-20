@@ -303,6 +303,39 @@ Icone via `lucide-react` (Home, Theater, MoreHorizontal, Mail, Sparkles, Graduat
 
 ---
 
+## 7.6 Pre go-live: coming-soon + SEO + Iubenda
+
+**Coming-soon mode** (Pre_Golive_Completo §1):
+- Toggle Sanity `impostazioniSito.comingSoon.attivo` (default `true`). Quando ON, il middleware `src/middleware.ts` reindirizza tutto a `/coming-soon` (307). Whitelist: `/studio`, `/api`, `/_next`, `/coming-soon`, asset SEO (`robots.txt`, `sitemap.xml`, `llms.txt`), loghi PNG.
+- Middleware su Edge runtime: niente `@sanity/client`, fetch HTTP a `https://${projectId}.api.sanity.io` con `next: { revalidate: 60 }`. Fail-open su errore.
+- Pagina `/coming-soon` (`src/app/coming-soon/page.tsx`) — server, fetch `impostazioniSito.comingSoon`. Hero foto + titolo + sottotitolo + `<ComingSoonCountdown />` (client) opzionale + social icons + crediti.
+- Header/Footer/BottomNavMobile nascosti via CSS `body:has(.coming-soon-page)` (supporto `:has()` Safari 15.4+/Chrome 105+).
+- `robots: { index: false, follow: false }` sulla pagina + `robots.ts` blocca tutto quando coming-soon attivo.
+
+**SEO infra**:
+- `src/app/sitemap.ts` — dinamico, include 7 pagine statiche + tutti `spettacolo` (slug) + tutte `edizioneImaginarium` (anno). Revalidate 1h. Fail-open.
+- `src/app/robots.ts` — rules generiche + AI crawler espliciti (GPTBot, PerplexityBot, Claude-Web, anthropic-ai, ClaudeBot). Quando coming-soon ON: blocca tutti. Revalidate 5min.
+- `public/llms.txt` — file statico per AI crawler con riassunto, link sezioni, repertorio, festival, academy, premi, territorio.
+- `src/components/seo/StructuredData.tsx` — JSON-LD injected in `<head>` del root layout:
+  - `Organization + PerformingArtsTheater + LocalBusiness` (singleton)
+  - `TheaterEvent[]` per ogni `spettacoloImaginarium` con `data > now()`
+  - `Course[]` per ogni `corso` in stato `in_corso` o `iscrizioni_aperte`
+  - Tutti con `addressLocality: Soncino`, `addressRegion: CR`, `addressCountry: IT`, `areaServed` esteso Lombardia
+- Root `layout.tsx` metadata: `metadataBase: https://caraval.it`, title template `%s | Caraval Spettacoli`, OG locale `it_IT`, robots index/follow, geo meta tags (`geo.region`, `geo.position`, `ICBM`).
+- `generateMetadata` dinamica su `/spettacoli/[slug]` (titolo + descrizione + OG image da `immagineCover` + canonical).
+
+**Iubenda**:
+- `src/components/seo/IubendaScripts.tsx` — Client `next/script` con `strategy="afterInteractive"`. Inizializza `_iub.csConfiguration` con palette Caraval (nero/crema/cremisi).
+- 4 campi Sanity in `impostazioniSito.iubenda` (cookieBannerSiteId, cookiePolicyId, privacyPolicyUrl, cookiePolicyUrl). Banner non si carica se siteId vuoto.
+- Footer aggiorna link Privacy/Cookie usando Iubenda URL se configurati (fallback `/privacy` `/cookie` locali).
+
+**Schema `impostazioniSito` estensioni**:
+- `seoDefault`: defaultTitle, defaultDescription, defaultOgImage, **keywords[]** (focus Lombardia 15 keyword default), **geoLat/geoLon** (Soncino 45.4017/9.8693 default), **canonicalBaseUrl**.
+- `comingSoon`: attivo (bool default true), titolo, sottotitolo, dataLancio (datetime opzionale), fotoSfondo.
+- `iubenda`: cookieBannerSiteId, cookiePolicyId, privacyPolicyUrl, cookiePolicyUrl.
+
+---
+
 ## 8. Convenzioni
 
 ### Naming

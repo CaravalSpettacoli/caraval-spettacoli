@@ -163,13 +163,148 @@ export default defineType({
       name: "seoDefault",
       title: "SEO default",
       type: "object",
+      description:
+        "Titolo, description e immagine usati come default su tutte le pagine. Keywords + geo + canonical configurabili sotto.",
       fields: [
-        defineField({ name: "defaultTitle", title: "Default title", type: "string" }),
-        defineField({ name: "defaultDescription", title: "Default description", type: "text" }),
+        defineField({
+          name: "defaultTitle",
+          title: "Default title (max 70 char)",
+          type: "string",
+          initialValue:
+            "Caraval Spettacoli — Compagnia teatrale di Soncino, Cremona",
+          validation: (r) => r.max(70),
+        }),
+        defineField({
+          name: "defaultDescription",
+          title: "Default description (max 170 char)",
+          type: "text",
+          rows: 3,
+          initialValue:
+            "Caraval Spettacoli è la compagnia teatrale di Soncino (Cremona). Prosa, teatro di fuoco, performance di strada. Festival Imaginarium ogni anno.",
+          validation: (r) => r.max(170),
+        }),
         defineField({
           name: "defaultOgImage",
-          title: "Default OG image",
+          title: "Default OG image (1200x630)",
           type: "image",
+          options: { hotspot: true },
+        }),
+        defineField({
+          name: "keywords",
+          title: "Keywords (focus geografico Lombardia)",
+          type: "array",
+          of: [defineArrayMember({ type: "string" })],
+          initialValue: [
+            "compagnia teatrale Soncino",
+            "compagnia teatrale Cremona",
+            "compagnia teatrale Brescia",
+            "compagnia teatrale Lombardia",
+            "teatro di fuoco Soncino",
+            "spettacoli teatro fuoco Cremona",
+            "spettacoli prosa Soncino",
+            "spettacoli teatrali Lombardia",
+            "festival teatro Soncino",
+            "Imaginarium Soncino festival",
+            "corsi recitazione Soncino",
+            "corsi recitazione Cremona",
+            "laboratori teatro scuole Cremona",
+            "spettacoli teatro strada Brescia",
+            "compagnia ingaggio teatro Cremona",
+          ],
+        }),
+        defineField({
+          name: "geoLat",
+          title: "Latitudine sede (Soncino default)",
+          type: "number",
+          initialValue: 45.4017,
+        }),
+        defineField({
+          name: "geoLon",
+          title: "Longitudine sede",
+          type: "number",
+          initialValue: 9.8693,
+        }),
+        defineField({
+          name: "canonicalBaseUrl",
+          title: "Base URL canonical (es. https://caraval.it)",
+          type: "url",
+          initialValue: "https://caraval.it",
+        }),
+      ],
+    }),
+    defineField({
+      name: "comingSoon",
+      title: "Coming Soon (modalità pre-lancio)",
+      type: "object",
+      description:
+        "Se attivo, tutto il sito reindirizza a /coming-soon. Lo Studio /studio resta sempre accessibile. Disattivalo quando il sito è pronto per il go-live.",
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({
+          name: "attivo",
+          title: "Coming Soon attivo",
+          type: "boolean",
+          initialValue: true,
+          description:
+            "Switch master. ON = sito chiuso al pubblico, OFF = sito live.",
+        }),
+        defineField({
+          name: "titolo",
+          title: "Titolo coming-soon",
+          type: "string",
+          initialValue: "Stiamo arrivando",
+        }),
+        defineField({
+          name: "sottotitolo",
+          title: "Sottotitolo",
+          type: "text",
+          rows: 2,
+          initialValue:
+            "Il nuovo sito di Caraval Spettacoli sarà online a breve. Restate sintonizzati.",
+        }),
+        defineField({
+          name: "dataLancio",
+          title: "Data lancio prevista (opzionale)",
+          type: "datetime",
+          description:
+            "Se valorizzata, sotto il sottotitolo appare un countdown.",
+        }),
+        defineField({
+          name: "fotoSfondo",
+          title: "Foto sfondo coming-soon",
+          type: "image",
+          options: { hotspot: true },
+        }),
+      ],
+    }),
+    defineField({
+      name: "iubenda",
+      title: "Iubenda (cookie banner + privacy)",
+      type: "object",
+      description:
+        "Codici Iubenda. Lascia vuoto finché non hai gli ID reali — il banner non viene caricato se siteId vuoto.",
+      options: { collapsible: true, collapsed: true },
+      fields: [
+        defineField({
+          name: "cookieBannerSiteId",
+          title: "Iubenda Cookie Banner Site ID",
+          type: "string",
+          description: "Numerico, generato da Iubenda (es. 1234567).",
+        }),
+        defineField({
+          name: "cookiePolicyId",
+          title: "Iubenda Cookie Policy ID",
+          type: "string",
+        }),
+        defineField({
+          name: "privacyPolicyUrl",
+          title: "URL Privacy Policy Iubenda",
+          type: "url",
+        }),
+        defineField({
+          name: "cookiePolicyUrl",
+          title: "URL Cookie Policy Iubenda",
+          type: "url",
         }),
       ],
     }),

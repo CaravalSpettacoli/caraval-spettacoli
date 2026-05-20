@@ -21,6 +21,10 @@ type ImpostazioniFooter = {
     codiceFiscale?: string;
   };
   socialLinks?: SocialLink[];
+  iubenda?: {
+    privacyPolicyUrl?: string;
+    cookiePolicyUrl?: string;
+  };
 };
 
 const FALLBACK: ImpostazioniFooter = {
@@ -81,7 +85,8 @@ async function getImpostazioni(): Promise<ImpostazioniFooter> {
       `*[_type == "impostazioniSito"][0]{
         contattiPubblici,
         datiAssociazione,
-        socialLinks[]{piattaforma, url, mostraInFooter}
+        socialLinks[]{piattaforma, url, mostraInFooter},
+        iubenda{ privacyPolicyUrl, cookiePolicyUrl }
       }`,
       {},
       { next: { revalidate: 300 } }
@@ -232,12 +237,34 @@ export async function Footer({ mostraCalendario = false }: { mostraCalendario?: 
 
         <div className="mt-16 pt-6 border-t border-crema-faint footer-crediti-row text-caption text-crema-muted">
           <div className="flex gap-6 footer-crediti-legal">
-            <Link href="/privacy" className="hover:text-crema-base">
-              Privacy
-            </Link>
-            <Link href="/cookie" className="hover:text-crema-base">
-              Cookie
-            </Link>
+            {impostazioni.iubenda?.privacyPolicyUrl ? (
+              <a
+                href={impostazioni.iubenda.privacyPolicyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-crema-base"
+              >
+                Privacy
+              </a>
+            ) : (
+              <Link href="/privacy" className="hover:text-crema-base">
+                Privacy
+              </Link>
+            )}
+            {impostazioni.iubenda?.cookiePolicyUrl ? (
+              <a
+                href={impostazioni.iubenda.cookiePolicyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-crema-base"
+              >
+                Cookie
+              </a>
+            ) : (
+              <Link href="/cookie" className="hover:text-crema-base">
+                Cookie
+              </Link>
+            )}
           </div>
           <div className="footer-crediti-blocco">
             <p className="footer-crediti-testo">

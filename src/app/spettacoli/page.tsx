@@ -52,7 +52,15 @@ async function getData() {
 export const metadata = {
   title: "Spettacoli",
   description:
-    "Il repertorio attivo di Caraval Spettacoli: prosa, teatro di fuoco, teatro di strada.",
+    "Il repertorio attivo di Caraval Spettacoli: prosa, teatro di fuoco, teatro di strada. Produzioni della compagnia teatrale di Soncino (Cremona).",
+  alternates: { canonical: "https://caraval.it/spettacoli" },
+  openGraph: {
+    title: "Spettacoli — Caraval Spettacoli",
+    description:
+      "Il repertorio attivo di Caraval Spettacoli: prosa, teatro di fuoco, teatro di strada.",
+    url: "https://caraval.it/spettacoli",
+    type: "website",
+  },
 };
 
 export default async function PaginaSpettacoli() {

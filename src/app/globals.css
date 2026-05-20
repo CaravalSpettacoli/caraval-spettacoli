@@ -1044,6 +1044,152 @@ header[data-scrolled="true"] .header-link:hover {
 }
 
 /* ============================================================
+   COMING SOON — pagina pre-lancio (Pre_Golive_Completo §1)
+   Hide Header/Footer/BottomNav via :has() per route /coming-soon.
+   ============================================================ */
+body:has(.coming-soon-page) > header,
+body:has(.coming-soon-page) > footer,
+body:has(.coming-soon-page) > nav.bottom-nav-mobile {
+  display: none !important;
+}
+body:has(.coming-soon-page) > main {
+  padding-bottom: 0 !important;
+}
+
+.coming-soon-page {
+  min-height: 100vh;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  background-color: var(--color-nero-base);
+}
+
+.coming-soon-foto-sfondo {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+.coming-soon-foto-sfondo img {
+  object-fit: cover;
+}
+.coming-soon-overlay {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(0, 0, 0, 0.4) 0%, rgba(0, 0, 0, 0.88) 100%);
+  z-index: 1;
+}
+
+.coming-soon-content {
+  position: relative;
+  z-index: 2;
+  text-align: center;
+  padding: 2rem;
+  max-width: 800px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2rem;
+}
+
+.coming-soon-logo {
+  width: 240px;
+  height: auto;
+}
+
+.coming-soon-titolo {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  color: var(--color-crema-base);
+  margin: 0;
+  letter-spacing: 0.02em;
+  line-height: 1.1;
+}
+
+.coming-soon-sottotitolo {
+  font-size: clamp(1rem, 2vw, 1.25rem);
+  color: rgba(245, 230, 211, 0.8);
+  margin: 0.75rem auto 0;
+  max-width: 540px;
+  line-height: 1.5;
+}
+
+.coming-soon-countdown {
+  display: flex;
+  gap: 1rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.countdown-block {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 1rem 1.25rem;
+  background-color: rgba(168, 23, 74, 0.15);
+  border: 1px solid rgba(168, 23, 74, 0.3);
+  border-radius: 12px;
+  min-width: 84px;
+}
+.countdown-numero {
+  font-family: var(--font-cinzel), serif;
+  font-size: 2.4rem;
+  color: var(--color-crema-base);
+  line-height: 1;
+}
+.countdown-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: rgba(245, 230, 211, 0.6);
+}
+
+.coming-soon-social {
+  display: flex;
+  gap: 1rem;
+}
+.coming-soon-social a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 9999px;
+  background-color: rgba(168, 23, 74, 0.15);
+  border: 1px solid rgba(168, 23, 74, 0.3);
+  color: var(--color-crema-base);
+  transition:
+    background-color 200ms ease-out,
+    border-color 200ms ease-out,
+    transform 200ms ease-out;
+}
+.coming-soon-social a:hover,
+.coming-soon-social a:focus-visible {
+  background-color: var(--color-rosso-base);
+  border-color: var(--color-rosso-base);
+  transform: translateY(-2px);
+  outline: none;
+}
+
+.coming-soon-credits {
+  font-size: 0.75rem;
+  color: rgba(245, 230, 211, 0.4);
+  margin: 0;
+  letter-spacing: 0.04em;
+}
+
+@media (max-width: 640px) {
+  .countdown-block {
+    padding: 0.75rem 0.9rem;
+    min-width: 68px;
+  }
+  .countdown-numero {
+    font-size: 1.75rem;
+  }
+}
+
+/* ============================================================
    FOOTER — riga crediti finale (Diagnosi_Fix_Mobile §6)
    Legal links a sinistra, crediti Caraval + Eddidesign a destra.
    Mobile: stack centrato.

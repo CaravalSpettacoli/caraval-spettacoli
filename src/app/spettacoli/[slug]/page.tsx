@@ -81,13 +81,36 @@ export async function generateMetadata({
   const data = await client.fetch<{
     titolo?: string;
     descrizioneBreve?: string;
+    immagineCover?: { asset?: { _ref?: string } } | null;
   } | null>(
-    `*[_type == "spettacolo" && slug.current == $slug][0]{ titolo, descrizioneBreve }`,
+    `*[_type == "spettacolo" && slug.current == $slug][0]{ titolo, descrizioneBreve, immagineCover }`,
     { slug: params.slug }
   );
+  const titolo = data?.titolo ?? "Spettacolo";
+  const descrizione =
+    data?.descrizioneBreve ??
+    `${titolo} — produzione Caraval Spettacoli. Compagnia teatrale di Soncino (Cremona).`;
+  const ogImage =
+    data?.immagineCover?.asset?._ref &&
+    `https://cdn.sanity.io/images/${process.env.NEXT_PUBLIC_SANITY_PROJECT_ID}/${process.env.NEXT_PUBLIC_SANITY_DATASET ?? "production"}/${data.immagineCover.asset._ref.replace("image-", "").replace(/-([a-z]+)$/, ".$1")}?w=1200&h=630&fit=crop&auto=format&q=80`;
+  const url = `https://caraval.it/spettacoli/${params.slug}`;
   return {
-    title: data?.titolo,
-    description: data?.descrizioneBreve,
+    title: titolo,
+    description: descrizione,
+    alternates: { canonical: url },
+    openGraph: {
+      title: titolo,
+      description: descrizione,
+      url,
+      type: "article",
+      images: ogImage ? [{ url: ogImage, width: 1200, height: 630 }] : undefined,
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: titolo,
+      description: descrizione,
+      images: ogImage ? [ogImage] : undefined,
+    },
   };
 }
 

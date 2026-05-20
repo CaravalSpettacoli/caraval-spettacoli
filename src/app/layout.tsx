@@ -6,7 +6,10 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { BottomNavMobile } from "@/components/caraval/BottomNavMobile";
 import { CustomCursor } from "@/components/effects/CustomCursor";
+import { StructuredData } from "@/components/seo/StructuredData";
+import { IubendaScripts } from "@/components/seo/IubendaScripts";
 import { getFeatureFlags } from "@/lib/feature-flags";
+import { client } from "@/../sanity/lib/client";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -23,12 +26,51 @@ const cinzel = Cinzel_Decorative({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://caraval.it"),
   title: {
-    default: "Caraval Spettacoli",
-    template: "%s — Caraval Spettacoli",
+    default: "Caraval Spettacoli — Compagnia teatrale di Soncino, Cremona",
+    template: "%s | Caraval Spettacoli",
   },
   description:
-    "Compagnia teatrale di Soncino. Prosa, teatro di strada, spettacoli di fuoco. Festival Imaginarium.",
+    "Caraval Spettacoli è la compagnia teatrale di Soncino (Cremona). Prosa, teatro di fuoco, performance di strada. Festival Imaginarium ogni anno.",
+  keywords: [
+    "compagnia teatrale Soncino",
+    "compagnia teatrale Cremona",
+    "compagnia teatrale Lombardia",
+    "teatro di fuoco",
+    "spettacoli prosa Lombardia",
+    "festival teatro Soncino",
+    "Imaginarium",
+    "corsi recitazione Cremona",
+  ],
+  authors: [{ name: "Caraval Spettacoli" }],
+  creator: "Caraval Spettacoli",
+  publisher: "Caraval Spettacoli",
+  openGraph: {
+    type: "website",
+    locale: "it_IT",
+    siteName: "Caraval Spettacoli",
+    url: "https://caraval.it",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  other: {
+    "geo.region": "IT-CR",
+    "geo.placename": "Soncino",
+    "geo.position": "45.4017;9.8693",
+    ICBM: "45.4017, 9.8693",
+  },
 };
 
 export const viewport: Viewport = {
@@ -37,23 +79,43 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
+type IubendaConfig = {
+  cookieBannerSiteId?: string;
+  cookiePolicyId?: string;
+};
+
+async function getIubendaConfig(): Promise<IubendaConfig> {
+  try {
+    const data = await client.fetch<{ iubenda?: IubendaConfig } | null>(
+      `*[_id == "impostazioniSito"][0]{ iubenda{ cookieBannerSiteId, cookiePolicyId } }`
+    );
+    return data?.iubenda ?? {};
+  } catch {
+    return {};
+  }
+}
+
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const flags = await getFeatureFlags();
+  const [flags, iubenda] = await Promise.all([
+    getFeatureFlags(),
+    getIubendaConfig(),
+  ]);
   return (
-    <html
-      lang="it"
-      className={`${inter.variable} ${cinzel.variable}`}
-    >
+    <html lang="it" className={`${inter.variable} ${cinzel.variable}`}>
       <head>
         {/* Preload entrambi i loghi: l'header li cross-fade tra le 2 varianti
-            in base al tema della sezione corrente. Senza preload, al primo
-            paint può vedersi il logo nero per qualche frame prima del bianco. */}
+            in base al tema della sezione corrente. */}
         <link rel="preload" as="image" href="/caraval-logo-white.png" />
         <link rel="preload" as="image" href="/caraval-logo-black.png" />
+        <StructuredData />
+        <IubendaScripts
+          cookieBannerSiteId={iubenda.cookieBannerSiteId}
+          cookiePolicyId={iubenda.cookiePolicyId}
+        />
       </head>
       <body className="bg-nero-base text-crema-base antialiased flex flex-col min-h-screen">
         <SkipLink />
