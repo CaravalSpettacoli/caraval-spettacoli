@@ -4,29 +4,46 @@ export const structure: StructureResolver = (S) =>
   S.list()
     .title("Caraval Spettacoli")
     .items([
+      // ⚙️ Impostazioni sito (singleton, primo per coming-soon toggle)
       S.listItem()
-        .title("Impostazioni sito")
+        .title("⚙️ Impostazioni sito")
         .id("impostazioniSito")
         .child(
           S.document()
             .schemaType("impostazioniSito")
             .documentId("impostazioniSito")
+            .title("Impostazioni sito")
         ),
       S.divider(),
+
+      // ➕ Contenuti creabili — clicca su una voce e poi sul "+" in alto a destra per aggiungere
+      S.documentTypeListItem("spettacolo").title("🎭 Spettacoli"),
+      S.documentTypeListItem("membro").title("👤 Membri compagnia"),
+      S.documentTypeListItem("evento").title("🗓️ Eventi (calendario)"),
+      S.documentTypeListItem("premio").title("🏆 Premi"),
+      S.documentTypeListItem("corso").title("📚 Corsi (formazione)"),
+      S.divider(),
+
+      // ✨ Imaginarium
+      S.documentTypeListItem("edizioneImaginarium").title("✨ Edizioni Imaginarium"),
+      S.documentTypeListItem("spettacoloImaginarium").title("🎪 Spettacoli Imaginarium"),
+      S.divider(),
+
+      // 📄 Copy pagine (singleton — modifica testi statici)
       S.listItem()
-        .title("Homepage — Hero")
+        .title("🏠 Homepage — Hero")
         .id("homepageHero")
         .child(
           S.document().schemaType("homepageHero").documentId("homepageHero")
         ),
       S.listItem()
-        .title("Homepage — Copy sezioni")
+        .title("🏠 Homepage — Copy sezioni")
         .id("homepageCopy")
         .child(
           S.document().schemaType("homepageCopy").documentId("homepageCopy")
         ),
       S.listItem()
-        .title("Pagina Spettacoli — Copy")
+        .title("📄 Pagina Spettacoli — Copy")
         .id("paginaSpettacoliCopy")
         .child(
           S.document()
@@ -34,7 +51,7 @@ export const structure: StructureResolver = (S) =>
             .documentId("paginaSpettacoliCopy")
         ),
       S.listItem()
-        .title("Pagina Imaginarium — Copy")
+        .title("📄 Pagina Imaginarium — Copy")
         .id("paginaImaginariumCopy")
         .child(
           S.document()
@@ -42,7 +59,7 @@ export const structure: StructureResolver = (S) =>
             .documentId("paginaImaginariumCopy")
         ),
       S.listItem()
-        .title("Pagina Chi siamo — Copy")
+        .title("📄 Pagina Chi siamo — Copy")
         .id("paginaChiSiamoCopy")
         .child(
           S.document()
@@ -50,7 +67,7 @@ export const structure: StructureResolver = (S) =>
             .documentId("paginaChiSiamoCopy")
         ),
       S.listItem()
-        .title("Pagina Contatti — Copy")
+        .title("📄 Pagina Contatti — Copy")
         .id("paginaContattiCopy")
         .child(
           S.document()
@@ -58,7 +75,7 @@ export const structure: StructureResolver = (S) =>
             .documentId("paginaContattiCopy")
         ),
       S.listItem()
-        .title("Pagina Ospita — Copy")
+        .title("📄 Pagina Ospita — Copy")
         .id("paginaOspitaCopy")
         .child(
           S.document()
@@ -66,18 +83,10 @@ export const structure: StructureResolver = (S) =>
             .documentId("paginaOspitaCopy")
         ),
       S.divider(),
-      S.documentTypeListItem("spettacolo").title("Spettacoli"),
-      S.documentTypeListItem("premio").title("Premi"),
-      S.documentTypeListItem("evento").title("Eventi (calendario)"),
-      S.divider(),
-      S.documentTypeListItem("edizioneImaginarium").title("Edizioni Imaginarium"),
-      S.documentTypeListItem("spettacoloImaginarium").title("Spettacoli Imaginarium"),
-      S.divider(),
-      S.documentTypeListItem("corso").title("Corsi (formazione)"),
-      S.documentTypeListItem("membro").title("Membri compagnia"),
-      S.divider(),
+
+      // Legacy pagina docs (singleton)
       S.listItem()
-        .title("Pagina — Chi siamo")
+        .title("Pagina — Chi siamo (legacy)")
         .id("paginaChiSiamo")
         .child(
           S.document()
@@ -85,7 +94,7 @@ export const structure: StructureResolver = (S) =>
             .documentId("paginaChiSiamo")
         ),
       S.listItem()
-        .title("Pagina — Ospita")
+        .title("Pagina — Ospita (legacy)")
         .id("paginaOspita")
         .child(
           S.document()

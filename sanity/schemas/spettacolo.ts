@@ -32,12 +32,16 @@ export default defineType({
       name: "titolo",
       title: "Titolo",
       type: "string",
+      description:
+        'Titolo dello spettacolo. Es. "Romeo+Giulietta — L\'Inferno dell\'Amore".',
       validation: (r) => r.required(),
     }),
     defineField({
       name: "slug",
-      title: "Slug",
+      title: "Slug (indirizzo web)",
       type: "slug",
+      description:
+        "L'indirizzo web della pagina. Clicca 'Generate' per crearlo automaticamente dal titolo. Apparirà come /spettacoli/[slug].",
       options: { source: "titolo", maxLength: 96 },
       validation: (r) => r.required(),
     }),
@@ -45,6 +49,8 @@ export default defineType({
       name: "categoria",
       title: "Categoria",
       type: "string",
+      description:
+        "Il tipo di spettacolo: prosa, teatro di strada o teatro di fuoco.",
       options: {
         list: [
           { title: "Prosa", value: "prosa" },
@@ -108,7 +114,25 @@ export default defineType({
       type: "boolean",
       initialValue: false,
       description:
-        "Se attivo, il biglietto mostra il badge 'Posti limitati'.",
+        "Se attivo, il biglietto mostra il badge 'Posti limitati' (se non specifichi un numero qui sotto).",
+      fieldset: "contenutiConsigliati",
+    }),
+    defineField({
+      name: "numeroPostiLimitati",
+      title: "Numero posti disponibili (opzionale)",
+      type: "number",
+      description:
+        'Se i posti sono limitati, indica quanti. Il biglietto mostrerà "Solo X posti". Lascia vuoto se illimitati o se gestiti dal teatro ospitante.',
+      validation: (r) => r.min(1).max(2000),
+      fieldset: "contenutiConsigliati",
+    }),
+    defineField({
+      name: "schedaTecnicaPdf",
+      title: "Scheda tecnica / rider (PDF)",
+      type: "file",
+      description:
+        "Il rider tecnico in PDF che i teatri possono scaricare dalla scheda spettacolo. Carica un file .pdf.",
+      options: { accept: "application/pdf" },
       fieldset: "contenutiConsigliati",
     }),
     defineField({
@@ -296,10 +320,65 @@ export default defineType({
       },
     }),
     defineField({
+      name: "opzioniPrenotazione",
+      title: "Opzioni di prenotazione (multipla)",
+      type: "array",
+      fieldset: "prenotazioniFs",
+      description:
+        "Aggiungi una o più modalità per prenotare/acquistare i biglietti. Appariranno tutte come bottoni nel biglietto. Se vuoto, il sito userà la 'Modalità' singola nella sezione qui sotto.",
+      of: [
+        defineArrayMember({
+          type: "object",
+          fields: [
+            defineField({
+              name: "tipo",
+              title: "Tipo",
+              type: "string",
+              options: {
+                list: [
+                  { title: "📞 Telefono", value: "telefono" },
+                  { title: "✉️ Email", value: "email" },
+                  { title: "🔗 Link esterno (biglietteria online)", value: "link" },
+                  { title: "🎫 Botteghino del teatro", value: "botteghino" },
+                ],
+                layout: "radio",
+              },
+              validation: (r) => r.required(),
+            }),
+            defineField({
+              name: "valore",
+              title: "Valore",
+              type: "string",
+              description:
+                "Per telefono: il numero (es. +39 333 1234567). Per email: l'indirizzo. Per link: l'URL completo (https://…). Per botteghino: lascia vuoto.",
+            }),
+            defineField({
+              name: "label",
+              title: "Etichetta bottone (opzionale)",
+              type: "string",
+              description:
+                'Testo personalizzato del bottone (es. "Acquista su Vivaticket"). Se vuoto, usa un testo predefinito.',
+            }),
+          ],
+          preview: {
+            select: { tipo: "tipo", valore: "valore", label: "label" },
+            prepare({ tipo, valore, label }) {
+              return {
+                title: label || tipo || "Opzione",
+                subtitle: valore || "",
+              };
+            },
+          },
+        }),
+      ],
+    }),
+    defineField({
       name: "prenotazione",
-      title: "Prenotazione / biglietti",
+      title: "Prenotazione / biglietti (modalità singola — legacy)",
       type: "object",
       fieldset: "prenotazioniFs",
+      description:
+        "Modalità singola di fallback. Usa 'Opzioni di prenotazione' sopra se vuoi più opzioni insieme.",
       options: { collapsible: false },
       fields: [
         defineField({

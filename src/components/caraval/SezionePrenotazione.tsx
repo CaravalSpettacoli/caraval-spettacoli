@@ -4,6 +4,7 @@ import {
   BigliettoSpettacolo,
   type BigliettoSpettacoloData,
   type ModalitaPrenotazione,
+  type OpzionePrenotazione,
 } from "@/components/caraval/BigliettoSpettacolo";
 
 export type ReferenteContatto = {
@@ -22,13 +23,18 @@ export type SezionePrenotazioneSpettacolo = {
   annoProduzione?: number;
   durataMinuti?: number;
   postiLimitati?: boolean;
+  numeroPostiLimitati?: number;
   slug?: { current?: string };
+  opzioniPrenotazione?: OpzionePrenotazione[];
   prenotazione?: {
     modalita?: ModalitaPrenotazione;
     urlBiglietti?: string;
     qrCode?: { asset?: { _ref?: string }; alt?: string };
     etichettaCustom?: string;
     noteAggiuntive?: string;
+  };
+  schedaTecnicaPdf?: {
+    asset?: { url?: string; originalFilename?: string };
   };
 };
 
@@ -56,10 +62,15 @@ export function SezionePrenotazione({
     annoProduzione: spettacolo.annoProduzione,
     durataMinuti: spettacolo.durataMinuti,
     postiLimitati: spettacolo.postiLimitati,
+    numeroPostiLimitati: spettacolo.numeroPostiLimitati,
     slug: spettacolo.slug?.current,
+    opzioniPrenotazione: spettacolo.opzioniPrenotazione,
     prenotazione: spettacolo.prenotazione,
     contatti: { telefono, email },
   };
+
+  const pdfUrl = spettacolo.schedaTecnicaPdf?.asset?.url;
+  const pdfFilename = spettacolo.schedaTecnicaPdf?.asset?.originalFilename;
 
   const headingForModalita = (() => {
     switch (modalita) {
@@ -114,6 +125,32 @@ export function SezionePrenotazione({
               <p className="mt-4 text-body-s text-crema-muted italic">
                 {spettacolo.prenotazione.noteAggiuntive}
               </p>
+            )}
+            {pdfUrl && (
+              <a
+                href={`${pdfUrl}?dl=${encodeURIComponent(pdfFilename ?? `${titolo}-scheda-tecnica.pdf`)}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="mt-6 inline-flex items-center gap-2 px-5 py-3 border border-rosso-base text-crema-base hover:bg-rosso-base hover:text-crema-bright transition-all duration-base rounded-md text-body-s font-semibold uppercase-tracked"
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="18"
+                  height="18"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  aria-hidden
+                >
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+                  <polyline points="7 10 12 15 17 10" />
+                  <line x1="12" y1="15" x2="12" y2="3" />
+                </svg>
+                <span>Scarica la scheda tecnica (PDF)</span>
+              </a>
             )}
           </div>
         </div>

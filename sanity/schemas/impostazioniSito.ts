@@ -6,6 +6,54 @@ export default defineType({
   type: "document",
   fields: [
     defineField({
+      name: "comingSoon",
+      title: "🚀 Coming Soon (pubblicazione sito)",
+      type: "object",
+      description:
+        "⚠️ Quando ATTIVO (verde), tutti i visitatori vedono solo la pagina 'Stiamo arrivando'. DISATTIVA questo interruttore quando vuoi pubblicare il sito completo e renderlo visibile a tutti. Lo Studio (/studio) resta sempre accessibile.",
+      options: { collapsible: true, collapsed: false },
+      fields: [
+        defineField({
+          name: "attivo",
+          title: "Sito in modalità Coming Soon",
+          type: "boolean",
+          initialValue: true,
+          description:
+            "ON (verde) = i visitatori vedono solo la pagina 'Stiamo arrivando'. OFF = sito pubblico e visibile a tutti.",
+        }),
+        defineField({
+          name: "titolo",
+          title: "Titolo pagina coming-soon",
+          type: "string",
+          initialValue: "Stiamo arrivando",
+          description: "Titolo grande visibile in cima alla pagina coming-soon.",
+        }),
+        defineField({
+          name: "sottotitolo",
+          title: "Sottotitolo / messaggio",
+          type: "text",
+          rows: 2,
+          initialValue:
+            "Il nuovo sito di Caraval Spettacoli sarà online a breve. Restate sintonizzati.",
+          description: "Frase sotto al titolo. Tieni breve (max 2 righe).",
+        }),
+        defineField({
+          name: "dataLancio",
+          title: "Data lancio prevista (opzionale)",
+          type: "datetime",
+          description:
+            "Se valorizzata, sotto il sottotitolo appare un countdown automatico.",
+        }),
+        defineField({
+          name: "fotoSfondo",
+          title: "Foto sfondo coming-soon",
+          type: "image",
+          options: { hotspot: true },
+          description: "Foto di sfondo della pagina coming-soon. Formato orizzontale 16:9 consigliato.",
+        }),
+      ],
+    }),
+    defineField({
       name: "homepageHero",
       title: "Hero homepage",
       type: "object",
@@ -229,51 +277,6 @@ export default defineType({
           title: "Base URL canonical (es. https://caraval.it)",
           type: "url",
           initialValue: "https://caraval.it",
-        }),
-      ],
-    }),
-    defineField({
-      name: "comingSoon",
-      title: "Coming Soon (modalità pre-lancio)",
-      type: "object",
-      description:
-        "Se attivo, tutto il sito reindirizza a /coming-soon. Lo Studio /studio resta sempre accessibile. Disattivalo quando il sito è pronto per il go-live.",
-      options: { collapsible: true, collapsed: false },
-      fields: [
-        defineField({
-          name: "attivo",
-          title: "Coming Soon attivo",
-          type: "boolean",
-          initialValue: true,
-          description:
-            "Switch master. ON = sito chiuso al pubblico, OFF = sito live.",
-        }),
-        defineField({
-          name: "titolo",
-          title: "Titolo coming-soon",
-          type: "string",
-          initialValue: "Stiamo arrivando",
-        }),
-        defineField({
-          name: "sottotitolo",
-          title: "Sottotitolo",
-          type: "text",
-          rows: 2,
-          initialValue:
-            "Il nuovo sito di Caraval Spettacoli sarà online a breve. Restate sintonizzati.",
-        }),
-        defineField({
-          name: "dataLancio",
-          title: "Data lancio prevista (opzionale)",
-          type: "datetime",
-          description:
-            "Se valorizzata, sotto il sottotitolo appare un countdown.",
-        }),
-        defineField({
-          name: "fotoSfondo",
-          title: "Foto sfondo coming-soon",
-          type: "image",
-          options: { hotspot: true },
         }),
       ],
     }),

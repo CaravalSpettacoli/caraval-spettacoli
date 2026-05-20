@@ -5,11 +5,11 @@ function youtubeEmbedUrl(url: string): string | null {
     const u = new URL(url);
     if (u.hostname.includes("youtu.be")) {
       const id = u.pathname.slice(1);
-      return id ? `https://www.youtube.com/embed/${id}` : null;
+      return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
     }
     if (u.hostname.includes("youtube.com")) {
       const id = u.searchParams.get("v");
-      return id ? `https://www.youtube.com/embed/${id}` : null;
+      return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
     }
     return null;
   } catch {
