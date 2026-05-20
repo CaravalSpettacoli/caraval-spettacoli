@@ -6,6 +6,14 @@ export default defineType({
   type: "document",
   fields: [
     defineField({
+      name: "notaInformativa",
+      title: "ℹ️ Come usare questa pagina",
+      type: "string",
+      readOnly: true,
+      initialValue:
+        "Qui gestisci la pubblicazione del sito e le impostazioni generali (contatti, dati associazione, social). Per mettere online il sito a tutti, disattiva la modalità Coming Soon qui sotto.",
+    }),
+    defineField({
       name: "comingSoon",
       title: "🚀 Coming Soon (pubblicazione sito)",
       type: "object",
@@ -55,67 +63,79 @@ export default defineType({
     }),
     defineField({
       name: "homepageHero",
-      title: "Hero homepage",
+      title: "Pagina Home — Impostazioni rapide",
       type: "object",
+      description:
+        "Impostazioni rapide della parte alta della home. Per modifiche più approfondite usa la voce \"Pagina Home → Immagine principale\" nel menu laterale.",
+      options: { collapsible: true, collapsed: true },
       fields: [
         defineField({ name: "titoloPrincipale", title: "Titolo principale", type: "string" }),
         defineField({ name: "sottotitolo", title: "Sottotitolo", type: "text", rows: 3 }),
         defineField({
           name: "immagineHero",
-          title: "Immagine hero",
+          title: "Immagine in cima alla pagina",
           type: "image",
           options: { hotspot: true },
         }),
         defineField({
           name: "videoHero",
-          title: "Video hero",
+          title: "Video in cima alla pagina",
           type: "file",
           options: { accept: "video/*" },
         }),
         defineField({
           name: "ctaPrincipale",
-          title: "CTA principale",
+          title: "Pulsante principale",
           type: "object",
           fields: [
-            defineField({ name: "testo", title: "Testo", type: "string" }),
-            defineField({ name: "link", title: "Link", type: "string" }),
+            defineField({ name: "testo", title: "Testo del pulsante", type: "string" }),
+            defineField({
+              name: "link",
+              title: "Dove porta il pulsante",
+              type: "string",
+              description: 'Indirizzo interno (es. "/spettacoli") o URL completo.',
+            }),
           ],
         }),
       ],
     }),
     defineField({
       name: "homepageBlocchi",
-      title: "Blocchi homepage",
+      title: "Sezioni visibili in home",
       type: "object",
+      description:
+        "Quali blocchi mostrare/nascondere nella pagina principale e i loro parametri.",
+      options: { collapsible: true, collapsed: true },
       fields: [
         defineField({
           name: "mostraProssimiEventi",
-          title: "Mostra prossimi eventi",
+          title: 'Mostra la sezione "Prossimi eventi"',
           type: "boolean",
           initialValue: true,
         }),
         defineField({
           name: "numeroProssimiEventi",
-          title: "Numero prossimi eventi",
+          title: "Quanti eventi mostrare",
           type: "number",
           initialValue: 4,
+          description: "Numero massimo di eventi visibili nella sezione 'Prossimi eventi'.",
         }),
         defineField({
           name: "spettacoliInEvidenza",
-          title: "Spettacoli in evidenza (max 3)",
+          title: "Spettacoli in evidenza (massimo 3)",
           type: "array",
           of: [defineArrayMember({ type: "reference", to: [{ type: "spettacolo" }] })],
           validation: (r) => r.max(3),
         }),
         defineField({
           name: "mostraTeaserImaginarium",
-          title: "Mostra teaser Imaginarium",
+          title: 'Mostra il blocco "Imaginarium" in home',
           type: "boolean",
           initialValue: true,
         }),
         defineField({
           name: "mostraTeaserOspita",
-          title: "Mostra teaser Ospita",
+          title: 'Mostra il blocco "Ospita Caraval" in home',
           type: "boolean",
           initialValue: true,
         }),
@@ -123,21 +143,33 @@ export default defineType({
     }),
     defineField({
       name: "contattiPubblici",
-      title: "Contatti pubblici",
+      title: "Contatti pubblici (visibili sul sito)",
       type: "object",
+      description: "Email e telefono mostrati sul sito (footer, pagina contatti, ecc.).",
       fields: [
-        defineField({ name: "email", title: "Email", type: "string" }),
-        defineField({ name: "telefono", title: "Telefono associativo", type: "string" }),
+        defineField({
+          name: "email",
+          title: "Email pubblica",
+          type: "string",
+          description: "Email principale visibile sul sito.",
+        }),
+        defineField({
+          name: "telefono",
+          title: "Telefono dell'associazione",
+          type: "string",
+          description: "Telefono generico mostrato nei contatti.",
+        }),
         defineField({
           name: "telefonoVeraDiretto",
-          title: "Telefono Vera (formazione)",
+          title: "Telefono diretto (sezione Formazione)",
           type: "string",
+          description: "Telefono diretto del referente della formazione.",
         }),
       ],
     }),
     defineField({
       name: "socialLinks",
-      title: "Social links",
+      title: "Profili social",
       type: "array",
       of: [
         defineArrayMember({
@@ -156,16 +188,21 @@ export default defineType({
                 ],
               },
             }),
-            defineField({ name: "url", title: "URL", type: "url" }),
+            defineField({
+              name: "url",
+              title: "Indirizzo (URL completo)",
+              type: "url",
+              description: "Es. https://www.instagram.com/caravalspettacoli/",
+            }),
             defineField({
               name: "mostraInHeader",
-              title: "Mostra in header",
+              title: "Mostra nel menu in alto",
               type: "boolean",
               initialValue: false,
             }),
             defineField({
               name: "mostraInFooter",
-              title: "Mostra in footer",
+              title: "Mostra in fondo al sito (footer)",
               type: "boolean",
               initialValue: true,
             }),
@@ -191,32 +228,33 @@ export default defineType({
     }),
     defineField({
       name: "featureFlags",
-      title: "Visibilità sezioni sito",
+      title: "Sezioni del sito attivabili/disattivabili",
       type: "object",
       description:
-        "Toggle on/off per sezioni che possono essere attivate o disattivate in modo non distruttivo.",
+        "Interruttori per accendere o spegnere alcune sezioni del sito senza cancellarne i contenuti.",
       options: { collapsible: true, collapsed: false },
       fields: [
         defineField({
           name: "mostraCalendario",
-          title: "Mostra pagina Calendario",
+          title: "Mostra la pagina Calendario",
           type: "boolean",
           initialValue: false,
           description:
-            "Se attivo, /calendario è accessibile e appare nel menu header/footer. Se disattivato (default), la pagina restituisce 404 e la voce è nascosta. La sezione 'Prossimi eventi' della homepage rimane sempre visibile a parte.",
+            "Se attivo, la pagina Calendario è accessibile dal menu. Se spento (impostazione predefinita), la pagina è nascosta e non appare nel menu. La sezione 'Prossimi eventi' della home resta sempre visibile a parte.",
         }),
       ],
     }),
     defineField({
       name: "seoDefault",
-      title: "SEO default",
+      title: "🔍 Visibilità su Google — Testi predefiniti",
       type: "object",
       description:
-        "Titolo, description e immagine usati come default su tutte le pagine. Keywords + geo + canonical configurabili sotto.",
+        "Titolo, descrizione e immagine usati su Google e sui social quando una pagina non ha testi specifici suoi.",
+      options: { collapsible: true, collapsed: true },
       fields: [
         defineField({
           name: "defaultTitle",
-          title: "Default title (max 70 char)",
+          title: "Titolo predefinito per Google (max 70 caratteri)",
           type: "string",
           initialValue:
             "Caraval Spettacoli — Compagnia teatrale di Soncino, Cremona",
@@ -224,22 +262,26 @@ export default defineType({
         }),
         defineField({
           name: "defaultDescription",
-          title: "Default description (max 170 char)",
+          title: "Descrizione predefinita per Google (max 170 caratteri)",
           type: "text",
           rows: 3,
+          description:
+            "Testo mostrato sotto al titolo nei risultati di Google quando una pagina non ha una descrizione propria.",
           initialValue:
             "Caraval Spettacoli è la compagnia teatrale di Soncino (Cremona). Prosa, teatro di fuoco, performance di strada. Festival Imaginarium ogni anno.",
           validation: (r) => r.max(170),
         }),
         defineField({
           name: "defaultOgImage",
-          title: "Default OG image (1200x630)",
+          title: "Immagine di anteprima social predefinita (1200x630 pixel)",
           type: "image",
+          description:
+            "Immagine usata quando un link del sito viene condiviso su WhatsApp, Facebook, Telegram, ecc., se la singola pagina non ha un'immagine propria.",
           options: { hotspot: true },
         }),
         defineField({
           name: "keywords",
-          title: "Keywords (focus geografico Lombardia)",
+          title: "Parole chiave del sito (Lombardia, Soncino, Cremona)",
           type: "array",
           of: [defineArrayMember({ type: "string" })],
           initialValue: [
@@ -262,20 +304,23 @@ export default defineType({
         }),
         defineField({
           name: "geoLat",
-          title: "Latitudine sede (Soncino default)",
+          title: "Latitudine della sede (Soncino)",
           type: "number",
+          description: "Coordinata geografica per Google Maps e SEO locale.",
           initialValue: 45.4017,
         }),
         defineField({
           name: "geoLon",
-          title: "Longitudine sede",
+          title: "Longitudine della sede",
           type: "number",
+          description: "Coordinata geografica per Google Maps e SEO locale.",
           initialValue: 9.8693,
         }),
         defineField({
           name: "canonicalBaseUrl",
-          title: "Base URL canonical (es. https://caraval.it)",
+          title: "Indirizzo principale del sito",
           type: "url",
+          description: 'Es. "https://caraval.it". Lascia così se non cambia il dominio.',
           initialValue: "https://caraval.it",
         }),
       ],

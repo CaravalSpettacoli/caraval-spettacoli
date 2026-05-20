@@ -2,54 +2,72 @@ import { defineType, defineField } from "sanity";
 
 export default defineType({
   name: "homepageHero",
-  title: "Homepage — Hero",
+  title: "Pagina Home — Immagine principale",
   type: "document",
   fields: [
+    defineField({
+      name: "notaInformativa",
+      title: "ℹ️ Come usare questa pagina",
+      type: "string",
+      readOnly: true,
+      initialValue:
+        "Qui modifichi l'immagine grande in cima alla home, il titolo, il sottotitolo e i due pulsanti d'azione. Ricordati di premere Publish per salvare le modifiche.",
+    }),
     defineField({
       name: "fotoSfondo",
       title: "Foto di sfondo",
       type: "image",
       options: { hotspot: true },
       fields: [
-        defineField({ name: "alt", title: "Testo alternativo", type: "string" }),
+        defineField({
+          name: "alt",
+          title: "Descrizione foto (per accessibilità)",
+          type: "string",
+          description:
+            "Breve descrizione di cosa si vede nella foto. Serve per chi non può vedere l'immagine (es. lettori di schermo).",
+        }),
       ],
       description:
-        "Foto cinematografica wide. Se vuota, la hero usa lo sfondo nero del sito.",
+        "Foto orizzontale grande che fa da sfondo alla parte alta della home. Formato consigliato: 1920x1080 pixel. Se lasci vuoto, lo sfondo resta nero.",
     }),
     defineField({
       name: "heading",
-      title: "Heading principale",
+      title: "Titolo principale",
       type: "string",
+      description: "Titolo grande visibile in cima alla home.",
       validation: (r) => r.required(),
     }),
     defineField({
       name: "subheading",
-      title: "Sottotitolo (2 righe max)",
+      title: "Sottotitolo",
       type: "text",
       rows: 3,
+      description: "Frase sotto al titolo (massimo 2 righe).",
     }),
     defineField({
       name: "ctaPrimariaTesto",
-      title: "CTA primaria — Testo",
+      title: "Primo pulsante — Testo",
       type: "string",
+      description: 'Es. "Scopri gli spettacoli".',
     }),
     defineField({
       name: "ctaPrimariaLink",
-      title: "CTA primaria — Link",
+      title: "Primo pulsante — Dove porta",
       type: "string",
-      description: "Es. /spettacoli",
+      description: 'Indirizzo a cui rimanda. Es. "/spettacoli".',
     }),
     defineField({
       name: "ctaSecondariaTesto",
-      title: "CTA secondaria — Testo",
+      title: "Secondo pulsante — Testo",
       type: "string",
+      description: 'Es. "Festival Imaginarium".',
     }),
     defineField({
       name: "ctaSecondariaLink",
-      title: "CTA secondaria — Link",
+      title: "Secondo pulsante — Dove porta",
       type: "string",
-      description: "Es. /imaginarium",
+      description: 'Indirizzo a cui rimanda. Es. "/imaginarium".',
     }),
   ],
-  preview: { prepare: () => ({ title: "Homepage — Hero" }) },
+  preview: { prepare: () => ({ title: "Pagina Home — Immagine principale" }) },
 });

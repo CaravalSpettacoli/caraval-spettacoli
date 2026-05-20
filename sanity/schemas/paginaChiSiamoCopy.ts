@@ -3,23 +3,44 @@ import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "paginaChiSiamoCopy",
-  title: "Chi siamo — Copy pagina",
+  title: "Pagina Chi siamo",
   type: "document",
   groups: [
-    { name: "hero", title: "Hero" },
-    { name: "storia", title: "Storia" },
-    { name: "membri", title: "Membri" },
-    { name: "premi", title: "Premi" },
-    { name: "magia", title: "Scuola di Magia" },
+    { name: "hero", title: "🖼️ Parte alta della pagina" },
+    { name: "storia", title: "📖 La nostra storia" },
+    { name: "membri", title: "👥 Sezione membri" },
+    { name: "premi", title: "🏆 Sezione premi" },
+    { name: "magia", title: "✨ Scuola di Magia" },
     SEO_GROUP,
   ],
   fields: [
-    // Hero
-    defineField({ name: "heroEyebrow", title: "Hero — Eyebrow", type: "string", group: "hero", initialValue: "CHI SIAMO" }),
-    defineField({ name: "heroHeading", title: "Hero — Heading", type: "string", group: "hero", initialValue: "Caraval Spettacoli" }),
+    defineField({
+      name: "notaInformativa",
+      title: "ℹ️ Come usare questa pagina",
+      type: "string",
+      readOnly: true,
+      initialValue:
+        "Qui modifichi i testi della pagina Chi siamo. Usa le linguette in alto per spostarti tra le sezioni (storia, membri, premi, Scuola di Magia). Ricordati di premere Publish per salvare.",
+    }),
+    // Parte alta della pagina
+    defineField({
+      name: "heroEyebrow",
+      title: "Sopratitolo piccolo",
+      type: "string",
+      group: "hero",
+      description: 'Testo piccolo in alto, sopra al titolo (es. "CHI SIAMO").',
+      initialValue: "CHI SIAMO",
+    }),
+    defineField({
+      name: "heroHeading",
+      title: "Titolo grande",
+      type: "string",
+      group: "hero",
+      initialValue: "Caraval Spettacoli",
+    }),
     defineField({
       name: "heroSottotitolo",
-      title: "Hero — Sottotitolo",
+      title: "Sottotitolo",
       type: "text",
       rows: 2,
       group: "hero",
@@ -27,11 +48,18 @@ export default defineType({
     }),
     defineField({
       name: "heroFotoSfondo",
-      title: "Hero — Foto sfondo",
+      title: "Foto in cima alla pagina",
       type: "image",
       options: { hotspot: true },
       group: "hero",
-      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+      description: "Foto orizzontale grande che fa da sfondo alla parte alta della pagina.",
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Descrizione foto (per accessibilità)",
+          type: "string",
+        }),
+      ],
     }),
 
     // Storia

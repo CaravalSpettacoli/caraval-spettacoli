@@ -9,25 +9,33 @@ export default defineType({
   fieldsets: [
     {
       name: "homepage",
-      title: "Visibilità in homepage",
+      title: "🏠 Visibilità in homepage",
       options: { collapsible: true, collapsed: false },
     },
     {
       name: "contenutiConsigliati",
-      title: "Contenuti consigliati",
+      title: "✏️ Contenuti della scheda",
       description:
-        "Campi non bloccanti per la demo, ma necessari per avere una scheda spettacolo completa. Vera, popolali quando hai tempo.",
+        "Campi opzionali ma utili per avere una scheda spettacolo completa (foto, descrizioni, durata, ecc.). Puoi compilarli con calma quando hai tempo.",
       options: { collapsible: true, collapsed: false },
     },
     {
       name: "prenotazioniFs",
-      title: "Prenotazione / biglietti",
+      title: "🎫 Prenotazione e biglietti",
       description:
-        "Come il pubblico prenota questo spettacolo. Determina la CTA del ticket nella scheda spettacolo.",
+        "Come il pubblico può prenotare o acquistare il biglietto per questo spettacolo. Determina il pulsante d'azione visibile nel biglietto della scheda.",
       options: { collapsible: true, collapsed: false },
     },
   ],
   fields: [
+    defineField({
+      name: "notaInformativa",
+      title: "ℹ️ Come usare questa pagina",
+      type: "string",
+      readOnly: true,
+      initialValue:
+        "Compila i campi per aggiungere o modificare uno spettacolo. I campi con asterisco rosso sono obbligatori, gli altri sono opzionali. Ricordati di premere Publish per salvare e rendere visibile lo spettacolo sul sito.",
+    }),
     defineField({
       name: "titolo",
       title: "Titolo",
@@ -38,10 +46,10 @@ export default defineType({
     }),
     defineField({
       name: "slug",
-      title: "Slug (indirizzo web)",
+      title: "Indirizzo della pagina sul sito",
       type: "slug",
       description:
-        "L'indirizzo web della pagina. Clicca 'Generate' per crearlo automaticamente dal titolo. Apparirà come /spettacoli/[slug].",
+        'Si genera automaticamente dal titolo cliccando "Generate". È la parte dell\'indirizzo dopo /spettacoli/ (es. "romeo-giulietta").',
       options: { source: "titolo", maxLength: 96 },
       validation: (r) => r.required(),
     }),
