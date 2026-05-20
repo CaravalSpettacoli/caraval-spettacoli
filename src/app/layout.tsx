@@ -1,13 +1,10 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Cinzel_Decorative } from "next/font/google";
 import "./globals.css";
-import { SkipLink } from "@/components/layout/SkipLink";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
-import { BottomNavMobile } from "@/components/caraval/BottomNavMobile";
-import { CustomCursor } from "@/components/effects/CustomCursor";
+import { SiteChrome } from "@/components/layout/SiteChrome";
 import { StructuredData } from "@/components/seo/StructuredData";
-import { IubendaScripts } from "@/components/seo/IubendaScripts";
 import { getFeatureFlags } from "@/lib/feature-flags";
 
 const inter = Inter({
@@ -92,17 +89,14 @@ export default async function RootLayout({
         <link rel="preload" as="image" href="/caraval-logo-white.png" />
         <link rel="preload" as="image" href="/caraval-logo-black.png" />
         <StructuredData />
-        <IubendaScripts />
       </head>
       <body className="bg-nero-base text-crema-base antialiased flex flex-col min-h-screen">
-        <SkipLink />
-        <CustomCursor />
-        <Header mostraCalendario={flags.mostraCalendario} />
-        <main id="contenuto" className="flex-1">
+        <SiteChrome
+          header={<Header mostraCalendario={flags.mostraCalendario} />}
+          footer={<Footer mostraCalendario={flags.mostraCalendario} />}
+        >
           {children}
-        </main>
-        <Footer mostraCalendario={flags.mostraCalendario} />
-        <BottomNavMobile />
+        </SiteChrome>
       </body>
     </html>
   );
