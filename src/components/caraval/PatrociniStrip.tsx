@@ -1,3 +1,4 @@
+import { Fragment } from "react";
 import { Container } from "@/components/ui/Container";
 import { urlFor } from "@/../sanity/lib/image";
 
@@ -61,21 +62,33 @@ export function PatrociniStrip({
       }}
     >
       <Container>
-        {/* Hotfix Finale 3: 3 colonne orizzontali affiancate da md+, stack mobile. */}
-        <div
-          className="grid grid-cols-1 md:grid-cols-3 gap-y-12 gap-x-8 md:gap-x-10 items-start max-w-5xl mx-auto"
-        >
-          {gruppi.map((gruppo) => (
-            <div key={gruppo.categoria} className="flex flex-col items-center">
-              <p
-                className={`uppercase-tracked text-caption text-center mb-6 ${
-                  isLight ? "text-crema-base/85" : "text-rosso-base"
-                }`}
-              >
-                {gruppo.label}
-              </p>
-              <PatrociniColonna items={gruppo.items} categoria={gruppo.categoria} />
-            </div>
+        {/* Hotfix Mini Patrocini: striscia unica orizzontale con pipe separatori
+            verticali tra le 3 categorie. Stack verticale su mobile. */}
+        <div className="patrocini-strip">
+          {gruppi.map((gruppo, idx) => (
+            <Fragment key={gruppo.categoria}>
+              <div className="patrocini-categoria">
+                <p
+                  className={`uppercase-tracked text-caption text-center mb-6 ${
+                    isLight ? "text-crema-base/85" : "text-rosso-base"
+                  }`}
+                >
+                  {gruppo.label}
+                </p>
+                <PatrociniColonna items={gruppo.items} categoria={gruppo.categoria} />
+              </div>
+              {idx < gruppi.length - 1 && (
+                <div
+                  className="patrocini-separatore"
+                  style={{
+                    backgroundColor: isLight
+                      ? "rgba(245, 230, 211, 0.3)"
+                      : "rgba(245, 230, 211, 0.2)",
+                  }}
+                  aria-hidden="true"
+                />
+              )}
+            </Fragment>
           ))}
         </div>
       </Container>

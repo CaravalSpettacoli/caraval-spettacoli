@@ -491,6 +491,48 @@ header[data-scrolled="true"] .header-link:hover {
 }
 
 /* === Loghi patrocini Imaginarium === */
+/* Hotfix Mini Patrocini: striscia orizzontale con 3 colonne flex paritarie e
+   pipe verticali sottili tra le categorie. Stack verticale su mobile. */
+.patrocini-strip {
+  display: flex;
+  align-items: stretch;
+  justify-content: center;
+  gap: 0;
+  flex-wrap: nowrap;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+.patrocini-categoria {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex: 1;
+  padding: 0 1.5rem;
+  min-width: 0;
+}
+.patrocini-separatore {
+  width: 1px;
+  align-self: stretch;
+  margin: 0.5rem 0;
+  flex-shrink: 0;
+}
+@media (max-width: 768px) {
+  .patrocini-strip {
+    flex-direction: column;
+    gap: 2.5rem;
+  }
+  .patrocini-categoria {
+    padding: 0;
+    width: 100%;
+  }
+  .patrocini-separatore {
+    width: 60%;
+    height: 1px;
+    margin: 0 auto;
+    align-self: center;
+  }
+}
+
 /* Hotfix Finale Desktop: width/height 100% + object-contain → ogni logo riempie
    lo spazio max possibile mantenendo proporzioni. Loghi grossi (Danesi)
    raggiungono il limite di larghezza, loghi stretti raggiungono il limite di
