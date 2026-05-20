@@ -230,17 +230,27 @@ export async function Footer({ mostraCalendario = false }: { mostraCalendario?: 
           </div>
         </div>
 
-        <div className="mt-16 pt-6 border-t border-crema-faint flex flex-col md:flex-row gap-4 md:items-center md:justify-between text-caption text-crema-muted">
-          <div>
-            © {new Date().getFullYear()} Caraval Spettacoli — Sito di Eddidesign
-          </div>
-          <div className="flex gap-6">
+        <div className="mt-16 pt-6 border-t border-crema-faint footer-crediti-row text-caption text-crema-muted">
+          <div className="flex gap-6 footer-crediti-legal">
             <Link href="/privacy" className="hover:text-crema-base">
               Privacy
             </Link>
             <Link href="/cookie" className="hover:text-crema-base">
               Cookie
             </Link>
+          </div>
+          <div className="footer-crediti-blocco">
+            <p className="footer-crediti-testo">
+              © {new Date().getFullYear()} Caraval Spettacoli · Tutti i diritti riservati
+            </p>
+            <a
+              href="https://www.eddidesign.it"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="footer-eddidesign-link"
+            >
+              Design by Eddidesign
+            </a>
           </div>
         </div>
       </Container>

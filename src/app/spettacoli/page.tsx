@@ -69,8 +69,12 @@ export default async function PaginaSpettacoli() {
         fotoSfondo={copy?.heroFotoSfondo ?? undefined}
       />
 
-      <div className="flex justify-center bg-nero-deep pt-6 pb-2">
-        <OndaDecorativa width={220} variant="sottile" className="text-rosso-base/60" />
+      {/* Onda separatore tra hero e sezione spettacoli. Bg combaciante con
+          la Section che segue (nero-soft) per dare continuità: la wave fa
+          da "ingresso decorativo" alla sezione invece di fluttuare in una
+          banda nero-deep orfana (Diagnosi_Fix_Mobile §3). */}
+      <div className="flex justify-center bg-nero-soft pt-8 pb-2 -mt-px">
+        <OndaDecorativa width={260} variant="sottile" className="text-rosso-base/60" />
       </div>
 
       <Section theme="dark" bgVariant="soft" glow="top-right">

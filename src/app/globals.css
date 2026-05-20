@@ -248,6 +248,25 @@ body {
   }
 }
 
+/* Mobile/tablet (<1024px): reveal animations disabilitate, contenuto sempre
+   visibile. Il pattern IntersectionObserver è inaffidabile su iOS Safari
+   con rootMargin negativo + elementi alti — risolve bug spettacoli/animazioni
+   che restavano opacity:0 al primo render (Diagnosi_Fix_Mobile §1+2). */
+@media (max-width: 1023px) {
+  .reveal,
+  .reveal.reveal-left,
+  .reveal.reveal-right {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+  .reveal-stagger > * {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}
+
 /* CTA terziarie tipo "Vedi tutto il repertorio →": underline sempre visibile,
    al hover cambia colore (cremisi). Più chiaro che è cliccabile. */
 .cta-tertiary {
@@ -779,9 +798,12 @@ header[data-scrolled="true"] .header-link:hover {
     -webkit-backdrop-filter: blur(12px);
   }
 
-  /* Padding bottom su main per non coprire contenuto con la bottom nav */
-  body > main {
-    padding-bottom: calc(64px + env(safe-area-inset-bottom));
+  /* Padding bottom sul footer per non essere coperto dalla bottom nav.
+     Diagnosi_Fix_Mobile §4-5: prima il padding era su main, ma il footer è
+     sibling di main (non figlio) → il footer veniva coperto dalla bottom nav.
+     Spostiamo il padding sul footer. */
+  body > footer {
+    padding-bottom: calc(64px + env(safe-area-inset-bottom) + 1rem);
   }
 }
 
@@ -791,8 +813,8 @@ header[data-scrolled="true"] .header-link:hover {
     padding-inline: 4rem;
     height: calc(70px + env(safe-area-inset-bottom));
   }
-  body > main {
-    padding-bottom: calc(70px + env(safe-area-inset-bottom));
+  body > footer {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom) + 1rem);
   }
 }
 
@@ -1027,5 +1049,67 @@ header[data-scrolled="true"] .header-link:hover {
   .bottom-sheet-overlay,
   .bottom-nav-icon {
     transition: none;
+  }
+}
+
+/* ============================================================
+   FOOTER — riga crediti finale (Diagnosi_Fix_Mobile §6)
+   Legal links a sinistra, crediti Caraval + Eddidesign a destra.
+   Mobile: stack centrato.
+   ============================================================ */
+.footer-crediti-row {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.footer-crediti-legal {
+  flex-shrink: 0;
+}
+
+.footer-crediti-blocco {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.35rem;
+  text-align: right;
+}
+
+.footer-crediti-testo {
+  margin: 0;
+  font-size: 0.8rem;
+  color: rgba(245, 230, 211, 0.55);
+  letter-spacing: 0.02em;
+}
+
+.footer-eddidesign-link {
+  font-size: 0.7rem;
+  color: rgba(245, 230, 211, 0.4);
+  text-decoration: none;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  transition: color 220ms ease-out;
+}
+
+.footer-eddidesign-link:hover,
+.footer-eddidesign-link:focus-visible {
+  color: #fec312;
+  outline: none;
+}
+
+/* Mobile/Tablet stretto: stack verticale centrato */
+@media (max-width: 640px) {
+  .footer-crediti-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    text-align: center;
+  }
+  .footer-crediti-blocco {
+    align-items: center;
+    text-align: center;
   }
 }
