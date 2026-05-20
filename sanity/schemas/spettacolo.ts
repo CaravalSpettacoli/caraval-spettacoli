@@ -1,9 +1,11 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
+import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "spettacolo",
   title: "Spettacolo",
   type: "document",
+  groups: [SEO_GROUP],
   fieldsets: [
     {
       name: "homepage",
@@ -351,8 +353,7 @@ export default defineType({
         }),
       ],
     }),
-    defineField({ name: "seoTitle", title: "SEO title (override)", type: "string" }),
-    defineField({ name: "seoDescription", title: "SEO description", type: "text", rows: 2 }),
+    ...seoOverrideFields(),
   ],
   preview: {
     select: { title: "titolo", subtitle: "categoria", media: "immagineCover" },

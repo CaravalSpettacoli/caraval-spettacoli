@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { generatePageMetadata } from "@/lib/generate-page-metadata";
 import Link from "next/link";
 import { client } from "@/../sanity/lib/client";
 import { Container } from "@/components/ui/Container";
@@ -11,11 +12,17 @@ import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 
 export const revalidate = 60;
 
-export const metadata: Metadata = {
-  title: "Caraval Academy · Caraval Spettacoli",
-  description:
-    "Corsi serali per adulti da ottobre a maggio. Spettacolo finale a Imaginarium. Laboratori nelle scuole primarie del territorio.",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  // /formazione non ha un singleton di copy dedicato — usa solo defaults
+  // globali + defaults locali specifici Caraval Academy.
+  return generatePageMetadata({
+    singletonId: null,
+    slug: "/formazione",
+    defaultTitle: "Caraval Academy — Corsi di teatro a Soncino e Cremona",
+    defaultDescription:
+      "Caraval Academy: corsi di recitazione per adulti e laboratori teatrali per scuole a Soncino (CR). Spettacolo finale a Imaginarium.",
+  });
+}
 
 type CopyFormazione = {
   formazioneHeroEyebrow?: string;

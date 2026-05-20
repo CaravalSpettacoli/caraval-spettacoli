@@ -105,11 +105,18 @@ async function getImaginariumData() {
   };
 }
 
-export const metadata = {
-  title: "Imaginarium",
-  description:
-    "Festival di Teatro Itinerante a Soncino. Sei serate, ingresso gratuito.",
-};
+import type { Metadata } from "next";
+import { generatePageMetadata } from "@/lib/generate-page-metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    singletonId: "paginaImaginariumCopy",
+    slug: "/imaginarium",
+    defaultTitle: "Imaginarium 2026 — Festival teatrale di Soncino",
+    defaultDescription:
+      "Imaginarium è il festival teatrale annuale di Caraval Spettacoli a Soncino (CR). Programma 2026, sei serate, ingresso libero.",
+  });
+}
 
 const MESI_HERO = [
   "gennaio", "febbraio", "marzo", "aprile", "maggio", "giugno",

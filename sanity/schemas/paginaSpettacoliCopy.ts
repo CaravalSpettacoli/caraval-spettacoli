@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "paginaSpettacoliCopy",
@@ -8,6 +9,7 @@ export default defineType({
     { name: "hero", title: "Hero" },
     { name: "indice", title: "Indice /spettacoli" },
     { name: "archivio", title: "Archivio /spettacoli/archivio" },
+    SEO_GROUP,
   ],
   fields: [
     defineField({
@@ -63,6 +65,7 @@ export default defineType({
       rows: 3,
       group: "archivio",
     }),
+    ...seoOverrideFields(),
   ],
   preview: { prepare: () => ({ title: "Pagina Spettacoli — Copy" }) },
 });

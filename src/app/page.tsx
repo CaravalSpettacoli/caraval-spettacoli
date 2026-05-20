@@ -1,6 +1,18 @@
+import type { Metadata } from "next";
 import { client } from "@/../sanity/lib/client";
 import { Sipario } from "@/components/layout/Sipario";
 import { HeroPagina } from "@/components/caraval/HeroPagina";
+import { generatePageMetadata } from "@/lib/generate-page-metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    singletonId: "homepageCopy",
+    slug: "/",
+    defaultTitle: "Caraval Spettacoli — Compagnia teatrale di Soncino, Cremona",
+    defaultDescription:
+      "Caraval Spettacoli è la compagnia teatrale di Soncino (Cremona). Prosa, teatro di fuoco, performance di strada. Festival Imaginarium ogni anno.",
+  });
+}
 
 type HeroHomepageData = {
   heading?: string;

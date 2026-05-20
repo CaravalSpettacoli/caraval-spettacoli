@@ -1,4 +1,5 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
+import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "paginaContattiCopy",
@@ -7,6 +8,7 @@ export default defineType({
   groups: [
     { name: "hero", title: "Hero" },
     { name: "aree", title: "Aree di contatto" },
+    SEO_GROUP,
   ],
   fields: [
     defineField({ name: "heroEyebrow", title: "Hero — Eyebrow", type: "string", group: "hero", initialValue: "CONTATTI" }),
@@ -99,6 +101,7 @@ export default defineType({
         }),
       ],
     }),
+    ...seoOverrideFields(),
   ],
   preview: { prepare: () => ({ title: "Contatti — Copy pagina" }) },
 });

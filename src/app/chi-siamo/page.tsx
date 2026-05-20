@@ -31,11 +31,18 @@ type ChiSiamoCopy = {
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Chi siamo · Caraval Spettacoli",
-  description:
-    "Caraval è una compagnia teatrale di Soncino. Sei artisti che fanno prosa, fuoco e strada. Dal 2020.",
-};
+import type { Metadata } from "next";
+import { generatePageMetadata } from "@/lib/generate-page-metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    singletonId: "paginaChiSiamoCopy",
+    slug: "/chi-siamo",
+    defaultTitle: "Chi siamo — Caraval Spettacoli, compagnia teatrale di Soncino",
+    defaultDescription:
+      "Caraval è una compagnia teatrale di Soncino (CR) dal 2020. Sei artisti che fanno prosa, teatro di fuoco e teatro di strada.",
+  });
+}
 
 async function getData() {
   const [copy, membri, premi] = await Promise.all([

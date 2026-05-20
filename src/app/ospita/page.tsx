@@ -39,11 +39,18 @@ type Impostazioni = {
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Ospita Caraval · Caraval Spettacoli",
-  description:
-    "Comuni, Pro Loco, dimore storiche, associazioni: porta uno spettacolo Caraval nella tua piazza. Prosa, fuoco, strada.",
-};
+import type { Metadata } from "next";
+import { generatePageMetadata } from "@/lib/generate-page-metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    singletonId: "paginaOspitaCopy",
+    slug: "/ospita",
+    defaultTitle: "Ospita Caraval — Informazioni per teatri ed enti",
+    defaultDescription:
+      "Comuni, Pro Loco, dimore storiche, associazioni: porta uno spettacolo Caraval nella tua piazza. Prosa, fuoco, strada.",
+  });
+}
 
 async function getData() {
   const [copy, impostazioni] = await Promise.all([

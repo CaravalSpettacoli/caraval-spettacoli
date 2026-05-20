@@ -58,11 +58,18 @@ const SOCIAL_LABEL: Record<
 
 export const revalidate = 60;
 
-export const metadata = {
-  title: "Contatti · Caraval Spettacoli",
-  description:
-    "Per spettacoli, formazione, collaborazioni o richieste tecniche. Tutti i contatti di Caraval Spettacoli.",
-};
+import type { Metadata } from "next";
+import { generatePageMetadata } from "@/lib/generate-page-metadata";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return generatePageMetadata({
+    singletonId: "paginaContattiCopy",
+    slug: "/contatti",
+    defaultTitle: "Contatti — Caraval Spettacoli Soncino",
+    defaultDescription:
+      "Contatti di Caraval Spettacoli: email, telefono, sede a Soncino (CR). Per spettacoli, formazione, collaborazioni o ingaggi B2B.",
+  });
+}
 
 async function getData() {
   const [copy, impostazioni] = await Promise.all([

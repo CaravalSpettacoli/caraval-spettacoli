@@ -1,4 +1,5 @@
 import { defineType, defineField } from "sanity";
+import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "paginaChiSiamoCopy",
@@ -10,6 +11,7 @@ export default defineType({
     { name: "membri", title: "Membri" },
     { name: "premi", title: "Premi" },
     { name: "magia", title: "Scuola di Magia" },
+    SEO_GROUP,
   ],
   fields: [
     // Hero
@@ -96,6 +98,7 @@ export default defineType({
       group: "magia",
       fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
     }),
+    ...seoOverrideFields(),
   ],
   preview: { prepare: () => ({ title: "Chi siamo — Copy pagina" }) },
 });

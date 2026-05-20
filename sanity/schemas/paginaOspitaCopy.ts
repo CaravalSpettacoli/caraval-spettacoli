@@ -1,4 +1,5 @@
 import { defineType, defineField, defineArrayMember } from "sanity";
+import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "paginaOspitaCopy",
@@ -11,6 +12,7 @@ export default defineType({
     { name: "testimonianze", title: "Testimonianze" },
     { name: "ingaggiato", title: "Hanno ingaggiato" },
     { name: "ctafinale", title: "CTA finale" },
+    SEO_GROUP,
   ],
   fields: [
     defineField({ name: "heroEyebrow", title: "Hero — Eyebrow", type: "string", group: "hero", initialValue: "OSPITA CARAVAL" }),
@@ -124,6 +126,7 @@ export default defineType({
       initialValue:
         "Scrivici. Ti rispondiamo entro 24 ore con una proposta su misura.",
     }),
+    ...seoOverrideFields(),
   ],
   preview: { prepare: () => ({ title: "Ospita — Copy pagina" }) },
 });
