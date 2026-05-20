@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
 import Link from "next/link";
 import {
@@ -34,6 +34,16 @@ const DIRECT_PATHS = ["/", "/spettacoli", "/contatti"];
 export function BottomNavMobile() {
   const pathname = usePathname();
   const [altroOpen, setAltroOpen] = useState(false);
+  // Mount guard: evita flicker durante il preloader Sipario e qualsiasi
+  // mismatch SSR/CSR. La nav appare solo dopo che React ha completato
+  // l'hydration sul client. Il fade-in CSS (.bottom-nav-mobile) ammorbidisce
+  // l'apparizione (Fix_3_Bug_Pre_Golive §1).
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  if (!mounted) return null;
 
   const isActive = (item: NavItem): boolean => {
     if (item.isAltro) {

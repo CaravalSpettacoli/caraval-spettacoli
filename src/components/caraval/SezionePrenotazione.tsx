@@ -94,10 +94,13 @@ export function SezionePrenotazione({
   return (
     <Section background="nero-soft" id="prenotazione">
       <Container>
-        <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-10 lg:gap-16 items-center">
+        {/* <1024px (mobile + tablet portrait): stack verticale, biglietto sopra
+            e info sotto, tutto centrato. Da lg: 2 colonne (biglietto sx, info dx)
+            con allineamento testo a sinistra. Fix_3_Bug_Pre_Golive §2. */}
+        <div className="grid grid-cols-1 lg:grid-cols-[340px_1fr] gap-10 lg:gap-16 items-center justify-items-center lg:justify-items-stretch text-center lg:text-left">
           <BigliettoSpettacolo data={bigliettoData} />
 
-          <div className="max-w-[560px]">
+          <div className="max-w-[560px] mx-auto lg:mx-0">
             <p className="uppercase-tracked text-caption text-rosso-base">
               Per vedere {titolo}
             </p>

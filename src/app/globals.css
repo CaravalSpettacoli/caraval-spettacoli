@@ -778,6 +778,15 @@ header[data-scrolled="true"] .header-link:hover {
     height: calc(64px + env(safe-area-inset-bottom));
     backdrop-filter: blur(12px);
     -webkit-backdrop-filter: blur(12px);
+    /* Fade-in soft alla prima comparsa post-mount (Fix_3_Bug_Pre_Golive §1) */
+    animation: bottom-nav-appear 350ms ease-out both;
+  }
+  @keyframes bottom-nav-appear {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .bottom-nav-mobile { animation: none; }
   }
 
   /* Padding bottom sul footer per non essere coperto dalla bottom nav.
