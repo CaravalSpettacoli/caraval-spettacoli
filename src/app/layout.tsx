@@ -9,7 +9,6 @@ import { CustomCursor } from "@/components/effects/CustomCursor";
 import { StructuredData } from "@/components/seo/StructuredData";
 import { IubendaScripts } from "@/components/seo/IubendaScripts";
 import { getFeatureFlags } from "@/lib/feature-flags";
-import { client } from "@/../sanity/lib/client";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -79,31 +78,12 @@ export const viewport: Viewport = {
   initialScale: 1,
 };
 
-type IubendaConfig = {
-  cookieBannerSiteId?: string;
-  cookiePolicyId?: string;
-};
-
-async function getIubendaConfig(): Promise<IubendaConfig> {
-  try {
-    const data = await client.fetch<{ iubenda?: IubendaConfig } | null>(
-      `*[_id == "impostazioniSito"][0]{ iubenda{ cookieBannerSiteId, cookiePolicyId } }`
-    );
-    return data?.iubenda ?? {};
-  } catch {
-    return {};
-  }
-}
-
 export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [flags, iubenda] = await Promise.all([
-    getFeatureFlags(),
-    getIubendaConfig(),
-  ]);
+  const flags = await getFeatureFlags();
   return (
     <html lang="it" className={`${inter.variable} ${cinzel.variable}`}>
       <head>
@@ -112,10 +92,7 @@ export default async function RootLayout({
         <link rel="preload" as="image" href="/caraval-logo-white.png" />
         <link rel="preload" as="image" href="/caraval-logo-black.png" />
         <StructuredData />
-        <IubendaScripts
-          cookieBannerSiteId={iubenda.cookieBannerSiteId}
-          cookiePolicyId={iubenda.cookiePolicyId}
-        />
+        <IubendaScripts />
       </head>
       <body className="bg-nero-base text-crema-base antialiased flex flex-col min-h-screen">
         <SkipLink />

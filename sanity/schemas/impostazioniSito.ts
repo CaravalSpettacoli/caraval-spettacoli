@@ -280,37 +280,6 @@ export default defineType({
         }),
       ],
     }),
-    defineField({
-      name: "iubenda",
-      title: "Iubenda (cookie banner + privacy)",
-      type: "object",
-      description:
-        "Codici Iubenda. Lascia vuoto finché non hai gli ID reali — il banner non viene caricato se siteId vuoto.",
-      options: { collapsible: true, collapsed: true },
-      fields: [
-        defineField({
-          name: "cookieBannerSiteId",
-          title: "Iubenda Cookie Banner Site ID",
-          type: "string",
-          description: "Numerico, generato da Iubenda (es. 1234567).",
-        }),
-        defineField({
-          name: "cookiePolicyId",
-          title: "Iubenda Cookie Policy ID",
-          type: "string",
-        }),
-        defineField({
-          name: "privacyPolicyUrl",
-          title: "URL Privacy Policy Iubenda",
-          type: "url",
-        }),
-        defineField({
-          name: "cookiePolicyUrl",
-          title: "URL Cookie Policy Iubenda",
-          type: "url",
-        }),
-      ],
-    }),
   ],
   preview: { prepare: () => ({ title: "Impostazioni sito" }) },
 });

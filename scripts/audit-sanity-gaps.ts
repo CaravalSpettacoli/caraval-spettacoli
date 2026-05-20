@@ -46,8 +46,7 @@ async function main() {
       "defaultDescriptionOk": defined(seoDefault.defaultDescription),
       "defaultOgImageOk": defined(seoDefault.defaultOgImage),
       "keywordsCount": length(seoDefault.keywords),
-      "comingSoonAttivo": comingSoon.attivo,
-      "iubendaConfigurato": defined(iubenda.cookieBannerSiteId)
+      "comingSoonAttivo": comingSoon.attivo
     },
     "imaginariumHeroFoto": defined(*[_id == "paginaImaginariumCopy"][0].heroFotoSfondo),
     "homepageHeroFoto": defined(*[_id == "homepageHero"][0].fotoSfondo)
@@ -64,7 +63,6 @@ async function main() {
   console.log(`Spettacoli attivi senza fotoHero: ${spettacoliSenzaFoto}`);
   console.log(`Membri senza foto: ${membriSenzaFoto}`);
   console.log(`Coming-soon attivo: ${globals?.comingSoonAttivo ? "SÌ" : "NO"}`);
-  console.log(`Iubenda configurato: ${globals?.iubendaConfigurato ? "SÌ" : "NO (banner disattivato)"}`);
   console.log(`OG image default: ${globals?.defaultOgImageOk ? "SÌ" : "MANCANTE (importante per condivisioni social)"}`);
   console.log(`Keywords globali: ${globals?.keywordsCount ?? 0}`);
   console.log("");
