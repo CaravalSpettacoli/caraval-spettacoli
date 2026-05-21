@@ -5,6 +5,8 @@ export default defineType({
   name: "paginaSpettacoliCopy",
   title: "Pagina Spettacoli",
   type: "document",
+  description:
+    "Qui modifichi i testi della pagina che elenca tutti gli spettacoli. La sezione Archivio mostra i lavori passati. Ricordati di premere Publish per salvare.",
   groups: [
     { name: "hero", title: "🖼️ Parte alta della pagina" },
     { name: "indice", title: "📋 Indice spettacoli" },
@@ -12,14 +14,6 @@ export default defineType({
     SEO_GROUP,
   ],
   fields: [
-    defineField({
-      name: "notaInformativa",
-      title: "ℹ️ Come usare questa pagina",
-      type: "string",
-      readOnly: true,
-      initialValue:
-        "Qui modifichi i testi della pagina che elenca tutti gli spettacoli. La sezione Archivio mostra i lavori passati. Ricordati di premere Publish per salvare.",
-    }),
     defineField({
       name: "heroFotoSfondo",
       title: "Foto in cima alla pagina",

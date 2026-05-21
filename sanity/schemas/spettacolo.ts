@@ -5,6 +5,8 @@ export default defineType({
   name: "spettacolo",
   title: "Spettacolo",
   type: "document",
+  description:
+    "Compila i campi per aggiungere o modificare uno spettacolo. I campi con asterisco rosso sono obbligatori, gli altri sono opzionali. Ricordati di premere Publish per salvare e rendere visibile lo spettacolo sul sito.",
   groups: [SEO_GROUP],
   fieldsets: [
     {
@@ -28,14 +30,6 @@ export default defineType({
     },
   ],
   fields: [
-    defineField({
-      name: "notaInformativa",
-      title: "ℹ️ Come usare questa pagina",
-      type: "string",
-      readOnly: true,
-      initialValue:
-        "Compila i campi per aggiungere o modificare uno spettacolo. I campi con asterisco rosso sono obbligatori, gli altri sono opzionali. Ricordati di premere Publish per salvare e rendere visibile lo spettacolo sul sito.",
-    }),
     defineField({
       name: "titolo",
       title: "Titolo",

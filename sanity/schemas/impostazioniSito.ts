@@ -4,15 +4,9 @@ export default defineType({
   name: "impostazioniSito",
   title: "Impostazioni sito",
   type: "document",
+  description:
+    "Qui gestisci la pubblicazione del sito e le impostazioni generali (contatti, dati associazione, social). Per mettere online il sito a tutti, disattiva la modalità Coming Soon qui sotto.",
   fields: [
-    defineField({
-      name: "notaInformativa",
-      title: "ℹ️ Come usare questa pagina",
-      type: "string",
-      readOnly: true,
-      initialValue:
-        "Qui gestisci la pubblicazione del sito e le impostazioni generali (contatti, dati associazione, social). Per mettere online il sito a tutti, disattiva la modalità Coming Soon qui sotto.",
-    }),
     defineField({
       name: "comingSoon",
       title: "🚀 Coming Soon (pubblicazione sito)",

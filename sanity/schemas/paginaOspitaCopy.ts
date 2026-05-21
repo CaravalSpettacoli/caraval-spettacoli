@@ -5,6 +5,8 @@ export default defineType({
   name: "paginaOspitaCopy",
   title: "Pagina Ospita Caraval",
   type: "document",
+  description:
+    "Qui modifichi i testi della pagina 'Ospita Caraval' dedicata a teatri, Comuni, Pro Loco. Usa le linguette in alto per spostarti tra le sezioni. Ricordati di premere Publish per salvare.",
   groups: [
     { name: "hero", title: "🖼️ Parte alta della pagina" },
     { name: "valore", title: "💡 Perché sceglierci" },
@@ -15,14 +17,6 @@ export default defineType({
     SEO_GROUP,
   ],
   fields: [
-    defineField({
-      name: "notaInformativa",
-      title: "ℹ️ Come usare questa pagina",
-      type: "string",
-      readOnly: true,
-      initialValue:
-        "Qui modifichi i testi della pagina 'Ospita Caraval' dedicata a teatri, Comuni, Pro Loco. Usa le linguette in alto per spostarti tra le sezioni. Ricordati di premere Publish per salvare.",
-    }),
     defineField({
       name: "heroEyebrow",
       title: "Sopratitolo piccolo",

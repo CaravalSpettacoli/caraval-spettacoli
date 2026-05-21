@@ -5,6 +5,8 @@ export default defineType({
   name: "homepageCopy",
   title: "Pagina Home — Testi delle sezioni",
   type: "document",
+  description:
+    "Qui modifichi i testi di tutte le sezioni della pagina principale (Premi, Numeri, Imaginarium, Repertorio, Caraval Academy, ecc.). Usa le linguette in alto per spostarti tra le sezioni. Ricordati di premere Publish per salvare.",
   groups: [
     { name: "premi", title: "🏆 Striscia premi" },
     { name: "numeri", title: "🔢 I numeri della compagnia" },
@@ -18,14 +20,6 @@ export default defineType({
     SEO_GROUP,
   ],
   fields: [
-    defineField({
-      name: "notaInformativa",
-      title: "ℹ️ Come usare questa pagina",
-      type: "string",
-      readOnly: true,
-      initialValue:
-        "Qui modifichi i testi di tutte le sezioni della pagina principale (Premi, Numeri, Imaginarium, Repertorio, Caraval Academy, ecc.). Usa le linguette in alto per spostarti tra le sezioni. Ricordati di premere Publish per salvare.",
-    }),
     // Strip Premi
     defineField({
       name: "premiHeading",

@@ -5,20 +5,14 @@ export default defineType({
   name: "paginaContattiCopy",
   title: "Pagina Contatti",
   type: "document",
+  description:
+    "Qui modifichi i testi della pagina Contatti e le aree di contatto (spettacoli, formazione, ecc.). Ricordati di premere Publish per salvare.",
   groups: [
     { name: "hero", title: "🖼️ Parte alta della pagina" },
     { name: "aree", title: "📇 Aree di contatto" },
     SEO_GROUP,
   ],
   fields: [
-    defineField({
-      name: "notaInformativa",
-      title: "ℹ️ Come usare questa pagina",
-      type: "string",
-      readOnly: true,
-      initialValue:
-        "Qui modifichi i testi della pagina Contatti e le aree di contatto (spettacoli, formazione, ecc.). Ricordati di premere Publish per salvare.",
-    }),
     defineField({
       name: "heroEyebrow",
       title: "Sopratitolo piccolo",

@@ -4,15 +4,9 @@ export default defineType({
   name: "homepageHero",
   title: "Pagina Home — Immagine principale",
   type: "document",
+  description:
+    "Qui modifichi l'immagine grande in cima alla home, il titolo, il sottotitolo e i due pulsanti d'azione. Ricordati di premere Publish per salvare le modifiche.",
   fields: [
-    defineField({
-      name: "notaInformativa",
-      title: "ℹ️ Come usare questa pagina",
-      type: "string",
-      readOnly: true,
-      initialValue:
-        "Qui modifichi l'immagine grande in cima alla home, il titolo, il sottotitolo e i due pulsanti d'azione. Ricordati di premere Publish per salvare le modifiche.",
-    }),
     defineField({
       name: "fotoSfondo",
       title: "Foto di sfondo",
