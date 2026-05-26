@@ -120,6 +120,14 @@ export default defineType({
       group: "magia",
       fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
     }),
+    defineField({
+      name: "scuolaMagiaVideoYoutube",
+      title: "Scuola Magia — Video YouTube",
+      description:
+        "Se compilato, sostituisce la foto con un video YouTube embed (16:9). Incolla l'URL completo (youtu.be/... oppure youtube.com/watch?v=...).",
+      type: "url",
+      group: "magia",
+    }),
     ...seoOverrideFields(),
   ],
   preview: { prepare: () => ({ title: "Chi siamo — Copy pagina" }) },

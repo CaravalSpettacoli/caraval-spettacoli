@@ -27,6 +27,7 @@ type ChiSiamoCopy = {
   scuolaMagiaBody?: string;
   scuolaMagiaUrl?: string;
   scuolaMagiaFoto?: { asset?: { _ref?: string }; alt?: string };
+  scuolaMagiaVideoYoutube?: string;
 };
 
 export const revalidate = 60;
@@ -107,6 +108,7 @@ export default async function ChiSiamoPage() {
         body={copy.scuolaMagiaBody}
         url={copy.scuolaMagiaUrl}
         foto={copy.scuolaMagiaFoto}
+        videoYoutube={copy.scuolaMagiaVideoYoutube}
       />
 
       <CtaFinale

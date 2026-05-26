@@ -1,21 +1,5 @@
 import { Container } from "@/components/ui/Container";
-
-function youtubeEmbedUrl(url: string): string | null {
-  try {
-    const u = new URL(url);
-    if (u.hostname.includes("youtu.be")) {
-      const id = u.pathname.slice(1);
-      return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
-    }
-    if (u.hostname.includes("youtube.com")) {
-      const id = u.searchParams.get("v");
-      return id ? `https://www.youtube-nocookie.com/embed/${id}` : null;
-    }
-    return null;
-  } catch {
-    return null;
-  }
-}
+import { youtubeEmbedUrl } from "@/lib/youtube";
 
 export function TrailerVideo({ url }: { url?: string }) {
   if (!url) return null;

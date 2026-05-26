@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Sparkles } from "lucide-react";
 import { Container } from "@/components/ui/Container";
 import { urlFor } from "@/../sanity/lib/image";
+import { youtubeEmbedUrl } from "@/lib/youtube";
 
 type Foto = { asset?: { _ref?: string }; alt?: string };
 
@@ -11,15 +12,19 @@ export function ScuolaMagiaBox({
   body,
   url,
   foto,
+  videoYoutube,
 }: {
   eyebrow?: string;
   heading?: string;
   body?: string;
   url?: string;
   foto?: Foto | null;
+  videoYoutube?: string;
 }) {
   if (!body && !heading) return null;
+  const embed = youtubeEmbedUrl(videoYoutube);
   const fotoUrl =
+    !embed &&
     foto?.asset?._ref &&
     urlFor(foto as Parameters<typeof urlFor>[0])
       .width(900)
@@ -38,9 +43,18 @@ export function ScuolaMagiaBox({
           <div className="md:col-span-5">
             <div
               className="relative w-full overflow-hidden border border-crema-faint/30"
-              style={{ aspectRatio: "4/5" }}
+              style={{ aspectRatio: embed ? "16/9" : "4/5" }}
             >
-              {fotoUrl ? (
+              {embed ? (
+                <iframe
+                  src={embed}
+                  title={heading ?? "Video"}
+                  loading="lazy"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                  allowFullScreen
+                  className="absolute inset-0 w-full h-full"
+                />
+              ) : fotoUrl ? (
                 <Image
                   src={fotoUrl}
                   alt={foto?.alt ?? heading ?? ""}
