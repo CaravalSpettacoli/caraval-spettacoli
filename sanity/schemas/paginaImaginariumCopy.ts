@@ -11,6 +11,7 @@ export default defineType({
     { name: "hero", title: "🖼️ Parte alta della pagina" },
     { name: "counter", title: "🔢 Numeri del festival" },
     { name: "video", title: "🎬 Video di presentazione" },
+    { name: "faq", title: "❓ Domande frequenti" },
     SEO_GROUP,
   ],
   fields: [
@@ -86,6 +87,15 @@ export default defineType({
         { valore: "2.500+", etichetta: "spettatori" },
       ],
       validation: (R) => R.max(6),
+    }),
+    defineField({
+      name: "faq",
+      title: "Domande frequenti (FAQ)",
+      type: "array",
+      of: [{ type: "faqItem" }],
+      group: "faq",
+      description:
+        "Domande e risposte mostrate in fondo alla pagina. Aiutano anche la visibilità su Google.",
     }),
     ...seoOverrideFields(),
   ],

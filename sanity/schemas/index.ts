@@ -2,6 +2,7 @@ import { type SchemaTypeDefinition } from "sanity";
 
 import luogo from "./objects/luogo";
 import comeParteciapare from "./objects/comeParteciapare";
+import faqItem from "./objects/faqItem";
 
 import spettacolo from "./spettacolo";
 import evento from "./evento";
@@ -18,10 +19,12 @@ import paginaImaginariumCopy from "./paginaImaginariumCopy";
 import paginaChiSiamoCopy from "./paginaChiSiamoCopy";
 import paginaContattiCopy from "./paginaContattiCopy";
 import paginaOspitaCopy from "./paginaOspitaCopy";
+import paginaFormazioneCopy from "./paginaFormazioneCopy";
 
 export const schemaTypes: SchemaTypeDefinition[] = [
   luogo,
   comeParteciapare,
+  faqItem,
   spettacolo,
   evento,
   edizioneImaginarium,
@@ -37,6 +40,7 @@ export const schemaTypes: SchemaTypeDefinition[] = [
   paginaChiSiamoCopy,
   paginaContattiCopy,
   paginaOspitaCopy,
+  paginaFormazioneCopy,
 ];
 
 export const singletonTypes = new Set([
@@ -48,4 +52,5 @@ export const singletonTypes = new Set([
   "paginaChiSiamoCopy",
   "paginaContattiCopy",
   "paginaOspitaCopy",
+  "paginaFormazioneCopy",
 ]);

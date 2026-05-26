@@ -14,6 +14,7 @@ export default defineType({
     { name: "testimonianze", title: "💬 Testimonianze" },
     { name: "ingaggiato", title: "🤝 Hanno ingaggiato Caraval" },
     { name: "ctafinale", title: "🎯 Pulsante d'azione finale" },
+    { name: "faq", title: "❓ Domande frequenti" },
     SEO_GROUP,
   ],
   fields: [
@@ -147,6 +148,15 @@ export default defineType({
       group: "ctafinale",
       initialValue:
         "Scrivici. Ti rispondiamo entro 24 ore con una proposta su misura.",
+    }),
+    defineField({
+      name: "faq",
+      title: "Domande frequenti (FAQ)",
+      type: "array",
+      of: [{ type: "faqItem" }],
+      group: "faq",
+      description:
+        "Domande e risposte mostrate in fondo alla pagina. Aiutano anche la visibilità su Google.",
     }),
     ...seoOverrideFields(),
   ],

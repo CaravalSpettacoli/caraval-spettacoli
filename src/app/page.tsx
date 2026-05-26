@@ -40,6 +40,8 @@ import { OfficinaTeaser } from "@/components/caraval/OfficinaTeaser";
 import { ContattiPrelude } from "@/components/caraval/ContattiPrelude";
 import { CounterStrip, type CounterItem } from "@/components/caraval/CounterStrip";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { FaqSezione } from "@/components/caraval/FaqSezione";
+import { FaqJsonLd } from "@/components/seo/FaqJsonLd";
 import { ProssimiEventiHomepage } from "@/components/caraval/ProssimiEventiHomepage";
 import {
   buildProssimiEventi,
@@ -71,6 +73,7 @@ type HomepageCopy = {
   contattiBody?: string;
   numeriEyebrow?: string;
   numeriElenco?: CounterItem[];
+  faq?: { domanda?: string; risposta?: string }[];
 };
 
 type ImpostazioniContatti = {
@@ -233,6 +236,8 @@ export default async function HomePage() {
         ctaLink={data.copy?.repertorioCtaLink}
       />
       <OfficinaTeaser copy={data.copy} />
+      <FaqSezione items={data.copy?.faq} />
+      <FaqJsonLd items={data.copy?.faq} />
       <CtaFinale
         variant="accent"
         heading={

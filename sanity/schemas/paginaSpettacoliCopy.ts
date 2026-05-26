@@ -11,6 +11,7 @@ export default defineType({
     { name: "hero", title: "🖼️ Parte alta della pagina" },
     { name: "indice", title: "📋 Indice spettacoli" },
     { name: "archivio", title: "🗄️ Archivio spettacoli" },
+    { name: "faq", title: "❓ Domande frequenti" },
     SEO_GROUP,
   ],
   fields: [
@@ -74,6 +75,15 @@ export default defineType({
       type: "text",
       rows: 3,
       group: "archivio",
+    }),
+    defineField({
+      name: "faq",
+      title: "Domande frequenti (FAQ)",
+      type: "array",
+      of: [{ type: "faqItem" }],
+      group: "faq",
+      description:
+        "Domande e risposte mostrate in fondo alla pagina. Aiutano anche la visibilità su Google.",
     }),
     ...seoOverrideFields(),
   ],

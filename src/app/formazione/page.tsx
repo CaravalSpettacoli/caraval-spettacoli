@@ -8,6 +8,8 @@ import { CorsoCard, type CorsoCardData } from "@/components/caraval/CorsoCard";
 import { LaboratoriScuoleSection } from "@/components/caraval/LaboratoriScuoleSection";
 import { HeroPagina } from "@/components/caraval/HeroPagina";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { FaqSezione, type FaqItem } from "@/components/caraval/FaqSezione";
+import { FaqJsonLd } from "@/components/seo/FaqJsonLd";
 import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 
 export const revalidate = 60;
@@ -45,7 +47,7 @@ type ImpostazioniSubset = {
 };
 
 async function getFormazioneData() {
-  const [corsi, copy, impostazioni] = await Promise.all([
+  const [corsi, copy, paginaCopy, impostazioni] = await Promise.all([
     client.fetch<CorsoCardData[]>(
       `*[_type == "corso" && statoCorso != "concluso"] | order(dataInizio asc) {
         _id, titolo, target, statoCorso, frequenza, dataInizio, dataFine,
@@ -67,16 +69,24 @@ async function getFormazioneData() {
         laboratoriEyebrow, laboratoriHeading, laboratoriBody, laboratoriCtaTesto
       }`
     ),
+    client.fetch<{ faq?: FaqItem[] } | null>(
+      `*[_type == "paginaFormazioneCopy"][0]{ faq[]{ domanda, risposta } }`
+    ),
     client.fetch<ImpostazioniSubset | null>(
       `*[_type == "impostazioniSito"][0]{ contattiPubblici }`
     ),
   ]);
 
-  return { corsi: corsi ?? [], copy: copy ?? {}, impostazioni: impostazioni ?? {} };
+  return {
+    corsi: corsi ?? [],
+    copy: copy ?? {},
+    paginaCopy: paginaCopy ?? {},
+    impostazioni: impostazioni ?? {},
+  };
 }
 
 export default async function FormazionePage() {
-  const { corsi, copy, impostazioni } = await getFormazioneData();
+  const { corsi, copy, paginaCopy, impostazioni } = await getFormazioneData();
 
   const heroEyebrow = copy.formazioneHeroEyebrow ?? "FORMAZIONE";
   const heroHeading = copy.formazioneHeroHeading ?? "Caraval Academy";
@@ -170,6 +180,9 @@ export default async function FormazionePage() {
         ctaTesto={labCtaTesto}
         ctaHref={labCtaHref}
       />
+
+      <FaqSezione items={paginaCopy.faq} />
+      <FaqJsonLd items={paginaCopy.faq} />
 
       <CtaFinale
         variant="accent"

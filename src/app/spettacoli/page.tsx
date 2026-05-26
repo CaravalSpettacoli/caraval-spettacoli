@@ -9,6 +9,8 @@ import {
 } from "@/components/caraval/ArchivioSpettacoliGrid";
 import type { SpettacoloCardLargeData } from "@/components/caraval/SpettacoloCardLarge";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { FaqSezione } from "@/components/caraval/FaqSezione";
+import { FaqJsonLd } from "@/components/seo/FaqJsonLd";
 import { GlifoDecorativo } from "@/components/decorative/GlifoDecorativo";
 import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 
@@ -20,6 +22,7 @@ type PaginaCopy = {
   archivioEyebrow?: string;
   archivioHeading?: string;
   archivioIntro?: string;
+  faq?: { domanda?: string; risposta?: string }[];
 };
 
 export const revalidate = 60;
@@ -42,7 +45,8 @@ async function getData() {
       `*[_type == "paginaSpettacoliCopy"][0]{
         eyebrow, heading, intro,
         archivioEyebrow, archivioHeading, archivioIntro,
-        heroFotoSfondo{ asset, alt }
+        heroFotoSfondo{ asset, alt },
+        faq[]{ domanda, risposta }
       }`
     ),
   ]);
@@ -114,6 +118,9 @@ export default async function PaginaSpettacoli() {
       <div className="flex justify-center bg-nero-base pt-2 pb-8">
         <OndaDecorativa width={220} variant="sottile" className="text-rosso-base/60" />
       </div>
+
+      <FaqSezione items={copy?.faq} />
+      <FaqJsonLd items={copy?.faq} />
 
       <CtaFinale
         variant="accent"

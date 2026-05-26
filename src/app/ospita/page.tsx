@@ -12,6 +12,8 @@ import {
 } from "@/components/caraval/TestimonianzeStrip";
 import { HannoIngaggiatoCaraval } from "@/components/caraval/HannoIngaggiatoCaraval";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { FaqSezione } from "@/components/caraval/FaqSezione";
+import { FaqJsonLd } from "@/components/seo/FaqJsonLd";
 
 type OspitaCopy = {
   heroEyebrow?: string;
@@ -31,6 +33,7 @@ type OspitaCopy = {
   hannoIngaggiatoElenco?: string[];
   ctaFinaleHeading?: string;
   ctaFinaleBody?: string;
+  faq?: { domanda?: string; risposta?: string }[];
 };
 
 type Impostazioni = {
@@ -117,6 +120,9 @@ export default async function OspitaPage() {
         eyebrow={copy.hannoIngaggiatoEyebrow}
         enti={copy.hannoIngaggiatoElenco ?? []}
       />
+
+      <FaqSezione items={copy.faq} />
+      <FaqJsonLd items={copy.faq} />
 
       <CtaFinale
         heading={copy.ctaFinaleHeading ?? "Pronto a portare Caraval da te?"}

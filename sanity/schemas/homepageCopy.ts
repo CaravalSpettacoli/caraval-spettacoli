@@ -17,6 +17,7 @@ export default defineType({
     { name: "contatti", title: "✉️ Sezione Contatti" },
     { name: "calendario", title: "🗓️ Sezione Calendario" },
     { name: "formazione", title: "📚 Sezione Formazione" },
+    { name: "faq", title: "❓ Domande frequenti" },
     SEO_GROUP,
   ],
   fields: [
@@ -359,6 +360,15 @@ export default defineType({
       title: "Laboratori — CTA testo",
       type: "string",
       group: "formazione",
+    }),
+    defineField({
+      name: "faq",
+      title: "Domande frequenti (FAQ)",
+      type: "array",
+      of: [{ type: "faqItem" }],
+      group: "faq",
+      description:
+        "Domande e risposte mostrate in fondo alla homepage. Aiutano anche la visibilità su Google.",
     }),
     ...seoOverrideFields(),
   ],

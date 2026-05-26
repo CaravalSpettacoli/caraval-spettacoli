@@ -100,4 +100,13 @@ export const structure: StructureResolver = (S) =>
             .documentId("paginaOspitaCopy")
             .title("Pagina Ospita Caraval")
         ),
+      S.listItem()
+        .title("📄 Pagina Formazione")
+        .id("paginaFormazioneCopy")
+        .child(
+          S.document()
+            .schemaType("paginaFormazioneCopy")
+            .documentId("paginaFormazioneCopy")
+            .title("Pagina Formazione")
+        ),
     ]);

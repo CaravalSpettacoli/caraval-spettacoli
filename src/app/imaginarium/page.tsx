@@ -22,6 +22,8 @@ import {
 import { CounterStrip, type CounterItem } from "@/components/caraval/CounterStrip";
 import { VideoYoutube } from "@/components/caraval/VideoYoutube";
 import { CtaFinale } from "@/components/caraval/CtaFinale";
+import { FaqSezione } from "@/components/caraval/FaqSezione";
+import { FaqJsonLd } from "@/components/seo/FaqJsonLd";
 import {
   PatrociniStrip,
   type PatrocinioItem,
@@ -45,6 +47,7 @@ type PaginaImagCopy = {
   videoHeading?: string;
   videoYoutubeUrl?: string;
   heroFotoSfondo?: { asset?: { _ref?: string }; alt?: string };
+  faq?: { domanda?: string; risposta?: string }[];
 };
 
 async function getImaginariumData() {
@@ -61,7 +64,8 @@ async function getImaginariumData() {
       `*[_type == "paginaImaginariumCopy"][0]{
         counterEyebrow, counterElenco,
         videoEyebrow, videoHeading, videoYoutubeUrl,
-        heroFotoSfondo
+        heroFotoSfondo,
+        faq[]{ domanda, risposta }
       }`
     ),
     client.fetch<{ patrociniHomepage?: PatrocinioItem[] } | null>(
@@ -243,6 +247,8 @@ export default async function ImaginariumPage() {
           ogni gruppo ha il suo titolo. */}
       <PatrociniStrip patrocini={patrocini} palette="light" />
       <EdizioniPassate edizioni={edizioniPassate} />
+      <FaqSezione items={paginaCopy?.faq} />
+      <FaqJsonLd items={paginaCopy?.faq} />
       <CtaFinale
         variant="dark"
         heading="Imaginarium è un progetto della comunità."
