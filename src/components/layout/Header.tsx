@@ -11,6 +11,7 @@ const NAV_LINKS_BASE = [
   { href: "/imaginarium", label: "Imaginarium" },
   { href: "/formazione", label: "Formazione" },
   { href: "/chi-siamo", label: "Chi siamo" },
+  { href: "/ospita", label: "Ospita" },
   { href: "/contatti", label: "Contatti" },
 ];
 

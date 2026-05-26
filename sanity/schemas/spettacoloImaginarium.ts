@@ -70,6 +70,10 @@ export default defineType({
       name: "dataInizio",
       title: "Data e ora inizio",
       type: "datetime",
+      description:
+        "Data e ora di inizio spettacolo. Es. 04/06/2026 21:30. Default orario consigliato Imaginarium: 21:30.",
+      options: { dateFormat: "DD/MM/YYYY", timeFormat: "HH:mm" },
+      initialValue: undefined,
       validation: (r) => r.required(),
     }),
     defineField({ name: "luogo", title: "Luogo", type: "luogo" }),
@@ -77,6 +81,8 @@ export default defineType({
       name: "locationSpecifica",
       title: "Location specifica (testo libero)",
       type: "string",
+      description:
+        'Nome del luogo per il programma. Es. "Rocca Sforzesca", "Teatro Aldo Moro — Orzinuovi", "Castel Giardino Il Fagiolo — Soncino", "Coop L\'Inchiostro — Soncino".',
     }),
     defineField({
       name: "descrizioneBreve",

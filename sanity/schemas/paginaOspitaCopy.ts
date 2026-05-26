@@ -3,23 +3,38 @@ import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "paginaOspitaCopy",
-  title: "Ospita Caraval — Copy pagina",
+  title: "Pagina Ospita Caraval",
   type: "document",
+  description:
+    "Qui modifichi i testi della pagina 'Ospita Caraval' dedicata a teatri, Comuni, Pro Loco. Usa le linguette in alto per spostarti tra le sezioni. Ricordati di premere Publish per salvare.",
   groups: [
-    { name: "hero", title: "Hero" },
-    { name: "valore", title: "Valore proposto" },
-    { name: "processo", title: "Come funziona" },
-    { name: "testimonianze", title: "Testimonianze" },
-    { name: "ingaggiato", title: "Hanno ingaggiato" },
-    { name: "ctafinale", title: "CTA finale" },
+    { name: "hero", title: "🖼️ Parte alta della pagina" },
+    { name: "valore", title: "💡 Perché sceglierci" },
+    { name: "processo", title: "📋 Come funziona" },
+    { name: "testimonianze", title: "💬 Testimonianze" },
+    { name: "ingaggiato", title: "🤝 Hanno ingaggiato Caraval" },
+    { name: "ctafinale", title: "🎯 Pulsante d'azione finale" },
     SEO_GROUP,
   ],
   fields: [
-    defineField({ name: "heroEyebrow", title: "Hero — Eyebrow", type: "string", group: "hero", initialValue: "OSPITA CARAVAL" }),
-    defineField({ name: "heroHeading", title: "Hero — Heading", type: "string", group: "hero", initialValue: "Porta il teatro nella tua piazza" }),
+    defineField({
+      name: "heroEyebrow",
+      title: "Sopratitolo piccolo",
+      type: "string",
+      group: "hero",
+      description: 'Testo piccolo sopra al titolo (es. "OSPITA CARAVAL").',
+      initialValue: "OSPITA CARAVAL",
+    }),
+    defineField({
+      name: "heroHeading",
+      title: "Titolo grande",
+      type: "string",
+      group: "hero",
+      initialValue: "Porta il teatro nella tua piazza",
+    }),
     defineField({
       name: "heroSottotitolo",
-      title: "Hero — Sottotitolo",
+      title: "Sottotitolo",
       type: "text",
       rows: 3,
       group: "hero",
@@ -28,11 +43,18 @@ export default defineType({
     }),
     defineField({
       name: "heroFotoSfondo",
-      title: "Hero — Foto sfondo",
+      title: "Foto in cima alla pagina",
       type: "image",
       options: { hotspot: true },
       group: "hero",
-      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+      description: "Foto orizzontale grande che fa da sfondo alla parte alta della pagina.",
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Descrizione foto (per accessibilità)",
+          type: "string",
+        }),
+      ],
     }),
 
     defineField({ name: "valorePropostoEyebrow", title: "Valore — Eyebrow", type: "string", group: "valore", initialValue: "PERCHÉ CARAVAL" }),

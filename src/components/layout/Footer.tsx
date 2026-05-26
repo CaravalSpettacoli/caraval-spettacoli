@@ -21,11 +21,11 @@ type ImpostazioniFooter = {
     codiceFiscale?: string;
   };
   socialLinks?: SocialLink[];
-  iubenda?: {
-    privacyPolicyUrl?: string;
-    cookiePolicyUrl?: string;
-  };
 };
+
+const IUBENDA_PRIVACY_URL = "https://www.iubenda.com/privacy-policy/68584916";
+const IUBENDA_COOKIE_URL =
+  "https://www.iubenda.com/privacy-policy/68584916/cookie-policy";
 
 const FALLBACK: ImpostazioniFooter = {
   contattiPubblici: {
@@ -85,8 +85,7 @@ async function getImpostazioni(): Promise<ImpostazioniFooter> {
       `*[_type == "impostazioniSito"][0]{
         contattiPubblici,
         datiAssociazione,
-        socialLinks[]{piattaforma, url, mostraInFooter},
-        iubenda{ privacyPolicyUrl, cookiePolicyUrl }
+        socialLinks[]{piattaforma, url, mostraInFooter}
       }`,
       {},
       { next: { revalidate: 300 } }
@@ -237,34 +236,22 @@ export async function Footer({ mostraCalendario = false }: { mostraCalendario?: 
 
         <div className="mt-16 pt-6 border-t border-crema-faint footer-crediti-row text-caption text-crema-muted">
           <div className="flex gap-6 footer-crediti-legal">
-            {impostazioni.iubenda?.privacyPolicyUrl ? (
-              <a
-                href={impostazioni.iubenda.privacyPolicyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-crema-base"
-              >
-                Privacy
-              </a>
-            ) : (
-              <Link href="/privacy" className="hover:text-crema-base">
-                Privacy
-              </Link>
-            )}
-            {impostazioni.iubenda?.cookiePolicyUrl ? (
-              <a
-                href={impostazioni.iubenda.cookiePolicyUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="hover:text-crema-base"
-              >
-                Cookie
-              </a>
-            ) : (
-              <Link href="/cookie" className="hover:text-crema-base">
-                Cookie
-              </Link>
-            )}
+            <a
+              href={IUBENDA_PRIVACY_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-crema-base"
+            >
+              Privacy Policy
+            </a>
+            <a
+              href={IUBENDA_COOKIE_URL}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hover:text-crema-base"
+            >
+              Cookie Policy
+            </a>
           </div>
           <div className="footer-crediti-blocco">
             <p className="footer-crediti-testo">

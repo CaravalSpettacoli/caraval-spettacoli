@@ -3,19 +3,34 @@ import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "paginaContattiCopy",
-  title: "Contatti — Copy pagina",
+  title: "Pagina Contatti",
   type: "document",
+  description:
+    "Qui modifichi i testi della pagina Contatti e le aree di contatto (spettacoli, formazione, ecc.). Ricordati di premere Publish per salvare.",
   groups: [
-    { name: "hero", title: "Hero" },
-    { name: "aree", title: "Aree di contatto" },
+    { name: "hero", title: "🖼️ Parte alta della pagina" },
+    { name: "aree", title: "📇 Aree di contatto" },
     SEO_GROUP,
   ],
   fields: [
-    defineField({ name: "heroEyebrow", title: "Hero — Eyebrow", type: "string", group: "hero", initialValue: "CONTATTI" }),
-    defineField({ name: "heroHeading", title: "Hero — Heading", type: "string", group: "hero", initialValue: "Restiamo in contatto" }),
+    defineField({
+      name: "heroEyebrow",
+      title: "Sopratitolo piccolo",
+      type: "string",
+      group: "hero",
+      description: 'Testo piccolo in alto, sopra al titolo (es. "CONTATTI").',
+      initialValue: "CONTATTI",
+    }),
+    defineField({
+      name: "heroHeading",
+      title: "Titolo grande",
+      type: "string",
+      group: "hero",
+      initialValue: "Restiamo in contatto",
+    }),
     defineField({
       name: "heroSottotitolo",
-      title: "Hero — Sottotitolo",
+      title: "Sottotitolo",
       type: "text",
       rows: 2,
       group: "hero",
@@ -23,11 +38,18 @@ export default defineType({
     }),
     defineField({
       name: "heroFotoSfondo",
-      title: "Hero — Foto sfondo",
+      title: "Foto in cima alla pagina",
       type: "image",
       options: { hotspot: true },
       group: "hero",
-      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+      description: "Foto orizzontale grande che fa da sfondo alla parte alta della pagina Contatti.",
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Descrizione foto (per accessibilità)",
+          type: "string",
+        }),
+      ],
     }),
     defineField({
       name: "aree",
@@ -56,13 +78,14 @@ export default defineType({
             }),
             defineField({
               name: "eyebrow",
-              title: "Eyebrow",
+              title: "Sopratitolo piccolo",
               type: "string",
+              description: 'Testo piccolo sopra al titolo (es. "PER I TEATRI").',
               validation: (r) => r.required(),
             }),
             defineField({
               name: "titolo",
-              title: "Titolo",
+              title: "Titolo dell'area",
               type: "string",
               validation: (r) => r.required(),
             }),
@@ -75,20 +98,25 @@ export default defineType({
             }),
             defineField({
               name: "referente",
-              title: "Referente",
+              title: "Persona di riferimento",
               type: "reference",
               to: [{ type: "membro" }],
-              description: "Opzionale. Tel/email vengono presi dal referente se non fornisci override.",
+              description:
+                "Opzionale. Se selezionata, telefono ed email vengono presi automaticamente dalla scheda della persona. Puoi sovrascriverli con i campi qui sotto.",
             }),
             defineField({
               name: "telefonoOverride",
-              title: "Telefono (override)",
+              title: "Telefono (personalizzato)",
               type: "string",
+              description:
+                "Solo se vuoi mostrare un telefono diverso da quello della persona di riferimento.",
             }),
             defineField({
               name: "emailOverride",
-              title: "Email (override)",
+              title: "Email (personalizzata)",
               type: "string",
+              description:
+                "Solo se vuoi mostrare un'email diversa da quella della persona di riferimento.",
             }),
           ],
           preview: {
@@ -103,5 +131,5 @@ export default defineType({
     }),
     ...seoOverrideFields(),
   ],
-  preview: { prepare: () => ({ title: "Contatti — Copy pagina" }) },
+  preview: { prepare: () => ({ title: "Pagina Contatti" }) },
 });

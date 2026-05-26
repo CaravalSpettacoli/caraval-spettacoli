@@ -3,22 +3,32 @@ import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "paginaSpettacoliCopy",
-  title: "Pagina Spettacoli — Copy",
+  title: "Pagina Spettacoli",
   type: "document",
+  description:
+    "Qui modifichi i testi della pagina che elenca tutti gli spettacoli. La sezione Archivio mostra i lavori passati. Ricordati di premere Publish per salvare.",
   groups: [
-    { name: "hero", title: "Hero" },
-    { name: "indice", title: "Indice /spettacoli" },
-    { name: "archivio", title: "Archivio /spettacoli/archivio" },
+    { name: "hero", title: "🖼️ Parte alta della pagina" },
+    { name: "indice", title: "📋 Indice spettacoli" },
+    { name: "archivio", title: "🗄️ Archivio spettacoli" },
     SEO_GROUP,
   ],
   fields: [
     defineField({
       name: "heroFotoSfondo",
-      title: "Hero — Foto sfondo",
+      title: "Foto in cima alla pagina",
       type: "image",
       options: { hotspot: true },
       group: "hero",
-      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+      description:
+        "Foto orizzontale grande che fa da sfondo alla parte alta della pagina Spettacoli.",
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Descrizione foto (per accessibilità)",
+          type: "string",
+        }),
+      ],
     }),
     defineField({
       name: "eyebrow",

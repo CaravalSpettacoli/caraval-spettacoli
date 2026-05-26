@@ -916,7 +916,8 @@ const archivioSeeds: ArchivioSeed[] = [
   { _id: "spettacolo-servitore-due-padroni", titolo: "Servitore di due padroni", categoria: "prosa", annoCreazione: 2019 },
   { _id: "spettacolo-sogno-mezza-estate", titolo: "Sogno di una notte di mezza estate", categoria: "prosa", annoCreazione: 2019 },
   { _id: "spettacolo-ezzelino", titolo: "Ezzelino da Romano", categoria: "prosa", annoCreazione: 2018 },
-  { _id: "spettacolo-battute-fuori-scena", titolo: "Battute fuori scena", categoria: "prosa", annoCreazione: 2018 },
+  // "Battute fuori scena" rimosso dall'archivio (post go-live, richiesta cliente).
+  // _id residuo in Sanity: spettacolo-battute-fuori-scena — da cancellare manualmente da Studio se ancora presente.
 ];
 
 function spettacoloArchivioDoc(s: ArchivioSeed): AnyDoc {

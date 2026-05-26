@@ -47,6 +47,13 @@ type SpettacoloPage = HeroSpettacoloData & {
   annoProduzione?: number;
   durataMinuti?: number;
   postiLimitati?: boolean;
+  numeroPostiLimitati?: number;
+  schedaTecnicaPdf?: { asset?: { url?: string; originalFilename?: string } };
+  opzioniPrenotazione?: Array<{
+    tipo: "telefono" | "email" | "link" | "botteghino";
+    valore?: string;
+    label?: string;
+  }>;
   prenotazione?: {
     modalita?:
       | "linkEsterno"
@@ -204,9 +211,11 @@ async function getData(slug: string) {
     client.fetch<SpettacoloPage | null>(
       `*[_type == "spettacolo" && slug.current == $slug][0]{
         _id, titolo, sottotitolo, slug, categoria, annoCreazione, regia,
-        annoProduzione, durataMinuti, postiLimitati,
+        annoProduzione, durataMinuti, postiLimitati, numeroPostiLimitati,
         descrizioneNarrativa, gallery, trailerYoutube,
         schedaTecnica, cast, citazioniStampa, immagineCover, fotoHero,
+        opzioniPrenotazione,
+        "schedaTecnicaPdf": schedaTecnicaPdf{ asset->{ url, originalFilename } },
         prenotazione,
         "premiAssociati": premiAssociati[]->{ _id, anno, nomePremio },
         "referenteContatto": referenteContatto->{

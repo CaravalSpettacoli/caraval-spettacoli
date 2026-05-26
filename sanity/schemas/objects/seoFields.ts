@@ -1,49 +1,51 @@
 import { defineField } from "sanity";
 
-/** Campi SEO override condivisi tra singleton di pagina e document type
- *  (spettacolo, spettacoloImaginarium). Tutti vuoti → si usano i default
- *  globali da `impostazioniSito.seoDefault`. Tutti opzionali. Si applica
- *  a un `group: "seo"` definito nello schema padre. */
+/** Campi per personalizzare come la pagina appare su Google e quando viene
+ *  condivisa sui social. Tutti i campi sono opzionali: se lasciati vuoti il
+ *  sito usa i testi predefiniti delle impostazioni generali. */
 export function seoOverrideFields() {
   return [
     defineField({
       name: "seoTitle",
-      title: "Titolo SEO (override)",
+      title: "Titolo per Google",
       type: "string",
       description:
-        "Se vuoto, usa il default globale o il titolo della pagina. Max 70 caratteri ottimali.",
+        "Titolo che appare nei risultati di ricerca su Google (massimo 70 caratteri). Se lasci vuoto, viene usato il titolo della pagina.",
       validation: (r) => r.max(70),
       group: "seo",
     }),
     defineField({
       name: "seoDescription",
-      title: "Meta description (override)",
+      title: "Descrizione per Google",
       type: "text",
       rows: 3,
       description:
-        "Se vuota, usa la descrizione breve o il default globale. Max 170 caratteri ottimali.",
+        "Testo che appare sotto il titolo nei risultati di Google (massimo 170 caratteri). Se lasci vuoto, viene usato il testo predefinito.",
       validation: (r) => r.max(170),
       group: "seo",
     }),
     defineField({
       name: "seoOgImage",
-      title: "Immagine Open Graph (override)",
+      title: "Immagine di anteprima sui social",
       type: "image",
       description:
-        "1200x630px raccomandato. Se vuota, usa fotoHero/immagineCover o il default globale.",
+        "Immagine che appare quando il link viene condiviso su WhatsApp, Facebook, Telegram. Formato consigliato: 1200x630 pixel. Se lasci vuota, viene usata automaticamente la foto principale della pagina.",
       options: { hotspot: true },
       group: "seo",
     }),
     defineField({
       name: "seoKeywords",
-      title: "Keywords aggiuntive (override)",
+      title: "Parole chiave aggiuntive",
       type: "array",
       of: [{ type: "string" }],
       description:
-        "Si sommano alle keywords globali. Esempi: 'spettacolo teatro fuoco Soncino', 'Imaginarium 2026'.",
+        "Parole chiave specifiche di questa pagina, in aggiunta a quelle generali del sito. Esempi: 'spettacolo teatro fuoco Soncino', 'Imaginarium 2026'.",
       group: "seo",
     }),
   ];
 }
 
-export const SEO_GROUP = { name: "seo", title: "SEO (override)" } as const;
+export const SEO_GROUP = {
+  name: "seo",
+  title: "🔍 Visibilità su Google",
+} as const;

@@ -3,25 +3,27 @@ import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "homepageCopy",
-  title: "Homepage — Copy sezioni",
+  title: "Pagina Home — Testi delle sezioni",
   type: "document",
+  description:
+    "Qui modifichi i testi di tutte le sezioni della pagina principale (Premi, Numeri, Imaginarium, Repertorio, Caraval Academy, ecc.). Usa le linguette in alto per spostarti tra le sezioni. Ricordati di premere Publish per salvare.",
   groups: [
-    { name: "premi", title: "Strip Premi" },
-    { name: "numeri", title: "I numeri" },
-    { name: "imaginarium", title: "Imaginarium preview" },
-    { name: "repertorio", title: "Repertorio" },
-    { name: "officina", title: "Caraval Academy" },
-    { name: "ospita", title: "Ospita Caraval" },
-    { name: "contatti", title: "Contatti prelude" },
-    { name: "calendario", title: "Calendario (pagina)" },
-    { name: "formazione", title: "Formazione (pagina)" },
+    { name: "premi", title: "🏆 Striscia premi" },
+    { name: "numeri", title: "🔢 I numeri della compagnia" },
+    { name: "imaginarium", title: "✨ Sezione Imaginarium" },
+    { name: "repertorio", title: "🎭 Sezione Repertorio" },
+    { name: "officina", title: "📚 Sezione Caraval Academy" },
+    { name: "ospita", title: "🤝 Sezione Ospita Caraval" },
+    { name: "contatti", title: "✉️ Sezione Contatti" },
+    { name: "calendario", title: "🗓️ Sezione Calendario" },
+    { name: "formazione", title: "📚 Sezione Formazione" },
     SEO_GROUP,
   ],
   fields: [
     // Strip Premi
     defineField({
       name: "premiHeading",
-      title: "Heading strip premi",
+      title: "Titolo della striscia premi",
       type: "string",
       group: "premi",
       description: 'Es. "Tre premi in quattro anni."',
@@ -30,7 +32,7 @@ export default defineType({
     // I numeri (counter homepage)
     defineField({
       name: "numeriEyebrow",
-      title: "Eyebrow",
+      title: "Sopratitolo piccolo",
       type: "string",
       group: "numeri",
       initialValue: "I NUMERI",
@@ -66,14 +68,14 @@ export default defineType({
     // Imaginarium preview
     defineField({
       name: "imaginariumPreviewBody",
-      title: "Body preview Imaginarium",
+      title: "Testo della preview Imaginarium",
       type: "text",
       rows: 3,
       group: "imaginarium",
     }),
     defineField({
       name: "imaginariumPreviewCtaTesto",
-      title: "CTA — Testo",
+      title: "Pulsante — Testo",
       type: "string",
       group: "imaginarium",
     }),
@@ -131,13 +133,13 @@ export default defineType({
     // Repertorio
     defineField({
       name: "repertorioEyebrow",
-      title: "Eyebrow",
+      title: "Sopratitolo piccolo",
       type: "string",
       group: "repertorio",
     }),
     defineField({
       name: "repertorioHeading",
-      title: "Heading",
+      title: "Titolo della sezione",
       type: "string",
       group: "repertorio",
     }),
@@ -150,13 +152,13 @@ export default defineType({
     }),
     defineField({
       name: "repertorioCtaTesto",
-      title: "CTA — Testo",
+      title: "Pulsante — Testo",
       type: "string",
       group: "repertorio",
     }),
     defineField({
       name: "repertorioCtaLink",
-      title: "CTA — Link",
+      title: "Pulsante — Dove porta",
       type: "string",
       group: "repertorio",
     }),
@@ -164,19 +166,19 @@ export default defineType({
     // Caraval Academy (campo tecnico "officina" mantenuto per backcompat)
     defineField({
       name: "officinaEyebrow",
-      title: "Eyebrow",
+      title: "Sopratitolo piccolo",
       type: "string",
       group: "officina",
     }),
     defineField({
       name: "officinaHeading",
-      title: "Heading",
+      title: "Titolo della sezione",
       type: "string",
       group: "officina",
     }),
     defineField({
       name: "officinaBody",
-      title: "Body",
+      title: "Testo della sezione",
       type: "text",
       rows: 3,
       group: "officina",
@@ -189,13 +191,13 @@ export default defineType({
     }),
     defineField({
       name: "officinaCtaTesto",
-      title: "CTA — Testo",
+      title: "Pulsante — Testo",
       type: "string",
       group: "officina",
     }),
     defineField({
       name: "officinaCtaLink",
-      title: "CTA — Link",
+      title: "Pulsante — Dove porta",
       type: "string",
       group: "officina",
     }),
@@ -203,26 +205,26 @@ export default defineType({
     // Ospita
     defineField({
       name: "ospitaHeading",
-      title: "Heading",
+      title: "Titolo della sezione",
       type: "string",
       group: "ospita",
     }),
     defineField({
       name: "ospitaBody",
-      title: "Body",
+      title: "Testo della sezione",
       type: "text",
       rows: 4,
       group: "ospita",
     }),
     defineField({
       name: "ospitaCtaTesto",
-      title: "CTA — Testo",
+      title: "Pulsante — Testo",
       type: "string",
       group: "ospita",
     }),
     defineField({
       name: "ospitaCtaLink",
-      title: "CTA — Link",
+      title: "Pulsante — Dove porta",
       type: "string",
       group: "ospita",
     }),
@@ -230,13 +232,13 @@ export default defineType({
     // Contatti
     defineField({
       name: "contattiHeading",
-      title: "Heading",
+      title: "Titolo della sezione",
       type: "string",
       group: "contatti",
     }),
     defineField({
       name: "contattiBody",
-      title: "Body",
+      title: "Testo della sezione",
       type: "text",
       rows: 2,
       group: "contatti",

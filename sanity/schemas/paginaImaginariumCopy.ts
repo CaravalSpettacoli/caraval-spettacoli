@@ -3,22 +3,31 @@ import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "paginaImaginariumCopy",
-  title: "Imaginarium — Copy pagina",
+  title: "Pagina Imaginarium",
   type: "document",
+  description:
+    "Qui modifichi i testi della pagina dedicata al festival Imaginarium. Ricordati di premere Publish per salvare.",
   groups: [
-    { name: "hero", title: "Hero" },
-    { name: "counter", title: "Counter (totali festival)" },
-    { name: "video", title: "Video presentazione" },
+    { name: "hero", title: "🖼️ Parte alta della pagina" },
+    { name: "counter", title: "🔢 Numeri del festival" },
+    { name: "video", title: "🎬 Video di presentazione" },
     SEO_GROUP,
   ],
   fields: [
     defineField({
       name: "heroFotoSfondo",
-      title: "Hero — Foto sfondo",
+      title: "Foto in cima alla pagina",
       type: "image",
       options: { hotspot: true },
       group: "hero",
-      fields: [defineField({ name: "alt", title: "Alt", type: "string" })],
+      description: "Foto orizzontale grande che fa da sfondo alla parte alta della pagina Imaginarium.",
+      fields: [
+        defineField({
+          name: "alt",
+          title: "Descrizione foto (per accessibilità)",
+          type: "string",
+        }),
+      ],
     }),
     defineField({
       name: "videoEyebrow",

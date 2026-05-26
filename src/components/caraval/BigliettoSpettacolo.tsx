@@ -23,6 +23,12 @@ export type ModalitaPrenotazione =
 
 type SanityImage = { asset?: { _ref?: string }; alt?: string };
 
+export type OpzionePrenotazione = {
+  tipo: "telefono" | "email" | "link" | "botteghino";
+  valore?: string;
+  label?: string;
+};
+
 export type BigliettoSpettacoloData = {
   titolo: string;
   sottotitolo?: string;
@@ -31,7 +37,9 @@ export type BigliettoSpettacoloData = {
   annoProduzione?: number;
   durataMinuti?: number;
   postiLimitati?: boolean;
+  numeroPostiLimitati?: number;
   slug?: string;
+  opzioniPrenotazione?: OpzionePrenotazione[];
   prenotazione?: {
     modalita?: ModalitaPrenotazione;
     urlBiglietti?: string;
@@ -170,7 +178,7 @@ export function BigliettoSpettacolo({ data }: { data: BigliettoSpettacoloData })
         )}
 
         {/* Badges inline: categoria · durata · posti */}
-        {(categoriaLabel || data.durataMinuti || data.postiLimitati) && (
+        {(categoriaLabel || data.durataMinuti || data.postiLimitati || data.numeroPostiLimitati) && (
           <p className="mt-3 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-body-s text-nero-base">
             {categoriaLabel && <span>{categoriaLabel}</span>}
             {data.durataMinuti && (
@@ -181,12 +189,16 @@ export function BigliettoSpettacolo({ data }: { data: BigliettoSpettacoloData })
                 <span>{data.durataMinuti} min</span>
               </>
             )}
-            {data.postiLimitati && (
+            {(data.numeroPostiLimitati || data.postiLimitati) && (
               <>
                 {(categoriaLabel || data.durataMinuti) && (
                   <span className="text-rosso-base font-bold">·</span>
                 )}
-                <span className="italic text-rosso-base">Posti limitati</span>
+                <span className="italic text-rosso-base">
+                  {data.numeroPostiLimitati
+                    ? `Solo ${data.numeroPostiLimitati} posti`
+                    : "Posti limitati"}
+                </span>
               </>
             )}
           </p>
@@ -293,6 +305,71 @@ function BigliettoCtaContent({
       <span>Indietro</span>
     </button>
   );
+
+  const opzioni = (data.opzioniPrenotazione ?? []).filter(
+    (o) => o && o.tipo && (o.tipo === "botteghino" || o.valore)
+  );
+
+  if (opzioni.length > 0) {
+    return (
+      <>
+        <div className="flex flex-col gap-2">
+          {opzioni.map((opt, i) => {
+            const tipo = opt.tipo;
+            if (tipo === "telefono") {
+              return (
+                <a
+                  key={i}
+                  href={`tel:${pulisciTel(opt.valore)}`}
+                  className="inline-flex items-center justify-center gap-2 w-full h-11 px-4 bg-rosso-base text-crema-base font-semibold uppercase-tracked text-body-s rounded-md hover:bg-rosso-hover transition-colors"
+                >
+                  <Phone className="h-3.5 w-3.5" aria-hidden />
+                  <span>{opt.label || opt.valore || "Chiama"}</span>
+                </a>
+              );
+            }
+            if (tipo === "email") {
+              return (
+                <a
+                  key={i}
+                  href={`mailto:${opt.valore}?subject=${subject}`}
+                  className="inline-flex items-center justify-center gap-2 w-full h-11 px-4 bg-transparent border border-rosso-base text-rosso-base font-semibold uppercase-tracked text-body-s rounded-md hover:bg-rosso-muted transition-colors"
+                >
+                  <Mail className="h-3.5 w-3.5" aria-hidden />
+                  <span>{opt.label || "Scrivi"}</span>
+                </a>
+              );
+            }
+            if (tipo === "link") {
+              return (
+                <a
+                  key={i}
+                  href={opt.valore}
+                  target="_blank"
+                  rel="noreferrer noopener"
+                  className="inline-flex items-center justify-center gap-2 w-full h-11 px-4 bg-nero-base text-crema-base font-semibold uppercase-tracked text-body-s rounded-md hover:bg-rosso-base transition-colors"
+                >
+                  <ExternalLink className="h-3.5 w-3.5" aria-hidden />
+                  <span>{opt.label || "Acquista online"}</span>
+                </a>
+              );
+            }
+            // botteghino — informativo
+            return (
+              <div
+                key={i}
+                className="inline-flex items-center justify-center gap-2 w-full h-11 px-4 bg-transparent border border-dashed border-rosso-base/60 text-nero-base font-semibold uppercase-tracked text-body-s rounded-md"
+              >
+                <TicketIcon className="h-3.5 w-3.5 text-rosso-base" aria-hidden />
+                <span>{opt.label || "Botteghino del teatro"}</span>
+              </div>
+            );
+          })}
+        </div>
+        {backBtn}
+      </>
+    );
+  }
 
   if (qrCodeUrl) {
     return (
