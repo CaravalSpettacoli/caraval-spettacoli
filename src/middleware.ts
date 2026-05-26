@@ -49,6 +49,12 @@ async function isComingSoonActive(): Promise<boolean> {
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
+  // In sviluppo locale lo sviluppatore vede sempre il sito completo: il
+  // coming-soon è controllato da Sanity e resta attivo solo in produzione.
+  if (process.env.NODE_ENV === "development") {
+    return NextResponse.next();
+  }
+
   if (ALLOWED_PREFIXES.some((p) => pathname.startsWith(p))) {
     return NextResponse.next();
   }
