@@ -6,6 +6,7 @@ import { paletteToTheme } from "@/lib/theme-system";
 import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 import { GlifoDecorativo } from "@/components/decorative/GlifoDecorativo";
 import { Reveal } from "@/components/effects/Reveal";
+import { partsInRome } from "@/lib/date-format";
 
 export type SpettacoloImagItem = {
   _id: string;
@@ -43,13 +44,13 @@ function blocksToText(blocks?: SpettacoloImagItem["descrizione"]): string {
 
 function dataParts(iso?: string) {
   if (!iso) return null;
-  const d = new Date(iso);
+  const p = partsInRome(iso);
   return {
-    giorno: d.getDate(),
-    mese: MESI[d.getMonth()],
-    settimana: GIORNI[d.getDay()],
-    ora: `${d.getHours()}${
-      d.getMinutes() === 0 ? "" : `.${d.getMinutes().toString().padStart(2, "0")}`
+    giorno: p.day,
+    mese: MESI[p.month],
+    settimana: GIORNI[p.weekday],
+    ora: `${p.hour}${
+      p.minute === 0 ? "" : `.${p.minute.toString().padStart(2, "0")}`
     }`,
   };
 }

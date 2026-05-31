@@ -2,6 +2,7 @@ import Link from "next/link";
 import { ArrowUpRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { splitDisplay } from "@/lib/splitDisplay";
+import { partsInRome } from "@/lib/date-format";
 
 export type EventoCardSimpleData = {
   data: string; // ISO date
@@ -27,10 +28,11 @@ const MESI_BREVI = [
 function parseData(iso: string) {
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return null;
+  const p = partsInRome(d);
   return {
-    giorno: d.getDate(),
-    mese: MESI_BREVI[d.getMonth()],
-    anno: d.getFullYear(),
+    giorno: p.day,
+    mese: MESI_BREVI[p.month],
+    anno: p.year,
   };
 }
 

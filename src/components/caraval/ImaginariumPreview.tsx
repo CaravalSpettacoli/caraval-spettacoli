@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/Button";
 import { Container } from "@/components/ui/Container";
+import { partsInRome } from "@/lib/date-format";
 
 export type EdizioneCorrente = {
   anno?: number;
@@ -38,12 +39,12 @@ const GIORNI = ["dom", "lun", "mar", "mer", "gio", "ven", "sab"];
 
 function formatData(iso?: string): string {
   if (!iso) return "";
-  const d = new Date(iso);
-  const giorno = GIORNI[d.getDay()];
-  const num = d.getDate();
-  const mese = MESI[d.getMonth()];
-  const ore = d.getHours();
-  const min = d.getMinutes();
+  const p = partsInRome(iso);
+  const giorno = GIORNI[p.weekday];
+  const num = p.day;
+  const mese = MESI[p.month];
+  const ore = p.hour;
+  const min = p.minute;
   const oraStr =
     min === 0 ? `ore ${ore}` : `ore ${ore}.${min.toString().padStart(2, "0")}`;
   return `${giorno.charAt(0).toUpperCase() + giorno.slice(1)} ${num} ${mese} · ${oraStr}`;
@@ -51,15 +52,14 @@ function formatData(iso?: string): string {
 
 function formatRangeDate(inizio?: string, fine?: string): string {
   if (!inizio || !fine) return "";
-  const a = new Date(inizio);
-  const b = new Date(fine);
-  const meseA = MESI[a.getMonth()];
-  const meseB = MESI[b.getMonth()];
-  const annoB = b.getFullYear();
+  const a = partsInRome(inizio);
+  const b = partsInRome(fine);
+  const meseA = MESI[a.month];
+  const meseB = MESI[b.month];
   if (meseA === meseB) {
-    return `${a.getDate()} — ${b.getDate()} ${meseB} ${annoB}`;
+    return `${a.day} — ${b.day} ${meseB} ${b.year}`;
   }
-  return `${a.getDate()} ${meseA} — ${b.getDate()} ${meseB} ${annoB}`;
+  return `${a.day} ${meseA} — ${b.day} ${meseB} ${b.year}`;
 }
 
 export function ImaginariumPreview({

@@ -7,6 +7,7 @@ import { Container } from "@/components/ui/Container";
 import { Reveal } from "@/components/effects/Reveal";
 import { urlFor } from "@/../sanity/lib/image";
 import type { ProssimoEvento } from "@/lib/prossimi-eventi-utils";
+import { partsInRome, formatOraRoma } from "@/lib/date-format";
 
 const GIORNI_SETT = [
   "Domenica", "Lunedì", "Martedì", "Mercoledì", "Giovedì", "Venerdì", "Sabato",
@@ -17,20 +18,22 @@ const MESI = [
 ];
 
 function formatDataLunga(d: Date): string {
-  return `${GIORNI_SETT[d.getDay()]} ${d.getDate()} ${MESI[d.getMonth()]} ${d.getFullYear()}`;
+  const p = partsInRome(d);
+  return `${GIORNI_SETT[p.weekday]} ${p.day} ${MESI[p.month]} ${p.year}`;
 }
 
 function formatOra(d: Date): string {
-  return d.toLocaleTimeString("it-IT", { hour: "2-digit", minute: "2-digit" });
+  return formatOraRoma(d);
 }
 
 function countdownLabel(data: Date): string | null {
-  const oggi = new Date();
-  oggi.setHours(0, 0, 0, 0);
-  const dataMidnight = new Date(data);
-  dataMidnight.setHours(0, 0, 0, 0);
-  const diffMs = dataMidnight.getTime() - oggi.getTime();
-  const diffGiorni = Math.round(diffMs / (1000 * 60 * 60 * 24));
+  const oggi = partsInRome(new Date());
+  const target = partsInRome(data);
+  // Conta giorni di calendario in Europe/Rome (Date.UTC è solo un trucco per
+  // sottrarre date senza interferenze di fuso).
+  const oggiUTC = Date.UTC(oggi.year, oggi.month, oggi.day);
+  const targetUTC = Date.UTC(target.year, target.month, target.day);
+  const diffGiorni = Math.round((targetUTC - oggiUTC) / (1000 * 60 * 60 * 24));
   if (diffGiorni === 0) return "Oggi";
   if (diffGiorni === 1) return "Domani";
   if (diffGiorni > 1 && diffGiorni <= 30) return `Tra ${diffGiorni} giorni`;

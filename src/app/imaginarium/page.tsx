@@ -1,5 +1,6 @@
 import { client } from "@/../sanity/lib/client";
 import { HeroPagina } from "@/components/caraval/HeroPagina";
+import { partsInRome } from "@/lib/date-format";
 
 type EdizioneHero = {
   anno?: number;
@@ -129,13 +130,12 @@ const MESI_HERO = [
 
 function formatRange(inizio?: string, fine?: string): string {
   if (!inizio || !fine) return "";
-  const a = new Date(inizio);
-  const b = new Date(fine);
-  const meseA = MESI_HERO[a.getMonth()];
-  const meseB = MESI_HERO[b.getMonth()];
-  const annoB = b.getFullYear();
-  if (meseA === meseB) return `${a.getDate()}–${b.getDate()} ${meseB} ${annoB}`;
-  return `${a.getDate()} ${meseA} – ${b.getDate()} ${meseB} ${annoB}`;
+  const a = partsInRome(inizio);
+  const b = partsInRome(fine);
+  const meseA = MESI_HERO[a.month];
+  const meseB = MESI_HERO[b.month];
+  if (meseA === meseB) return `${a.day}–${b.day} ${meseB} ${b.year}`;
+  return `${a.day} ${meseA} – ${b.day} ${meseB} ${b.year}`;
 }
 
 function descrToText(blocks?: EdizioneHero["descrizione"]): string {

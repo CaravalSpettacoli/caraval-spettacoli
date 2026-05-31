@@ -4,18 +4,13 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 import { urlFor } from "@/../sanity/lib/image";
 import type { ItemImaginarium } from "@/lib/calendario-utils";
+import { partsInRome, formatOraRoma } from "@/lib/date-format";
 
 const GIORNI_SETT = ["DOM", "LUN", "MAR", "MER", "GIO", "VEN", "SAB"];
 const MESI_BREVI = [
   "gen", "feb", "mar", "apr", "mag", "giu",
   "lug", "ago", "set", "ott", "nov", "dic",
 ];
-
-function formatOra(d: Date) {
-  const hh = String(d.getHours()).padStart(2, "0");
-  const mm = String(d.getMinutes()).padStart(2, "0");
-  return `${hh}:${mm}`;
-}
 
 export function GiornataImaginariumCard({
   item,
@@ -25,6 +20,7 @@ export function GiornataImaginariumCard({
   className?: string;
 }) {
   const { data, edizioneAnno, locationGiornata, spettacoli } = item;
+  const dataParts = partsInRome(data);
 
   return (
     <article
@@ -36,14 +32,14 @@ export function GiornataImaginariumCard({
       {/* Data sx */}
       <div className="flex md:flex-col items-baseline md:items-center gap-3 md:gap-1 shrink-0 md:w-20 md:py-2 md:text-center">
         <span className="font-display text-display-m leading-none text-rosso-deep">
-          {data.getDate()}
+          {dataParts.day}
         </span>
         <div className="flex md:flex-col gap-2 md:gap-0">
           <span className="text-label uppercase-tracked text-rosso-base">
-            {MESI_BREVI[data.getMonth()]}
+            {MESI_BREVI[dataParts.month]}
           </span>
           <span className="text-caption text-nero-base/60">
-            {GIORNI_SETT[data.getDay()]} · {formatOra(data)}
+            {GIORNI_SETT[dataParts.weekday]} · {formatOraRoma(data)}
           </span>
         </div>
       </div>

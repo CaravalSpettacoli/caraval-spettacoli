@@ -1,4 +1,5 @@
 import type { Categoria } from "@/components/caraval/CategoriaBadge";
+import { partsInRome } from "@/lib/date-format";
 
 type SanityImage = { asset?: { _ref?: string }; alt?: string } | null | undefined;
 
@@ -84,8 +85,8 @@ export function buildCalendario(
   const grouped = new Map<string, SpettacoloImaginariumFromSanity[]>();
   for (const s of spettacoliImaginarium) {
     if (!s.data) continue;
-    const d = new Date(s.data);
-    const key = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+    const p = partsInRome(s.data);
+    const key = `${p.year}-${String(p.month + 1).padStart(2, "0")}-${String(p.day).padStart(2, "0")}`;
     if (!grouped.has(key)) grouped.set(key, []);
     grouped.get(key)!.push(s);
   }
@@ -124,7 +125,8 @@ const MESI_LUNGHI = [
 ];
 
 export function meseLabel(date: Date): string {
-  return `${MESI_LUNGHI[date.getMonth()]} ${date.getFullYear()}`;
+  const p = partsInRome(date);
+  return `${MESI_LUNGHI[p.month]} ${p.year}`;
 }
 
 export function groupByMese(items: CalendarioItem[]): Map<string, CalendarioItem[]> {
