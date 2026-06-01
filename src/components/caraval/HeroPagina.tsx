@@ -72,7 +72,7 @@ export function HeroPagina({
     <section
       data-theme={paletteToTheme[palette]}
       className={`relative w-full overflow-hidden flex items-center ${bgClass}`}
-      style={{ minHeight: isFull ? "100vh" : "60vh", ...bgInlineStyle }}
+      style={{ minHeight: isFull ? "100dvh" : "60dvh", ...bgInlineStyle }}
     >
       {fotoUrl ? (
         <>

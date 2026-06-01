@@ -90,7 +90,7 @@ export default async function RootLayout({
         <link rel="preload" as="image" href="/caraval-logo-black.png" />
         <StructuredData />
       </head>
-      <body className="bg-nero-base text-crema-base antialiased flex flex-col min-h-screen">
+      <body className="bg-nero-base text-crema-base antialiased flex flex-col min-h-[100dvh]">
         <SiteChrome
           header={<Header mostraCalendario={flags.mostraCalendario} />}
           footer={<Footer mostraCalendario={flags.mostraCalendario} />}

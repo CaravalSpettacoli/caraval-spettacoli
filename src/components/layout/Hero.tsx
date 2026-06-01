@@ -25,9 +25,9 @@ export type HeroProps = {
 };
 
 const heights: Record<Height, string> = {
-  sm: "min-h-[60vh]",
-  md: "min-h-[80vh]",
-  lg: "min-h-screen",
+  sm: "min-h-[60dvh]",
+  md: "min-h-[80dvh]",
+  lg: "min-h-[100dvh]",
 };
 
 export function Hero({

@@ -76,7 +76,8 @@ body {
   font-family: var(--font-inter), system-ui, sans-serif;
   font-size: 16px;
   line-height: 1.6;
-  min-height: 100vh;
+  min-height: 100vh; /* fallback browser senza dvh */
+  min-height: 100dvh; /* viewport dinamica: evita altezza-layout > viewport visibile (bottom nav "balla") */
   overflow-x: hidden;
   max-width: 100%;
   position: relative;
@@ -804,6 +805,18 @@ header[data-scrolled="true"] .header-link:hover {
   body > footer {
     padding-bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 1rem);
   }
+
+  /* Badge Iubenda (preferenze cookie) sopra la bottom nav: di default si
+     ancora bottom:0 right:0 con z-index altissimo e copre la voce "Contatti"
+     (4ª, rendendola non cliccabile). Lo solleviamo dell'altezza della nav.
+     Iubenda posiziona il badge con regole ad altissima specificità
+     ([data-tp-float="bottom-right"] ecc.): per vincere il `!important`
+     ripetiamo la classe (.iubenda-tp-btn ×3) → specificità superiore.
+     `top:auto` perché il badge è ancorato in basso (top è solo il valore usato). */
+  .iubenda-tp-btn.iubenda-tp-btn.iubenda-tp-btn.iubenda-cs-preferences-link[data-tp-float="bottom-right"] {
+    top: auto !important;
+    bottom: calc(64px + env(safe-area-inset-bottom, 0px) + 0.5rem) !important;
+  }
 }
 
 /* Su tablet, contieni la nav e ingrandisci leggermente le voci */
@@ -814,6 +827,10 @@ header[data-scrolled="true"] .header-link:hover {
   }
   body > footer {
     padding-bottom: calc(70px + env(safe-area-inset-bottom, 0px) + 1rem);
+  }
+  .iubenda-tp-btn.iubenda-tp-btn.iubenda-tp-btn.iubenda-cs-preferences-link[data-tp-float="bottom-right"] {
+    top: auto !important;
+    bottom: calc(70px + env(safe-area-inset-bottom, 0px) + 0.5rem) !important;
   }
 }
 
@@ -1065,7 +1082,8 @@ body:has(.coming-soon-page) > main {
 }
 
 .coming-soon-page {
-  min-height: 100vh;
+  min-height: 100vh; /* fallback */
+  min-height: 100dvh;
   position: relative;
   display: flex;
   align-items: center;
