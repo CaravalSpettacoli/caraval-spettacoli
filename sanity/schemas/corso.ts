@@ -2,7 +2,7 @@ import { defineType, defineField } from "sanity";
 
 export default defineType({
   name: "corso",
-  title: "Corso (formazione)",
+  title: "Corso (Caraval Academy)",
   type: "document",
   fields: [
     defineField({
@@ -13,9 +13,12 @@ export default defineType({
     }),
     defineField({
       name: "slug",
-      title: "Slug",
+      title: "Slug (indirizzo della pagina)",
       type: "slug",
       options: { source: "titolo", maxLength: 96 },
+      description:
+        'Premi "Generate" per crearlo dal titolo. Senza slug il corso non ha una pagina di dettaglio e la card non è cliccabile.',
+      validation: (r) => r.required(),
     }),
     defineField({
       name: "target",
@@ -52,6 +55,17 @@ export default defineType({
       title: "Descrizione",
       type: "array",
       of: [{ type: "block" }],
+      description:
+        "Testo completo mostrato nella pagina di dettaglio del corso.",
+    }),
+    defineField({
+      name: "descrizioneBreve",
+      title: "Descrizione breve",
+      type: "text",
+      rows: 4,
+      description:
+        "Le prime righe del corso: compaiono nella card in elenco, sotto il titolo nella pagina di dettaglio e nelle anteprime social. Gli a capo vengono rispettati. Se vuota, la card mostra solo i dati pratici.",
+      validation: (r) => r.max(400),
     }),
     defineField({
       name: "immagineCover",

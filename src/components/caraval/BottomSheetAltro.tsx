@@ -26,10 +26,10 @@ const VOCI_ALTRO: VoceMenu[] = [
     descrizione: "Il festival annuale di Caraval",
   },
   {
-    label: "Academy",
+    label: "Caraval Academy",
     icon: GraduationCap,
-    href: "/formazione",
-    descrizione: "Corsi adulti e laboratori scuole",
+    href: "/caraval-academy",
+    descrizione: "Corsi adulti, ragazzi e laboratori scuole",
   },
   {
     label: "Chi siamo",

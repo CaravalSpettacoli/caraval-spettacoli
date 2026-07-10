@@ -17,6 +17,16 @@ const nextConfig = {
         destination: "/spettacoli#archivio",
         permanent: true,
       },
+      {
+        source: "/formazione",
+        destination: "/caraval-academy",
+        permanent: true,
+      },
+      {
+        source: "/formazione/:path*",
+        destination: "/caraval-academy/:path*",
+        permanent: true,
+      },
     ];
   },
 };

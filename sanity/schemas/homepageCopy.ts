@@ -16,7 +16,7 @@ export default defineType({
     { name: "ospita", title: "🤝 Sezione Ospita Caraval" },
     { name: "contatti", title: "✉️ Sezione Contatti" },
     { name: "calendario", title: "🗓️ Sezione Calendario" },
-    { name: "formazione", title: "📚 Sezione Formazione" },
+    { name: "formazione", title: "📚 Sezione Caraval Academy" },
     { name: "faq", title: "❓ Domande frequenti" },
     SEO_GROUP,
   ],

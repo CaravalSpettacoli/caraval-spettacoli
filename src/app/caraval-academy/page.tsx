@@ -15,14 +15,12 @@ import { OndaDecorativa } from "@/components/decorative/OndaDecorativa";
 export const revalidate = 60;
 
 export async function generateMetadata(): Promise<Metadata> {
-  // /formazione non ha un singleton di copy dedicato — usa solo defaults
-  // globali + defaults locali specifici Caraval Academy.
   return generatePageMetadata({
-    singletonId: null,
-    slug: "/formazione",
+    singletonId: "paginaFormazioneCopy",
+    slug: "/caraval-academy",
     defaultTitle: "Caraval Academy — Corsi di teatro a Soncino e Cremona",
     defaultDescription:
-      "Caraval Academy: corsi di recitazione per adulti e laboratori teatrali per scuole a Soncino (CR). Spettacolo finale a Imaginarium.",
+      "Caraval Academy: corsi di recitazione per adulti e ragazzi e laboratori teatrali per scuole a Soncino (CR). Spettacolo finale a Imaginarium.",
   });
 }
 
@@ -50,7 +48,8 @@ async function getFormazioneData() {
   const [corsi, copy, paginaCopy, impostazioni] = await Promise.all([
     client.fetch<CorsoCardData[]>(
       `*[_type == "corso" && statoCorso != "concluso"] | order(dataInizio asc) {
-        _id, titolo, target, statoCorso, frequenza, dataInizio, dataFine,
+        _id, titolo, "slug": slug.current, target, statoCorso, frequenza,
+        descrizioneBreve, immagineCover, dataInizio, dataFine,
         spettacoloFinaleLinked->{
           titolo,
           "slug": slug.current,
@@ -65,7 +64,7 @@ async function getFormazioneData() {
       `*[_type == "homepageCopy"][0]{
         formazioneHeroEyebrow, formazioneHeroHeading, formazioneHeroSubheading, formazioneHeroIntro,
         formazioneHeroFotoSfondo,
-        corsiSezioneEyebrow, corsiSezioneHeading, corsiStatoVuotoTesto,
+        corsiSezioneEyebrow, corsiSezioneHeading, corsiStatoVuotoTesto, corsoCardCtaLabel,
         laboratoriEyebrow, laboratoriHeading, laboratoriBody, laboratoriCtaTesto
       }`
     ),
@@ -85,10 +84,10 @@ async function getFormazioneData() {
   };
 }
 
-export default async function FormazionePage() {
+export default async function CaravalAcademyPage() {
   const { corsi, copy, paginaCopy, impostazioni } = await getFormazioneData();
 
-  const heroEyebrow = copy.formazioneHeroEyebrow ?? "FORMAZIONE";
+  const heroEyebrow = copy.formazioneHeroEyebrow ?? "CARAVAL ACADEMY";
   const heroHeading = copy.formazioneHeroHeading ?? "Caraval Academy";
   const heroSubheading =
     copy.formazioneHeroSubheading ?? "Non serve esperienza. Serve curiosità.";

@@ -3,7 +3,7 @@ import { seoOverrideFields, SEO_GROUP } from "./objects/seoFields";
 
 export default defineType({
   name: "paginaFormazioneCopy",
-  title: "Pagina Formazione",
+  title: "Pagina Caraval Academy",
   type: "document",
   groups: [
     { name: "faq", title: "❓ Domande frequenti" },
@@ -21,5 +21,5 @@ export default defineType({
     }),
     ...seoOverrideFields(),
   ],
-  preview: { prepare: () => ({ title: "Pagina Formazione — FAQ" }) },
+  preview: { prepare: () => ({ title: "Pagina Caraval Academy — FAQ" }) },
 });

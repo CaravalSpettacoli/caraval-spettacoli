@@ -189,7 +189,7 @@ const FAQ_FORMAZIONE: FaqItem[] = [
     _type: "faqItem",
     domanda: "Caraval organizza corsi o laboratori teatrali?",
     risposta:
-      "Sì, Caraval propone percorsi di formazione teatrale. I dettagli su programmi e iscrizioni sono nella pagina Formazione.",
+      "Sì, Caraval propone i corsi della Caraval Academy. I dettagli su programmi e iscrizioni sono nella pagina Caraval Academy.",
   },
   {
     _type: "faqItem",

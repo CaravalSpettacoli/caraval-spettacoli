@@ -9,7 +9,9 @@ import { themeStyles, type SectionTheme } from "@/lib/theme-system";
 const NAV_LINKS_BASE = [
   { href: "/spettacoli", label: "Spettacoli" },
   { href: "/imaginarium", label: "Imaginarium" },
-  { href: "/formazione", label: "Formazione" },
+  // "Academy" e non "Caraval Academy": con 7 voci la nav desktop è satura e il
+  // brand è già nel logo a sinistra. Per esteso in footer, bottom sheet e hero.
+  { href: "/caraval-academy", label: "Academy" },
   { href: "/chi-siamo", label: "Chi siamo" },
   { href: "/ospita", label: "Ospita" },
   { href: "/contatti", label: "Contatti" },

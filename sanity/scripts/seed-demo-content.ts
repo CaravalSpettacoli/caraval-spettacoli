@@ -129,13 +129,13 @@ const homepageCopy: AnyDoc = {
     "Prosa contemporanea, teatro di fuoco e di strada. Per teatri, piazze, borghi, rievocazioni storiche.",
   repertorioCtaTesto: "Vedi tutto il repertorio",
   repertorioCtaLink: "/spettacoli",
-  officinaEyebrow: "FORMAZIONE",
+  officinaEyebrow: "CARAVAL ACADEMY",
   officinaHeading: "Caraval Academy",
   officinaBody:
     "Corsi serali per adulti da ottobre a maggio. Spettacolo finale a Imaginarium. Laboratori nelle scuole primarie del territorio.",
   officinaTagline: "Non serve esperienza. Serve curiosità.",
   officinaCtaTesto: "Scopri i corsi",
-  officinaCtaLink: "/formazione",
+  officinaCtaLink: "/caraval-academy",
   ospitaHeading: "Sei un Comune, una Pro Loco, una dimora storica?",
   ospitaBody:
     "Caraval può portare uno spettacolo da te. Prosa per teatri, fuoco per rievocazioni storiche, strada per piazze e borghi. Lavoriamo con Comuni, Pro Loco, dimore storiche e associazioni in tutta la Lombardia e oltre.",
@@ -150,7 +150,7 @@ const homepageCopy: AnyDoc = {
   calendarioHeroIntro:
     "Tutte le date di Caraval Spettacoli e del festival Imaginarium.",
   // Formazione (pagina)
-  formazioneHeroEyebrow: "FORMAZIONE",
+  formazioneHeroEyebrow: "CARAVAL ACADEMY",
   formazioneHeroHeading: "Caraval Academy",
   formazioneHeroSubheading: "Non serve esperienza. Serve curiosità.",
   formazioneHeroIntro:
@@ -323,7 +323,7 @@ const paginaContattiCopy: AnyDoc = {
     {
       _key: "area-formazione",
       icona: "formazione",
-      eyebrow: "CORSI E FORMAZIONE",
+      eyebrow: "CARAVAL ACADEMY",
       titolo: "Caraval Academy e laboratori",
       descrizione:
         "Caraval Academy per adulti, laboratori nelle scuole. Per informazioni o iscrizioni.",

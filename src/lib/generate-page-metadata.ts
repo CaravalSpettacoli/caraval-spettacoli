@@ -23,7 +23,7 @@ type GlobalSeo = {
 
 type Args = {
   /** ID Sanity del singleton di pagina (es. "paginaSpettacoliCopy"). Se null,
-   *  usa solo i default globali (es. /formazione che non ha singleton). */
+   *  usa solo i default globali. */
   singletonId: string | null;
   /** Path della pagina (es. "/spettacoli"). Usato per canonical URL. */
   slug: string;
