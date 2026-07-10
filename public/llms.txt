@@ -1,6 +1,6 @@
 # Caraval Spettacoli
 
-> Compagnia teatrale italiana di Soncino (Cremona), specializzata in prosa, teatro di fuoco e performance di strada. Festival annuale Imaginarium. Caraval Academy per formazione adulti e laboratori scolastici.
+> Compagnia teatrale italiana di Soncino (Cremona), specializzata in prosa, teatro di fuoco e performance di strada. Festival annuale Imaginarium. Caraval Academy per corsi adulti, corsi ragazzi e laboratori scolastici.
 
 ## Contatti
 
@@ -14,9 +14,9 @@
 - [Homepage](https://caraval.it/): Presentazione compagnia, repertorio principale, prossimi eventi
 - [Spettacoli](https://caraval.it/spettacoli): Repertorio completo (prosa, fuoco, strada) + archivio produzioni
 - [Imaginarium](https://caraval.it/imaginarium): Festival teatrale annuale a Soncino
-- [Caraval Academy](https://caraval.it/formazione): Corsi adulti e laboratori scolastici
+- [Caraval Academy](https://caraval.it/caraval-academy): Corsi adulti, corsi ragazzi e laboratori scolastici
 - [Chi siamo](https://caraval.it/chi-siamo): Storia compagnia + membri + premi
-- [Contatti](https://caraval.it/contatti): Recapiti per area (B2B, formazione, fuoco, generale)
+- [Contatti](https://caraval.it/contatti): Recapiti per area (B2B, Caraval Academy, fuoco, generale)
 - [Ospita Caraval](https://caraval.it/ospita): Informazioni per teatri ed enti che vogliono ingaggiarci
 
 ## Repertorio attivo

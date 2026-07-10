@@ -43,7 +43,7 @@ export function OfficinaTeaser({ copy }: { copy: OfficinaCopy | null }) {
               <div className="mt-8">
                 <Button
                   as="link"
-                  href={copy.officinaCtaLink ?? "/formazione"}
+                  href={copy.officinaCtaLink ?? "/caraval-academy"}
                   variant="secondary"
                   size="md"
                 >

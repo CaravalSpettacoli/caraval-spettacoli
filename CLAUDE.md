@@ -110,7 +110,7 @@ src/app/
 ├── design-system/, demo/, studio/[[...tool]]/
 ├── spettacoli/, spettacoli/[slug]/
 ├── imaginarium/, imaginarium/[anno]/
-├── calendario/, formazione/
+├── calendario/, caraval-academy/, caraval-academy/[slug]/
 ├── chi-siamo/, contatti/, ospita/
 src/components/
 ├── ui/         # Button, Card, Container, Section, PlaceholderImage
@@ -148,7 +148,7 @@ scripts/import-images-to-sanity.ts
 - **`edizioneImaginarium`** — anno, slug (=anno), dataInizio/Fine, locationPrincipale, descrizione, descrizioneBreve, immagineCover, corrente bool, mostraInHomepage, patrocinio[], sponsor[], partnerLista[]. **Deprecato:** `partner` con tipo discriminator
 - **`premio`** — anno, nomePremio, rassegna, spettacoloAssociato→spettacolo, motivazione, ordineHomepage, mostraInHomepage
 - **`evento`** (riscritto Sess.5, esteso Hotfix 6) — spettacolo ref, dataOra, luogo (object), modalitaAccesso enum (4), urlBiglietti condizionale, note, mostraInCalendario. **Group "homepage":** `descrizioneBreve`, `mostraInHomepage` (default true), `ordinePriorita`, `ctaTipo` enum (default|link|telefono|email), `ctaValore` condizionale, `ctaLabel`
-- **`corso`** — titolo, target, frequenza, date, statoCorso enum (in_corso|iscrizioni_aperte|concluso), dataChiusuraIscrizioni, spettacoloFinaleLinked, referenteIscrizioni→membro. **Deprecato:** `spettacoloFinaleRif`
+- **`corso`** — titolo, `slug` (**obbligatorio**, alimenta `/caraval-academy/[slug]`), target, frequenza, date, statoCorso enum (in_corso|iscrizioni_aperte|concluso), dataChiusuraIscrizioni, `descrizione` (portable text, resa nel dettaglio), `descrizioneBreve` (max 400, card + hero dettaglio + OG; a capo preservati via `whitespace-pre-line`, collassati nella `meta description`), `immagineCover`, sede, costoVisibile+costo, spettacoloFinaleLinked, referenteIscrizioni→membro. **Deprecato:** `spettacoloFinaleRif`
 - **`membro`** — nome, ruoli[], `bioBreve` (max 200, per griglia), `bio` (lunga, dettaglio futuro), foto (opt), `ordinamento`, referenteAreaTesto, telefonoPubblico, emailPubblica
 - **Object riusabili:** `luogo` (nomeStruttura, citta, indirizzo, mappa) · `comeParteciapare` (tipo discriminator)
 
@@ -188,7 +188,7 @@ Normalizzazione accenti NFD + underscore→trattino + strip prefix articoli ital
 
 ### caraval/ (dominio)
 - **Hero/Layout:** `HeroPagina` (unificato: prop palette `default|imaginarium`, altezza `full|compatto`, fotoSfondo + parallax + subtle-zoom, placeholder grafico con SVG noise), `HeroSpettacolo` (specifico scheda), `HeroParallaxFoto`
-- **Cards:** `SpettacoloCardLarge`, `SpettacoliGrid` (Client, filtri + lista verticale media-text alternato), `SpettacoloRow` (interno: foto 4:5 alternata sx/dx), `ArchivioSpettacoliGrid` (grid 4 col 4:5 non cliccabile, integrato in `/spettacoli#archivio`), `EventoCard`, `EventoCardSimple` (ex EventoCard Sess.2.5), `GiornataImaginariumCard`, `CorsoCard` (CTA "Contattaci per informazioni"), `SpettacoloCard` (variant manifesto)
+- **Cards:** `SpettacoloCardLarge`, `SpettacoliGrid` (Client, filtri + lista verticale media-text alternato), `SpettacoloRow` (interno: foto 4:5 alternata sx/dx), `ArchivioSpettacoliGrid` (grid 4 col 4:5 non cliccabile, integrato in `/spettacoli#archivio`), `EventoCard`, `EventoCardSimple` (ex EventoCard Sess.2.5), `GiornataImaginariumCard`, `CorsoCard` (card interamente cliccabile → `/caraval-academy/[slug]`, cover 16:9 opzionale, CTA "Scopri il corso"; senza slug degrada a card statica con recapiti + CTA `/contatti`), `SpettacoloCard` (variant manifesto)
 - **Homepage:** `HeroHomepage`/`HeroImaginarium` eliminati in Blocco 1 (unificati in `HeroPagina`), `ProssimiEventiHomepage` (Client, sezione "Prossimi eventi" sotto hero, feed verticale, unifica `evento` + `spettacoloImaginarium`, auto-resolve via cutoff GROQ, countdown discreto, CTA flessibile, limit 5 + link `/calendario`), `StripPremi`, `CounterStrip` (Client, animazione rAF 1500ms ease-out-cubic + IntersectionObserver one-shot), `ImaginariumPreview` (palette inversa rifatta Hotfix 2), `RepertorioPreview` eliminato (sostituito da accordion), `SpettacoliAccordionHomepage` (Client, 2 col Prosa/Fuoco+strada, descrizioneBreve da Sanity, accordion `.accordion-body` max-height 500ms ease-out), `OfficinaTeaser`, `OspitaTeaser` (sostituito in homepage da CtaFinale, resta nel repo), `ContattiPrelude`, `PatrociniStrip` (Server, prop palette `dark|light`, filtra entries senza logo)
 - **Scheda spettacolo:** `DescrizioneNarrativa`, `GalleriaFoto` (Client, `<dialog>` lightbox HTML), `TrailerVideo`, `SchedaTecnica`, `CastECrediti` (`combinaPersone(cast, regia)` → Map<nome, ruoli[]> dedup + ordine prima occorrenza), `CitazioniStampaList`, `SezionePrenotazione` (semplificata: solo descrizione + BigliettoSpettacolo), `BigliettoSpettacolo` (Client, flip 3D rotateY 800ms bouncy, FRONTE CTA → /contatti, RETRO tel cliccabile, accessibile), `TicketSpettacolo` (legacy, in repo), `SpettacoliCorrelati`
 - **Decorativi semantici:** `TitoloDoppio`, `TitoloRitmico`, `Ticket` (cinema vintage, legacy 2.7), `CreditiLocandina`, `CitazioneStampa`, `CategoriaBadge`, `PremioBadge`
@@ -277,15 +277,19 @@ Pattern: i componenti derivano automaticamente `data-theme` dalle prop esistenti
 - `/imaginarium` — hub edizione corrente, hero dark, palette inversa rosso sul resto, scope `.theme-imaginarium`
 - `/imaginarium/[anno]` — dinamica, `notFound()` se anno inesistente, "Programma in caricamento" se vuoto
 - `/calendario` — Server, fetch eventi + spettacoli Imaginarium, raggruppamento per mese italiano, filtri client 4 voci
-- `/formazione` — Server, corsi `statoCorso != "concluso"`, sezione laboratori scolastici
+- `/caraval-academy` — Server, corsi `statoCorso != "concluso"`, sezione laboratori scolastici. Ex `/formazione` (redirect 301 in `next.config.mjs`, incluso `/formazione/:path*`)
+- `/caraval-academy/[slug]` — scheda corso, `generateStaticParams()` SSG, `notFound()` su slug inesistente. Descrizione PortableText + sidebar sticky dati pratici/iscrizioni
 - `/chi-siamo` — hero compatto + storia + carosello membri + premi + Scuola di Magia + CTA finale
-- `/contatti` — hero + indirizzo/P.IVA + 4 aree (Spettacolo B2B/Formazione/Fuoco/Generale) + social
+- `/contatti` — hero + indirizzo/P.IVA + 4 aree (Spettacolo B2B/Caraval Academy/Fuoco/Generale) + social
 - `/ospita` — hero CTA mailto + processo 3 step + testimonianze + ingaggiato + CTA finale rosso
 - `/design-system` — showcase 15+ sezioni (noindex)
 - `/studio` — Sanity Studio embedded
 - `/demo` — playground query
 
-24 rotte totali in build.
+25+ rotte totali in build (una per corso attivo).
+
+### Naming Formazione → Caraval Academy
+Rinominata la pagina in tutta la UI (nav desktop, footer, bottom sheet mobile, hero, FAQ, Studio). **Label:** header desktop usa `Academy` (7 voci, nav satura, brand già nel logo); footer, bottom sheet, hero e title usano `Caraval Academy` per esteso. I **nomi tecnici Sanity restano invariati** — `paginaFormazioneCopy`, `homepageCopy.formazioneHero*`, group `formazione`, `ContattiSezione` icona `formazione` — perché rinominarli orfanerebbe i documenti già pubblicati. Cambiati solo i `title` visibili nello Studio. Testi già su Sanity allineati una tantum da `scripts/rename-formazione-to-academy.ts` (idempotente).
 
 ---
 
@@ -294,7 +298,7 @@ Pattern: i componenti derivano automaticamente `data-theme` dalle prop esistenti
 Sotto `lg` (Tailwind 1024px) il sito assume un layout **stile web app nativa**:
 
 - **Header minimal:** solo logo Caraval centrato, niente nav voci, niente hamburger. Mantiene logica adattiva theme (logo bianco/nero a seconda del tema della sezione sotto). Altezza ridotta: 56px mobile / 64px tablet.
-- **Bottom navigation fissa** (`BottomNavMobile.tsx`): 4 voci — Home / Spettacoli / Altro / Contatti. `position: fixed; bottom: 0; z-50`. `env(safe-area-inset-bottom)` per notch iOS. Active state cremisi (`bottom-nav-item--active`) derivato da `usePathname()`. Su `/imaginarium`, `/formazione`, `/chi-siamo`, `/ospita`, `/calendario` la voce attiva è **Altro**.
+- **Bottom navigation fissa** (`BottomNavMobile.tsx`): 4 voci — Home / Spettacoli / Altro / Contatti. `position: fixed; bottom: 0; z-50`. `env(safe-area-inset-bottom)` per notch iOS. Active state cremisi (`bottom-nav-item--active`) derivato da `usePathname()`. Su `/imaginarium`, `/caraval-academy`, `/chi-siamo`, `/ospita`, `/calendario` la voce attiva è **Altro**.
 - **Bottom sheet "Altro"** (`BottomSheetAltro.tsx`): slide-up dal basso con 4 voci (Imaginarium, Academy, Chi siamo, Ospita Caraval). Chiusura via ESC, click overlay, tap su X, drag-down (>100px). Body scroll lock quando aperto. Su tablet (≥768px) lo sheet è centrato `max-width 600px`.
 - **Padding-bottom main:** `body > main { padding-bottom: calc(64px + env(safe-area-inset-bottom)) }` (70px su tablet) per evitare che la bottom nav copra il contenuto in fondo.
 - **Breakpoint:** tutto via `@media (max-width: 1023px)` in `globals.css`. Desktop ≥1024px invariato (nav classica orizzontale).
@@ -455,4 +459,6 @@ Aggiungere file in `MATERIALE-PER-SITO/FOTO PER SITO/` con naming `{slug}-vertic
 - **Sanity `createOrReplace` cancella foto** → usa `createOrReplacePreservingImages(doc)` con whitelist `PRESERVED_IMAGE_FIELDS` (vedi `seed-demo-content.ts`).
 - **Cursore custom invisibile su sezione** → verifica che la sezione abbia `data-theme` (auto da Section o hardcoded). Vedi `theme-system.ts` mappe.
 - **Animazione Reveal non parte** → controlla che il fallback sincrono via `getBoundingClientRect` sia nell'useEffect; per stagger usare `.reveal-stagger` self-applicato (NON nested in `.reveal`).
+- **PortableText che esce come muro di testo** → nello Studio gli a capo morbidi (shift+enter) restano dentro **un unico blocco** come `\n` nello stesso span, e in HTML collassano. Il renderer del blocco `normal` deve avere `whitespace-pre-line` (vedi `/caraval-academy/[slug]`). Succede sempre quando il cliente incolla testo da Word/Note.
+- **Modifica Sanity non visibile subito in dev** → `sanity/lib/client.ts` ha `useCdn: true` e le pagine hanno `revalidate = 60`. Dopo una patch via script servono ~40-60s, e ogni rotta ha la sua cache: l'indice e il dettaglio si aggiornano in momenti diversi. Non è un bug, non ri-patchare.
 - **Chrome MCP screenshot economy** — cap retries a 3, fallback a verifica JS via curl + grep, fidarsi dei check visivi dell'utente.

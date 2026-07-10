@@ -27,7 +27,7 @@ const NAV_ITEMS: NavItem[] = [
 ];
 
 // Pagine che hanno una loro voce diretta nella bottom nav.
-// Tutte le altre (/imaginarium, /formazione, /chi-siamo, /ospita, /calendario)
+// Tutte le altre (/imaginarium, /caraval-academy, /chi-siamo, /ospita, /calendario)
 // vengono mappate sulla voce "Altro".
 const DIRECT_PATHS = ["/", "/spettacoli", "/contatti"];
 

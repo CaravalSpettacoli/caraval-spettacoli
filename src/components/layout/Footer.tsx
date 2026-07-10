@@ -62,7 +62,7 @@ const FALLBACK: ImpostazioniFooter = {
 
 const SITO_LINKS_BASE = [
   { href: "/spettacoli", label: "Spettacoli" },
-  { href: "/formazione", label: "Formazione" },
+  { href: "/caraval-academy", label: "Caraval Academy" },
   { href: "/imaginarium", label: "Imaginarium" },
 ];
 

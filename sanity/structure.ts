@@ -24,7 +24,7 @@ export const structure: StructureResolver = (S) =>
       S.documentTypeListItem("spettacoloImaginarium").title("🎪 Spettacoli Imaginarium"),
       S.documentTypeListItem("edizioneImaginarium").title("✨ Edizioni Imaginarium"),
       S.documentTypeListItem("premio").title("🏆 Premi e riconoscimenti"),
-      S.documentTypeListItem("corso").title("📚 Corsi (formazione)"),
+      S.documentTypeListItem("corso").title("📚 Corsi (Caraval Academy)"),
       S.documentTypeListItem("evento").title("📅 Eventi e date"),
       S.divider(),
 
@@ -101,12 +101,12 @@ export const structure: StructureResolver = (S) =>
             .title("Pagina Ospita Caraval")
         ),
       S.listItem()
-        .title("📄 Pagina Formazione")
+        .title("📄 Pagina Caraval Academy")
         .id("paginaFormazioneCopy")
         .child(
           S.document()
             .schemaType("paginaFormazioneCopy")
             .documentId("paginaFormazioneCopy")
-            .title("Pagina Formazione")
+            .title("Pagina Caraval Academy")
         ),
     ]);

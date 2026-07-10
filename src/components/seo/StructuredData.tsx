@@ -43,6 +43,7 @@ type StructuredDataPayload = {
     titolo?: string;
     target?: string;
     statoCorso?: string;
+    slug?: string;
   }[];
 };
 
@@ -59,7 +60,7 @@ async function getSeedData(): Promise<StructuredDataPayload> {
         titolo, slug, data, locationSpecifica, descrizioneBreve
       },
       "corsi": *[_type == "corso" && statoCorso in ["in_corso", "iscrizioni_aperte"]]{
-        titolo, target, statoCorso
+        titolo, target, statoCorso, "slug": slug.current
       }
     }`);
     return data ?? {};
@@ -151,10 +152,13 @@ export async function StructuredData() {
       "@type": "Course",
       name: c.titolo,
       description: c.target,
+      url: c.slug
+        ? `${baseUrl}/caraval-academy/${c.slug}`
+        : `${baseUrl}/caraval-academy`,
       provider: {
         "@type": "Organization",
         name: "Caraval Academy",
-        url: `${baseUrl}/formazione`,
+        url: `${baseUrl}/caraval-academy`,
       },
     }));
 
